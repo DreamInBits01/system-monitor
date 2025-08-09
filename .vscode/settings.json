@@ -3,6 +3,7 @@
     "*.page-template": "vue",
     "*.layout-template": "vue",
     "*.vue": "vue",
-    "memory.h": "c"
+    "memory.h": "c",
+    "math.h": "c"
   }
 }

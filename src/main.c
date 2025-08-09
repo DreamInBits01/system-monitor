@@ -4,6 +4,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <string.h>
+#include <dirent.h>
+#include <ctype.h>
 #include "memory.h"
 typedef struct
 {
@@ -17,11 +19,21 @@ typedef struct
 typedef struct
 {
     // gb
-    int total_memory;
-    int free_memory;
     int buffers;
     int cached;
+    float total_memory;
+    float free_memory;
 } MemoryInfo;
+int is_numeric(char *name)
+{
+    while (*name)
+    {
+        if (!isdigit(*name))
+            return 0;
+        name++;
+    };
+    return 1;
+}
 CpuInfo read_cpu_info()
 {
     FILE *cpu_info_file = fopen("/proc/cpuinfo", "r");
@@ -85,16 +97,42 @@ MemoryInfo read_memory_info()
     {
         if (strncmp("MemTotal:", line, 9) == 0)
         {
-            int kb;
-            sscanf(line, "MemTotal: %d", &kb);
-            printf("MemTotal:%dgb\n", KB_TO_GB(kb));
+            float kb;
+            sscanf(line, "MemTotal: %f", &kb);
+            memory_info.total_memory = KB_TO_GB(kb);
+            printf("MemTotal:%.2fgb\n", memory_info.total_memory);
+        }
+        if (strncmp("MemFree:", line, 8) == 0)
+        {
+            float kb;
+            sscanf(line, "MemFree: %f", &kb);
+            memory_info.free_memory = KB_TO_GB(kb);
+            printf("MemFree:%.2fgb\n", memory_info.free_memory);
         }
     };
     return memory_info;
+}
+void list_entries()
+{
+    DIR *directory = opendir("/proc/");
+    if (directory == NULL)
+    {
+        printf("Error while opening a directory!\n");
+    };
+    struct dirent *ep;
+    while ((ep = readdir(directory)) != NULL)
+    {
+        if (is_numeric(ep->d_name))
+        {
+            printf("A process:%s\n", ep->d_name);
+        }
+    };
+    closedir(directory);
 }
 int main()
 {
     read_cpu_info();
     printf("----------\n");
     read_memory_info();
+    printf("----------\n");
 }

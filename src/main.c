@@ -112,7 +112,7 @@ MemoryInfo read_memory_info()
     };
     return memory_info;
 }
-void list_entries()
+struct dirent *get_processes()
 {
     DIR *directory = opendir("/proc/");
     if (directory == NULL)
@@ -120,14 +120,19 @@ void list_entries()
         printf("Error while opening a directory!\n");
     };
     struct dirent *ep;
-    while ((ep = readdir(directory)) != NULL)
+    struct dirent *processes = malloc(10 * sizeof(struct dirent));
+    int processes_index = 0;
+    while ((ep = readdir(directory)) != NULL && processes_index < 10)
     {
         if (is_numeric(ep->d_name))
         {
-            printf("A process:%s\n", ep->d_name);
+            processes[processes_index] = *ep;
+            // printf("A process:%s\n", ep->d_name);
+            processes_index++;
         }
     };
     closedir(directory);
+    return processes;
 }
 int main()
 {
@@ -135,4 +140,13 @@ int main()
     printf("----------\n");
     read_memory_info();
     printf("----------\n");
+    struct dirent *processes = get_processes();
+    int i = 0;
+    while (i < 10)
+    {
+        printf("Process:%s\n", processes[i].d_name);
+        /* code */
+        i++;
+    };
+    free(processes);
 }

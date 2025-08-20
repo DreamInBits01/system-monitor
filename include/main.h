@@ -10,4 +10,5 @@
 #include "utils.h"
 #include "memory.h"
 #include "ncurses.h"
+#include "cpu.h"
 #endif

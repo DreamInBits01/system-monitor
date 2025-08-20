@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <string.h>
-#include <unistd.h>
-#include <string.h>
-#include <dirent.h>
-#include <ctype.h>
-#include "memory.h"
-#include "ncurses.h"
+#include "main.h"
 typedef struct
 {
     int logical_cpus;
@@ -17,24 +8,7 @@ typedef struct
     char model_name[128];
 
 } CpuInfo;
-typedef struct
-{
-    // gb
-    int buffers;
-    int cached;
-    float total_memory;
-    float free_memory;
-} MemoryInfo;
-int is_numeric(char *name)
-{
-    while (*name)
-    {
-        if (!isdigit(*name))
-            return 0;
-        name++;
-    };
-    return 1;
-}
+
 CpuInfo read_cpu_info()
 {
     FILE *cpu_info_file = fopen("/proc/cpuinfo", "r");
@@ -84,33 +58,7 @@ CpuInfo read_cpu_info()
     fclose(cpu_info_file);
     return cpu_info;
 }
-MemoryInfo read_memory_info()
-{
-    FILE *memory_info_file = fopen("/proc/meminfo", "r");
-    if (memory_info_file == NULL)
-    {
-        printf("Error while reading memory_info_file\n");
-        exit(1);
-    }
-    char line[256];
-    MemoryInfo memory_info = {0};
-    while (fgets(line, sizeof(line), memory_info_file))
-    {
-        if (strncmp("MemTotal:", line, 9) == 0)
-        {
-            float kb;
-            sscanf(line, "MemTotal: %f", &kb);
-            memory_info.total_memory = KB_TO_GB(kb);
-        }
-        if (strncmp("MemFree:", line, 8) == 0)
-        {
-            float kb;
-            sscanf(line, "MemFree: %f", &kb);
-            memory_info.free_memory = KB_TO_GB(kb);
-        }
-    };
-    return memory_info;
-}
+
 struct dirent *get_processes()
 {
     DIR *directory = opendir("/proc/");
@@ -138,28 +86,13 @@ struct dirent *get_processes()
     closedir(directory);
     return processes;
 }
-void build_loadbar(int fill, int bar_width, int y, int x)
-{
-    mvaddch(y, x, '[');
-    for (size_t i = 0; i < bar_width; i++)
-    {
-        if (i < fill)
-        {
-            addch('#');
-        }
-        else
-        {
-            addch(' ');
-        };
-    }
-    addch(']');
-}
+
 int main()
 {
     slk_init(1);
     initscr();
-    noecho();
-    cbreak();
+    noecho(); // wouldn't echo to the window
+    cbreak(); // no need to press enter
 
     slk_set(1, "Help", 1);
     slk_set(2, "Save", 1);
@@ -169,16 +102,16 @@ int main()
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
     int bar_width = COLS / 4;
-    MemoryInfo memory_info = read_memory_info();
+    MemoryInfo memory_info = {0};
     while (1)
     {
         memory_info = read_memory_info();
-        double used_percent = (memory_info.total_memory - memory_info.free_memory) / memory_info.total_memory * 100;
+        double used_percent = (memory_info.total - memory_info.free) / memory_info.total * 100;
         // get a fraction and multiply it by the width
         int fill = used_percent / 100 * bar_width;
         mvprintw(0, 0, "Task manager (press q to quit)\n");
-        mvprintw(1, 0, "Memory total: %f\n", memory_info.total_memory);
-        mvprintw(2, 0, "Memory free: %f\n", memory_info.free_memory);
+        mvprintw(1, 0, "Memory total: %f\n", memory_info.total);
+        mvprintw(2, 0, "Memory free: %f\n", memory_info.free);
         mvprintw(3, 0, "Buffers: %d\n", memory_info.buffers);
         mvprintw(4, 0, "Used memory:%f", used_percent);
         build_loadbar(fill, bar_width, 5, 0);

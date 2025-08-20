@@ -4,6 +4,7 @@
     "*.layout-template": "vue",
     "*.vue": "vue",
     "memory.h": "c",
-    "math.h": "c"
+    "math.h": "c",
+    "utils.h": "c"
   }
 }

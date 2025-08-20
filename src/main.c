@@ -7,6 +7,7 @@
 #include <dirent.h>
 #include <ctype.h>
 #include "memory.h"
+#include "ncurses.h"
 typedef struct
 {
     int logical_cpus;
@@ -100,14 +101,12 @@ MemoryInfo read_memory_info()
             float kb;
             sscanf(line, "MemTotal: %f", &kb);
             memory_info.total_memory = KB_TO_GB(kb);
-            printf("MemTotal:%.2fgb\n", memory_info.total_memory);
         }
         if (strncmp("MemFree:", line, 8) == 0)
         {
             float kb;
             sscanf(line, "MemFree: %f", &kb);
             memory_info.free_memory = KB_TO_GB(kb);
-            printf("MemFree:%.2fgb\n", memory_info.free_memory);
         }
     };
     return memory_info;
@@ -121,6 +120,11 @@ struct dirent *get_processes()
     };
     struct dirent *ep;
     struct dirent *processes = malloc(10 * sizeof(struct dirent));
+    if (processes == NULL)
+    {
+        printf("Error while allocating processes\n");
+        exit(1);
+    }
     int processes_index = 0;
     while ((ep = readdir(directory)) != NULL && processes_index < 10)
     {
@@ -134,19 +138,58 @@ struct dirent *get_processes()
     closedir(directory);
     return processes;
 }
+void build_loadbar(int fill, int bar_width, int y, int x)
+{
+    mvaddch(y, x, '[');
+    for (size_t i = 0; i < bar_width; i++)
+    {
+        if (i < fill)
+        {
+            addch('#');
+        }
+        else
+        {
+            addch(' ');
+        };
+    }
+    addch(']');
+}
 int main()
 {
-    read_cpu_info();
-    printf("----------\n");
-    read_memory_info();
-    printf("----------\n");
-    struct dirent *processes = get_processes();
-    int i = 0;
-    while (i < 10)
+    slk_init(1);
+    initscr();
+    noecho();
+    cbreak();
+
+    slk_set(1, "Help", 1);
+    slk_set(2, "Save", 1);
+    slk_set(3, "Load", 1);
+    slk_set(4, "Quit", 1);
+    slk_refresh();
+    keypad(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
+    int bar_width = COLS / 4;
+    MemoryInfo memory_info = read_memory_info();
+    while (1)
     {
-        printf("Process:%s\n", processes[i].d_name);
-        /* code */
-        i++;
-    };
-    free(processes);
+        memory_info = read_memory_info();
+        double used_percent = (memory_info.total_memory - memory_info.free_memory) / memory_info.total_memory * 100;
+        // get a fraction and multiply it by the width
+        int fill = used_percent / 100 * bar_width;
+        mvprintw(0, 0, "Task manager (press q to quit)\n");
+        mvprintw(1, 0, "Memory total: %f\n", memory_info.total_memory);
+        mvprintw(2, 0, "Memory free: %f\n", memory_info.free_memory);
+        mvprintw(3, 0, "Buffers: %d\n", memory_info.buffers);
+        mvprintw(4, 0, "Used memory:%f", used_percent);
+        build_loadbar(fill, bar_width, 5, 0);
+        refresh();
+        int ch = getch();
+        if (ch == KEY_F(4))
+        {
+            break;
+        }
+        sleep(1.5);
+    }
+    endwin();
+    return 0;
 }

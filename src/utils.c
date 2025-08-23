@@ -16,13 +16,13 @@ void build_loadbar(int fill, int bar_width, int y, int x)
     {
         if (i < fill)
         {
-            if (i > fill - fill / 3)
+            if (i >= bar_width * .6)
             {
                 attr_on(COLOR_PAIR(3), NULL); // red
                 addch('|');
                 attr_off(COLOR_PAIR(3), NULL);
             }
-            else if (i > fill - fill / 2)
+            else if (i >= bar_width * .3)
             {
                 attr_on(COLOR_PAIR(2), NULL); // yellow
                 addch('|');

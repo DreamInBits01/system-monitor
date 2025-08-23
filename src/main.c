@@ -36,9 +36,12 @@ int main()
         unsigned processes_index = 0;
         while (processes_index < procsses_count)
         {
-            mvprintw(procsses_y, processes_index % 2 == 0 ? 0 : COLS / 2, "Process name:%s", processes[processes_index].d_name);
+            mvprintw(procsses_y, processes_index % 2 == 0 ? 0 : COLS / 8, "Process name:%s", processes[processes_index].d_name);
             processes_index++;
-            procsses_y++;
+            if (processes_index % 2 == 0)
+            {
+                procsses_y++;
+            }
         }
         free(processes);
         refresh();

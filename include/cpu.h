@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "ncurses.h"
 typedef struct
 {
     int logical_cpus;
@@ -14,4 +15,5 @@ typedef struct
 
 } CpuInfo;
 CpuInfo read_cpu_info();
+void show_cpu_info(CpuInfo *cpu_info);
 #endif

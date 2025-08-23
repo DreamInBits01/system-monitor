@@ -25,7 +25,6 @@ struct dirent *get_processes(int *count)
             if (temp == NULL)
             {
                 printf("Re-allocation of processes failed\n");
-                free(temp);
                 free(processes);
                 exit(1);
             };

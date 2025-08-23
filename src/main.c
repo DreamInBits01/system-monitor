@@ -21,6 +21,8 @@ int main()
     int bar_width = COLS / 4;
     MemoryInfo memory_info = {0};
     CpuInfo cpu_info = {0};
+    struct dirent *processes;
+    int procsses_count = 0;
     while (1)
     {
         memory_info = read_memory_info();
@@ -42,6 +44,15 @@ int main()
         mvprintw(8, 0, "Pyhiscal cores: %d\n", cpu_info.physical_cores);
         mvprintw(9, 0, "Mhz:%f", cpu_info.total_mhz / cpu_info.mhz_occurrence);
         // build_loadbar(fill, bar_width, 10, 0);
+        processes = get_processes(&procsses_count);
+        unsigned procsses_y = 10;
+        unsigned processes_index = 0;
+        while (processes_index < procsses_count)
+        {
+            mvprintw(procsses_y, 0, "Process name:%s", processes[processes_index].d_name);
+            processes_index++;
+            procsses_y++;
+        }
         refresh();
         int ch = getch();
         if (ch == KEY_F(4))

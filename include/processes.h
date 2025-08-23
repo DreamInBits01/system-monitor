@@ -2,5 +2,6 @@
 #define PROCESSES_H
 #include <dirent.h>
 #include <stdlib.h>
-struct dirent *get_processes();
+#define INITIAL_PROCESSES_CAPACITY 20
+struct dirent *get_processes(int *count);
 #endif

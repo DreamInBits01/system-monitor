@@ -49,8 +49,8 @@ CpuInfo read_cpu_info()
 void show_cpu_info(CpuInfo *cpu_info)
 {
     int x = COLS / 2;
-    mvprintw(0, x, "Model name: %s\n", cpu_info->model_name);
-    mvprintw(1, x, "Logical CPUs: %d\n", cpu_info->logical_cpus);
-    mvprintw(2, x, "Pyhiscal cores: %d\n", cpu_info->physical_cores);
+    mvprintw(0, x, "Model name: %s", cpu_info->model_name);
+    mvprintw(1, x, "Logical CPUs: %d", cpu_info->logical_cpus);
+    mvprintw(2, x, "Pyhiscal cores: %d", cpu_info->physical_cores);
     mvprintw(3, x, "Mhz:%f", cpu_info->total_mhz / cpu_info->mhz_occurrence);
 }

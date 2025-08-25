@@ -39,9 +39,9 @@ void show_memory_info(MemoryInfo *memory_info, int bar_width)
     double used_percent = (memory_info->total - memory_info->free) / memory_info->total * 100;
     // get a fraction and multiply it by the width
     int memory_bar_fill = used_percent / 100 * bar_width;
-    mvprintw(1, 0, "Memory total: %f\n", memory_info->total);
-    mvprintw(2, 0, "Memory free: %f\n", memory_info->free);
-    mvprintw(3, 0, "Buffers: %d\n", memory_info->buffers);
-    mvprintw(4, 0, "Used memory:%f", used_percent);
-    build_loadbar(memory_bar_fill, bar_width, 5, 0);
+    mvprintw(0, 0, "Memory total: %.2fgb", memory_info->total);
+    mvprintw(1, 0, "Memory free: %2fgb", memory_info->free);
+    mvprintw(2, 0, "Buffers: %dkb", memory_info->buffers);
+    mvprintw(3, 0, "Used memory:%.2f", used_percent);
+    build_loadbar(memory_bar_fill, bar_width, 4, 0);
 }

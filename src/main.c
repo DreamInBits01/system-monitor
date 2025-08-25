@@ -10,7 +10,6 @@ int main()
     init_pair(3, COLOR_RED, COLOR_BLACK);
     noecho(); // wouldn't echo to the window
     cbreak(); // no need to press enter
-
     slk_set(1, "Help", 1);
     slk_set(2, "Save", 1);
     slk_set(3, "Load", 1);
@@ -27,12 +26,10 @@ int main()
     {
         memory_info = read_memory_info();
         cpu_info = read_cpu_info();
-        mvprintw(0, 0, "Task manager (press q to quit)\n");
         show_memory_info(&memory_info, bar_width);
         show_cpu_info(&cpu_info);
-        // build_loadbar(fill, bar_width, 10, 0);
         processes = get_processes(&procsses_count);
-        unsigned procsses_y = 10;
+        unsigned procsses_y = 6;
         unsigned processes_index = 0;
         while (processes_index < procsses_count)
         {

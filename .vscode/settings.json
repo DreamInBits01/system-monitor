@@ -5,6 +5,11 @@
     "*.vue": "vue",
     "memory.h": "c",
     "math.h": "c",
-    "utils.h": "c"
+    "utils.h": "c",
+    "processes.h": "c",
+    "dirent.h": "c",
+    "unistd.h": "c",
+    "ncurses.h": "c",
+    "types.h": "c"
   }
 }

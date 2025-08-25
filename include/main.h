@@ -1,8 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <string.h>
 #include <unistd.h>
 #include <string.h>
@@ -11,4 +11,6 @@
 #include "ncurses.h"
 #include "cpu.h"
 #include "processes.h"
+#include "./third_party/uthash/src/uthash.h"
+
 #endif

@@ -8,13 +8,13 @@
 #include "utils.h"
 typedef struct
 {
-    // gb
+    // kb
     unsigned buffers;
+    // gb
     unsigned cached;
     float total;
     float free;
 } MemoryInfo;
-
 MemoryInfo read_memory_info();
 void show_memory_info(MemoryInfo *memory_info, int bar_width);
 #endif

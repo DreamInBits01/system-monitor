@@ -20,7 +20,7 @@ int main()
     int bar_width = COLS / 4;
     MemoryInfo memory_info = {0};
     CpuInfo cpu_info = {0};
-    struct dirent *processes;
+    struct dirent *processes = NULL;
     int procsses_count = 0;
     while (1)
     {
@@ -28,7 +28,7 @@ int main()
         cpu_info = read_cpu_info();
         show_memory_info(&memory_info, bar_width);
         show_cpu_info(&cpu_info);
-        processes = get_processes(&procsses_count);
+        processes = get_processes(&processes, &procsses_count);
         unsigned procsses_y = 6;
         unsigned processes_index = 0;
         while (processes_index < procsses_count)
@@ -50,6 +50,5 @@ int main()
         sleep(1.5);
     }
     endwin();
-    // free(processes);
     return 0;
 }

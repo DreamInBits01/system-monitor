@@ -20,34 +20,24 @@ int main()
     int bar_width = COLS / 4;
     MemoryInfo memory_info = {0};
     CpuInfo cpu_info = {0};
-    struct dirent *processes = NULL;
-    int procsses_count = 0;
+    Process *processes = NULL;
+    size_t procsses_count = 0;
     while (1)
     {
         memory_info = read_memory_info();
         cpu_info = read_cpu_info();
         show_memory_info(&memory_info, bar_width);
         show_cpu_info(&cpu_info);
-        processes = get_processes(&processes, &procsses_count);
+        get_processes(&processes, &procsses_count);
         unsigned procsses_y = 6;
         unsigned processes_index = 0;
-        while (processes_index < procsses_count)
-        {
-            mvprintw(procsses_y, processes_index % 2 == 0 ? 0 : COLS / 8, "Process name:%s", processes[processes_index].d_name);
-            processes_index++;
-            if (processes_index % 2 == 0)
-            {
-                procsses_y++;
-            }
-        }
-        free(processes);
         refresh();
         int ch = getch();
         if (ch == KEY_F(4))
         {
             break;
         }
-        sleep(1.5);
+        sleep(2);
     }
     endwin();
     return 0;

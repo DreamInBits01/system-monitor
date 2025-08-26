@@ -1,6 +1,12 @@
 #include "processes.h"
 #include "utils.h"
-struct dirent *get_processes(struct dirent *processes, int *count)
+void mark_processes_unseen(Process **processes) {
+
+};
+void remove_unseen_processes(Process **processes) {
+
+};
+void get_processes(Process **processes, size_t *count)
 {
     DIR *directory = opendir("/proc/");
     if (directory == NULL)
@@ -8,14 +14,7 @@ struct dirent *get_processes(struct dirent *processes, int *count)
         printf("Error while opening a directory!\n");
     };
     struct dirent *ep;
-    int processes_capacity = INITIAL_PROCESSES_CAPACITY;
-    // struct dirent *processes = malloc(processes_capacity * sizeof(struct dirent));
-    if (processes == NULL)
-    {
-        printf("Error while allocating processes\n");
-        exit(1);
-    }
-    unsigned processes_index = 0;
+    size_t processes_index = 0;
 
     /*
         --loop over the entries
@@ -23,30 +22,36 @@ struct dirent *get_processes(struct dirent *processes, int *count)
         --if not malloc it, and add it
         --if it's already there,
     */
-
-    // while ((ep = readdir(directory)) != NULL)
-    // {
-    //     if (processes_index >= processes_capacity)
-    //     {
-    //         processes_capacity *= INITIAL_PROCESSES_CAPACITY;
-    //         struct dirent *temp = realloc(processes, processes_capacity * sizeof(struct dirent));
-    //         if (temp == NULL)
-    //         {
-    //             printf("Re-allocation of processes failed\n");
-    //             free(processes);
-    //             exit(1);
-    //         };
-    //         processes = temp;
-    //     }
-    //     if (is_numeric(ep->d_name))
-    //     {
-    //         processes[processes_index] = *ep;
-    //         processes_index++;
-    //     }
-    // };
+    while ((ep = readdir(directory)) != NULL)
+    {
+        if (is_numeric(ep->d_name))
+        {
+            int pid = atoi(ep->d_name);
+            Process *found_process = NULL;
+            HASH_FIND_INT(*processes, &pid, found_process);
+            if (found_process == NULL)
+            {
+                int pid = atoi(ep->d_name);
+                found_process = malloc(sizeof(Process));
+                if (found_process == NULL)
+                {
+                    printf("Error while allocating memory\n");
+                }
+                found_process->id = pid;
+                found_process->seen = true;
+                found_process->name = strdup(ep->d_name);
+                found_process->type = ep->d_type;
+                HASH_ADD_INT(*processes, id, found_process);
+                processes_index++;
+            }
+            else
+            {
+                printf("found: %s\n", found_process->name);
+            }
+        }
+    };
     closedir(directory);
     *count = processes_index;
-    return processes;
 }
 /*
 

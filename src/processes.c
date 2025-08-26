@@ -15,13 +15,14 @@ void get_processes(Process **processes, size_t *count)
     };
     struct dirent *ep;
     size_t processes_index = 0;
-
     /*
         --loop over the entries
         --check if it's added
         --if not malloc it, and add it
         --if it's already there,
     */
+
+    // mark all processes unseen
     while ((ep = readdir(directory)) != NULL)
     {
         if (is_numeric(ep->d_name))
@@ -46,10 +47,11 @@ void get_processes(Process **processes, size_t *count)
             }
             else
             {
-                printf("found: %s\n", found_process->name);
+                // mark the process as seen
             }
         }
     };
+    // clean up unseen processes
     closedir(directory);
     *count = processes_index;
 }

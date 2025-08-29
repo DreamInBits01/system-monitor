@@ -10,7 +10,7 @@
 
 typedef struct
 {
-    unsigned id;
+    unsigned pid;
     char *name;
     unsigned char type;
     bool seen;
@@ -19,5 +19,5 @@ typedef struct
 // Function declaration - fixed syntax
 void get_processes(Process **processes, size_t *count);
 void mark_processes_unseen(Process **processes);
-void remove_unseen_processes(Process **processes);
+void remove_unseen_processes(Process **processes, size_t *processes_count);
 #endif

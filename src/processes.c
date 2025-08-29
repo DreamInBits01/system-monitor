@@ -1,10 +1,28 @@
 #include "processes.h"
 #include "utils.h"
-void mark_processes_unseen(Process **processes) {
-
+void mark_processes_unseen(Process **processes)
+{
+    Process *process;
+    for (process = *processes; process != NULL; process = process->hh.next)
+    {
+        process->seen = false;
+    }
 };
-void remove_unseen_processes(Process **processes) {
-
+void remove_unseen_processes(Process **processes, size_t *processes_count)
+{
+    Process *process, *tmp;
+    HASH_ITER(hh, *processes, process, tmp)
+    {
+        if (process->seen == false)
+        {
+            HASH_DEL(*processes, process);
+            free(process);
+        }
+        else if (process->seen == true)
+        {
+            *processes_count += 1;
+        }
+    }
 };
 void get_processes(Process **processes, size_t *count)
 {
@@ -14,7 +32,7 @@ void get_processes(Process **processes, size_t *count)
         printf("Error while opening a directory!\n");
     };
     struct dirent *ep;
-    size_t processes_index = 0;
+    size_t processes_count = 0;
     /*
         --loop over the entries
         --check if it's added
@@ -23,6 +41,7 @@ void get_processes(Process **processes, size_t *count)
     */
 
     // mark all processes unseen
+    mark_processes_unseen(processes);
     while ((ep = readdir(directory)) != NULL)
     {
         if (is_numeric(ep->d_name))
@@ -32,28 +51,28 @@ void get_processes(Process **processes, size_t *count)
             HASH_FIND_INT(*processes, &pid, found_process);
             if (found_process == NULL)
             {
-                int pid = atoi(ep->d_name);
                 found_process = malloc(sizeof(Process));
                 if (found_process == NULL)
                 {
                     printf("Error while allocating memory\n");
                 }
-                found_process->id = pid;
+                found_process->pid = pid;
                 found_process->seen = true;
                 found_process->name = strdup(ep->d_name);
                 found_process->type = ep->d_type;
-                HASH_ADD_INT(*processes, id, found_process);
-                processes_index++;
+                HASH_ADD_INT(*processes, pid, found_process);
             }
             else
             {
+                found_process->seen = true;
                 // mark the process as seen
             }
         }
     };
-    // clean up unseen processes
+    remove_unseen_processes(processes, &processes_count);
+    // clean up unseen processes && count the seen processes
     closedir(directory);
-    *count = processes_index;
+    *count = processes_count;
 }
 /*
 

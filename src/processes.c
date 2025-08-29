@@ -70,7 +70,6 @@ void get_processes(Process **processes, size_t *count)
         }
     };
     remove_unseen_processes(processes, &processes_count);
-    // clean up unseen processes && count the seen processes
     closedir(directory);
     *count = processes_count;
 }

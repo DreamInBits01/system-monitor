@@ -14,6 +14,7 @@ typedef struct
     char *name;
     unsigned char type;
     bool seen;
+    char state;
     UT_hash_handle hh;
 } Process;
 // Function declaration - fixed syntax

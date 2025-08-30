@@ -37,7 +37,7 @@ int main()
         size_t index = 0;
         for (process = processes; process != NULL; process = process->hh.next)
         {
-            mvprintw(procsses_y, index % 2 == 0 ? 0 : COLS / 4, "Process: %s, seen:%d", process->name, process->seen);
+            mvprintw(procsses_y, index % 2 == 0 ? 0 : COLS / 4, "Process: %s, state:%c", process->name, process->state);
             if (index % 2 != 0)
             {
                 procsses_y++;

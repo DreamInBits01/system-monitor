@@ -33,13 +33,6 @@ void get_processes(Process **processes, size_t *count)
     };
     struct dirent *ep;
     size_t processes_count = 0;
-    /*
-        --loop over the entries
-        --check if it's added
-        --if not malloc it, and add it
-        --if it's already there,
-    */
-
     // mark all processes unseen
     mark_processes_unseen(processes);
     while ((ep = readdir(directory)) != NULL)
@@ -60,12 +53,28 @@ void get_processes(Process **processes, size_t *count)
                 found_process->seen = true;
                 found_process->name = strdup(ep->d_name);
                 found_process->type = ep->d_type;
+                char line[256];
+                int pid_len = strlen(ep->d_name);
+                char *file_name = malloc(7 + 6 + pid_len + 1);
+                if (file_name == NULL)
+                {
+                    printf("Error while alloacting file name\n");
+                }
+                sprintf(file_name, "/proc/%s/stat", ep->d_name);
+                FILE *process_stat = fopen(file_name, "r");
+                if (process_stat == NULL)
+                {
+                    printf("Error while opening process's stat\n");
+                }
+                fgets(line, sizeof(line), process_stat);
+                sscanf(line, "%*d %*s %c", &found_process->state);
+                fclose(process_stat);
+                free(file_name);
                 HASH_ADD_INT(*processes, pid, found_process);
             }
             else
             {
                 found_process->seen = true;
-                // mark the process as seen
             }
         }
     };

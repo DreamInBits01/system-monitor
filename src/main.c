@@ -34,14 +34,16 @@ int main()
         mvprintw(6, 0, "Processes count:%ld", procsses_count);
         attroff(A_BOLD);
         size_t procsses_y = 8;
-        size_t index = 0;
+        size_t index = 300;
         for (process = processes; process != NULL; process = process->hh.next)
         {
-            mvprintw(procsses_y, index % 2 == 0 ? 0 : COLS / 4, "Process: %s, state:%c", process->name, process->state);
-            if (index % 2 != 0)
-            {
-                procsses_y++;
-            }
+
+            mvprintw(procsses_y, 0, "Process: %s, state:%c, path:%s", process->name, process->state, process->exe_path);
+            procsses_y++;
+
+            // if (index % 2 != 0)
+            // {
+            // }
             index++;
         }
         refresh();
@@ -52,6 +54,18 @@ int main()
         }
         sleep(2);
     }
+    // Process *cleanup_process, *tmp;
+    // HASH_ITER(hh, processes, cleanup_process, tmp)
+    // {
+    //     HASH_DEL(processes, process);
+
+    //     free(cleanup_process);
+    // }
+    // // for (process = processes; process != NULL; process = process->hh.next)
+    // // {
+    // //     free(process->name);
+    // //     free(process->exe_path);
+    // // }
     free(processes);
     endwin();
     return 0;

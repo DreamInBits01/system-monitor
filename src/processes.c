@@ -40,41 +40,63 @@ void get_processes(Process **processes, size_t *count)
         if (is_numeric(ep->d_name))
         {
             int pid = atoi(ep->d_name);
-            Process *found_process = NULL;
-            HASH_FIND_INT(*processes, &pid, found_process);
-            if (found_process == NULL)
+            if (pid >= 3000)
             {
-                found_process = malloc(sizeof(Process));
+
+                Process *found_process = NULL;
+                HASH_FIND_INT(*processes, &pid, found_process);
                 if (found_process == NULL)
                 {
-                    printf("Error while allocating memory\n");
+                    found_process = malloc(sizeof(Process));
+                    if (found_process == NULL)
+                    {
+                        printf("Error while allocating memory\n");
+                    }
+                    found_process->pid = pid;
+                    found_process->seen = true;
+                    found_process->name = strdup(ep->d_name);
+                    found_process->type = ep->d_type;
+                    // read process stat
+                    char line[256];
+                    int pid_len = strlen(ep->d_name);
+                    char *stat_path = malloc(7 + 6 + pid_len + 1);
+                    if (stat_path == NULL)
+                    {
+                        printf("Error while alloacting file name\n");
+                        return;
+                    }
+                    sprintf(stat_path, "/proc/%s/stat", ep->d_name);
+                    FILE *process_stat = fopen(stat_path, "r");
+                    if (process_stat == NULL)
+                    {
+                        printf("Error while opening process's stat\n");
+                        return;
+                    }
+                    fgets(line, sizeof(line), process_stat);
+                    sscanf(line, "%*d %*s %c", &found_process->state);
+                    fclose(process_stat);
+                    free(stat_path);
+                    // read process location
+                    char exe_path[PROCESS_EXE_PATH_SIZE];
+                    char *exe_file_name = malloc(7 + pid_len + 5 + 1);
+                    sprintf(exe_file_name, "/proc/%s/exe", ep->d_name);
+                    size_t len = readlink(exe_file_name, exe_path, sizeof(exe_path) - 1);
+                    if (len != -1)
+                    {
+                        exe_path[len] = '\0';
+                        found_process->exe_path = strdup(exe_path);
+                    }
+                    else
+                    {
+                        found_process->exe_path = strdup("[unavailable]");
+                    }
+                    free(exe_file_name);
+                    HASH_ADD_INT(*processes, pid, found_process);
                 }
-                found_process->pid = pid;
-                found_process->seen = true;
-                found_process->name = strdup(ep->d_name);
-                found_process->type = ep->d_type;
-                char line[256];
-                int pid_len = strlen(ep->d_name);
-                char *file_name = malloc(7 + 6 + pid_len + 1);
-                if (file_name == NULL)
+                else
                 {
-                    printf("Error while alloacting file name\n");
+                    found_process->seen = true;
                 }
-                sprintf(file_name, "/proc/%s/stat", ep->d_name);
-                FILE *process_stat = fopen(file_name, "r");
-                if (process_stat == NULL)
-                {
-                    printf("Error while opening process's stat\n");
-                }
-                fgets(line, sizeof(line), process_stat);
-                sscanf(line, "%*d %*s %c", &found_process->state);
-                fclose(process_stat);
-                free(file_name);
-                HASH_ADD_INT(*processes, pid, found_process);
-            }
-            else
-            {
-                found_process->seen = true;
             }
         }
     };

@@ -112,42 +112,7 @@ void get_processes(Process **processes, size_t *count)
                     found_process->seen = true;
                     found_process->name = strdup(ep->d_name);
                     found_process->type = ep->d_type;
-                    // read process stat
                     read_process_stat(ep->d_name, &found_process->state);
-                    // char line[256];
-                    int pid_len = strlen(ep->d_name);
-                    // char *stat_path = malloc(7 + 6 + pid_len + 1);
-                    // if (stat_path == NULL)
-                    // {
-                    //     printf("Error while alloacting file name\n");
-                    //     return;
-                    // }
-                    // sprintf(stat_path, "/proc/%s/stat", ep->d_name);
-                    // FILE *process_stat = fopen(stat_path, "r");
-                    // if (process_stat == NULL)
-                    // {
-                    //     printf("Error while opening process's stat\n");
-                    //     return;
-                    // }
-                    // fgets(line, sizeof(line), process_stat);
-                    // sscanf(line, "%*d %*s %c", &found_process->state);
-                    // fclose(process_stat);
-                    // free(stat_path);
-                    // read process location
-                    // char exe_path[PROCESS_EXE_PATH_SIZE];
-                    // char *exe_file_name = malloc(7 + pid_len + 5 + 1);
-                    // sprintf(exe_file_name, "/proc/%s/exe", ep->d_name);
-                    // size_t len = readlink(exe_file_name, exe_path, sizeof(exe_path) - 1);
-                    // if (len != -1)
-                    // {
-                    //     exe_path[len] = '\0';
-                    //     found_process->exe_path = strdup(exe_path);
-                    // }
-                    // else
-                    // {
-                    //     found_process->exe_path = strdup("[unavailable]");
-                    // }
-                    // free(exe_file_name);
                     read_process_location(ep->d_name, &found_process->exe_path);
                     HASH_ADD_INT(*processes, pid, found_process);
                 }

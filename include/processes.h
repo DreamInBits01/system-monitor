@@ -20,8 +20,6 @@ typedef struct
     char *exe_path;
     UT_hash_handle hh;
 } Process;
-
-// Function declaration - fixed syntax
 void get_processes(Process **processes, size_t *count);
 void mark_processes_unseen(Process **processes);
 void remove_unseen_processes(Process **processes, size_t *processes_count);

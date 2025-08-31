@@ -25,4 +25,7 @@ typedef struct
 void get_processes(Process **processes, size_t *count);
 void mark_processes_unseen(Process **processes);
 void remove_unseen_processes(Process **processes, size_t *processes_count);
+void cleanup_processes(Process **processes);
+void read_process_stat(char *ep_name, char *destination);
+void read_process_location(char *ep_name, char **destination);
 #endif

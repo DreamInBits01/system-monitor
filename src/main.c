@@ -50,15 +50,7 @@ int main()
         }
         sleep(2);
     }
-    Process *current, *tmp;
-    HASH_ITER(hh, processes, current, tmp)
-    {
-        HASH_DEL(processes, current);
-        free(current->name);
-        free(current->exe_path);
-        free(current);
-    }
-    free(processes);
+    cleanup_processes(&processes);
     endwin();
     return 0;
 }

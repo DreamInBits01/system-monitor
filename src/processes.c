@@ -1,5 +1,6 @@
 #include "processes.h"
 #include "utils.h"
+// read process stat & file location functions
 void mark_processes_unseen(Process **processes)
 {
     Process *process;
@@ -40,7 +41,7 @@ void get_processes(Process **processes, size_t *count)
         if (is_numeric(ep->d_name))
         {
             int pid = atoi(ep->d_name);
-            if (pid >= 3000)
+            if (pid >= 1000)
             {
 
                 Process *found_process = NULL;
@@ -48,6 +49,7 @@ void get_processes(Process **processes, size_t *count)
                 if (found_process == NULL)
                 {
                     found_process = malloc(sizeof(Process));
+                    memset(found_process, 0, sizeof(*found_process));
                     if (found_process == NULL)
                     {
                         printf("Error while allocating memory\n");

@@ -54,18 +54,14 @@ int main()
         }
         sleep(2);
     }
-    // Process *cleanup_process, *tmp;
-    // HASH_ITER(hh, processes, cleanup_process, tmp)
-    // {
-    //     HASH_DEL(processes, process);
-
-    //     free(cleanup_process);
-    // }
-    // // for (process = processes; process != NULL; process = process->hh.next)
-    // // {
-    // //     free(process->name);
-    // //     free(process->exe_path);
-    // // }
+    Process *current, *tmp;
+    HASH_ITER(hh, processes, current, tmp)
+    {
+        HASH_DEL(processes, current);
+        free(current->name);
+        free(current->exe_path);
+        free(current);
+    }
     free(processes);
     endwin();
     return 0;

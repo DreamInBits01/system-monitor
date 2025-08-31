@@ -11,15 +11,15 @@ void mark_processes_unseen(Process **processes)
 };
 void remove_unseen_processes(Process **processes, size_t *processes_count)
 {
-    Process *process, *tmp;
-    HASH_ITER(hh, *processes, process, tmp)
+    Process *current, *tmp;
+    HASH_ITER(hh, *processes, current, tmp)
     {
-        if (process->seen == false)
+        if (current->seen == false)
         {
-            HASH_DEL(*processes, process);
-            free(process);
+            HASH_DEL(*processes, current);
+            free(current);
         }
-        else if (process->seen == true)
+        else if (current->seen == true)
         {
             *processes_count += 1;
         }
@@ -41,7 +41,7 @@ void get_processes(Process **processes, size_t *count)
         if (is_numeric(ep->d_name))
         {
             int pid = atoi(ep->d_name);
-            if (pid >= 1000)
+            if (pid >= 1500)
             {
 
                 Process *found_process = NULL;

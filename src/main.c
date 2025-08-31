@@ -40,10 +40,6 @@ int main()
 
             mvprintw(procsses_y, 0, "Process: %s, state:%c, path:%s", process->name, process->state, process->exe_path);
             procsses_y++;
-
-            // if (index % 2 != 0)
-            // {
-            // }
             index++;
         }
         refresh();

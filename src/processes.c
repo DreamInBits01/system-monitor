@@ -17,6 +17,8 @@ void remove_unseen_processes(Process **processes, size_t *processes_count)
         if (current->seen == false)
         {
             HASH_DEL(*processes, current);
+            free(current->exe_path);
+            free(current->name);
             free(current);
         }
         else if (current->seen == true)

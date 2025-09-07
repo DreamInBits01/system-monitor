@@ -1,6 +1,5 @@
 #include "processes.h"
 #include "utils.h"
-// read process stat & file location functions
 void cleanup_processes(Process **processes)
 {
     Process *current, *tmp;
@@ -95,31 +94,28 @@ void get_processes(Process **processes, size_t *count)
         if (is_numeric(ep->d_name))
         {
             int pid = atoi(ep->d_name);
-            if (pid >= 1500)
-            {
 
-                Process *found_process = NULL;
-                HASH_FIND_INT(*processes, &pid, found_process);
+            Process *found_process = NULL;
+            HASH_FIND_INT(*processes, &pid, found_process);
+            if (found_process == NULL)
+            {
+                found_process = malloc(sizeof(Process));
+                memset(found_process, 0, sizeof(*found_process));
                 if (found_process == NULL)
                 {
-                    found_process = malloc(sizeof(Process));
-                    memset(found_process, 0, sizeof(*found_process));
-                    if (found_process == NULL)
-                    {
-                        printf("Error while allocating memory\n");
-                    }
-                    found_process->pid = pid;
-                    found_process->seen = true;
-                    found_process->name = strdup(ep->d_name);
-                    found_process->type = ep->d_type;
-                    read_process_stat(ep->d_name, &found_process->state);
-                    read_process_location(ep->d_name, &found_process->exe_path);
-                    HASH_ADD_INT(*processes, pid, found_process);
+                    printf("Error while allocating memory\n");
                 }
-                else
-                {
-                    found_process->seen = true;
-                }
+                found_process->pid = pid;
+                found_process->seen = true;
+                found_process->name = strdup(ep->d_name);
+                found_process->type = ep->d_type;
+                read_process_stat(ep->d_name, &found_process->state);
+                read_process_location(ep->d_name, &found_process->exe_path);
+                HASH_ADD_INT(*processes, pid, found_process);
+            }
+            else
+            {
+                found_process->seen = true;
             }
         }
     };

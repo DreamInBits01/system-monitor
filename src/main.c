@@ -22,7 +22,6 @@ int main()
     MemoryInfo memory_info = {0};
     CpuInfo cpu_info = {0};
     Process *processes = NULL;
-    Process *process;
     size_t procsses_count = 0;
 
     // PAD Attributes (the container of the data)
@@ -33,7 +32,7 @@ int main()
     // WINDOW SIZE - What we can see on screen
     int processes_window_height = (int)(.7 * LINES);
     int processes_window_width = COLS;
-    int processes_window_y = 8, processes_window_x = 0; // Position of the visible content on screen
+    int processes_window_y = 8, processes_window_x = 0;
 
     WINDOW *pad = newpad(processes_pad_height, processes_pad_width);
     WINDOW *view_border = newwin(processes_window_height, processes_window_width, processes_window_y, processes_window_x);
@@ -50,35 +49,22 @@ int main()
 
         attron(A_BOLD);
         mvprintw(6, 0, "Processes count:%ld", procsses_count);
-        mvprintw(6, 25, "Scrolled:%.1f%%", ((float)((processes_window_height + pad_y) / (processes_pad_height - processes_window_height)) * 100));
+        mvprintw(6, 25, "Scrolled:%.1f%%", ((float)((pad_y / (processes_pad_height - processes_window_height)) * 100)));
         attroff(A_BOLD);
-        werase(pad);
-        size_t line = 0;
 
-        process = processes;
-        while (line < processes_pad_height && process != NULL)
-        {
-            wprintw(pad, "Process: %s, state:%c, path:%s", process->name, process->state, process->exe_path);
-            wprintw(pad, "\n");
-            line++;
-            process = process->hh.next;
-        }
+        werase(pad);
+        show_processes(&processes, pad, processes_pad_height, pad_y);
+
         // Ensure we don't scroll beyond actual content
         // int max_pad_y = (line > processes_window_height) ? line - processes_window_height : 0;
         // if (pad_y > max_pad_y)
         //     pad_y = max_pad_y;
 
-        // Display the pad
         prefresh(pad,
                  pad_y, pad_x,
                  processes_window_y, processes_window_x,
                  processes_window_y + processes_window_height - 1, processes_window_x + processes_window_width - 1);
-        // for (process = processes; process != NULL; process = process->hh.next)
-        // {
-        // mvprintw(procsses_y, 0, "Process: %s, state:%c, path:%s", process->name, process->state, process->exe_path);
-        //     procsses_y++;
-        //     index++;
-        // }
+
         refresh();
         int ch = getch();
         switch (ch)
@@ -92,14 +78,6 @@ int main()
         case KEY_DOWN:
             if (pad_y < processes_pad_height - processes_window_height)
                 pad_y++;
-            break;
-        case KEY_LEFT:
-            if (pad_x > 0)
-                pad_x--;
-            break;
-        case KEY_RIGHT:
-            if (pad_x < processes_pad_width - processes_window_width)
-                pad_x++;
             break;
         case KEY_HOME:
             pad_y = 0;

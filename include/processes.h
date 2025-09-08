@@ -8,10 +8,12 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include "ncurses.h"
 #define PROCESS_EXE_PATH_SIZE 1024
 #define INITIAL_PROCESSES_CAPACITY 20
 
-typedef struct {
+typedef struct
+{
   unsigned pid;
   unsigned char type;
   bool seen;
@@ -26,4 +28,5 @@ void remove_unseen_processes(Process **processes, size_t *processes_count);
 void cleanup_processes(Process **processes);
 void read_process_stat(char *ep_name, char *destination);
 void read_process_location(char *ep_name, char **destination);
+void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y);
 #endif

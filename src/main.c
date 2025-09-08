@@ -22,7 +22,7 @@ int main()
     MemoryInfo memory_info = {0};
     CpuInfo cpu_info = {0};
     Process *processes = NULL;
-    size_t procsses_count = 0;
+    size_t processes_count = 0;
 
     // PAD Attributes (the container of the data)
     int processes_pad_height = 1000;
@@ -45,27 +45,20 @@ int main()
         cpu_info = read_cpu_info();
         show_memory_info(&memory_info, bar_width);
         show_cpu_info(&cpu_info);
-        get_processes(&processes, &procsses_count);
+        get_processes(&processes, &processes_count);
 
         attron(A_BOLD);
-        mvprintw(6, 0, "Processes count:%ld", procsses_count);
-        mvprintw(6, 25, "Scrolled:%.1f%%", ((float)((pad_y / (processes_pad_height - processes_window_height)) * 100)));
+        mvprintw(6, 0, "Processes count:%ld", processes_count);
+        mvprintw(6, 25, "Scrolled:%.1f%%", (float)pad_y / (processes_count - processes_window_height) * 100);
         attroff(A_BOLD);
+        refresh();
 
         werase(pad);
         show_processes(&processes, pad, processes_pad_height, pad_y);
-
-        // Ensure we don't scroll beyond actual content
-        // int max_pad_y = (line > processes_window_height) ? line - processes_window_height : 0;
-        // if (pad_y > max_pad_y)
-        //     pad_y = max_pad_y;
-
         prefresh(pad,
                  pad_y, pad_x,
                  processes_window_y, processes_window_x,
                  processes_window_y + processes_window_height - 1, processes_window_x + processes_window_width - 1);
-
-        refresh();
         int ch = getch();
         switch (ch)
         {
@@ -76,19 +69,17 @@ int main()
                 pad_y--;
             break;
         case KEY_DOWN:
-            if (pad_y < processes_pad_height - processes_window_height)
+            if (pad_y < processes_count - processes_window_height)
                 pad_y++;
             break;
         case KEY_HOME:
             pad_y = 0;
-            pad_x = 0;
             break;
         case KEY_END:
             pad_y = processes_pad_height - processes_window_height;
-            pad_x = processes_pad_width - processes_window_width;
             break;
         }
-        sleep(2.5);
+        sleep(2);
     }
 
 cleanup:

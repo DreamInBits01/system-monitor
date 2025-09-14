@@ -9,6 +9,8 @@ void read_cpu_info(CpuInfo *cpu_info)
         exit(1);
     }
     char line[256];
+    cpu_info->total_mhz = 0;
+    cpu_info->mhz_occurrence = 0;
     while (fgets(line, sizeof(line), cpu_info_file))
     {
         // logical CPUs

@@ -144,12 +144,12 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            wprintw(pad, "Process: %s, state:%c, path:%s", process->name, process->state, process->exe_path);
+            wprintw(pad, "Process: %s, %s", process->name, process->exe_path);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {
-            wprintw(pad, "Process: %s, state:%c, path:%s", process->name, process->state, process->exe_path);
+            wprintw(pad, "Process: %s, %s", process->name, process->exe_path);
         }
         wprintw(pad, "\n");
         line_height++;

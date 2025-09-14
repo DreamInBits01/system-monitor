@@ -14,6 +14,6 @@ typedef struct
     char model_name[128];
 
 } CpuInfo;
-CpuInfo read_cpu_info();
+void read_cpu_info(CpuInfo *cpu_info);
 void show_cpu_info(CpuInfo *cpu_info);
 #endif

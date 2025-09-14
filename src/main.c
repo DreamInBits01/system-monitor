@@ -1,7 +1,48 @@
 #include "main.h"
 // main thread for handling rendering
 //  worker thread for handling interactivity
-int main()
+// Create a Consumer, producer pattern for threads,
+// one thread generates the action (producer), the other executes it (consumer)
+
+/*
+-Refreshing happens on the rendering worker
+-The switch case responsible for interactivity works on another thread
+-the pad variables are shared between these two threads
+
+
+
+*/
+
+// void *render_routine(void *data)
+// {
+//     while (1)
+//     {
+//         TaskManagerContext *ctx = (TaskManagerContext *)data;
+//         read_memory_info(ctx->memory_info);
+//         show_memory_info(ctx->memory_info, ctx->bar_width);
+//         read_cpu_info(ctx->cpu_info);
+//         show_cpu_info(ctx->cpu_info);
+//         read_processes(&ctx->processes, ctx->processes_count);
+
+//         attron(A_BOLD);
+//         mvprintw(6, 0, "Processes count:%ld", *ctx->processes_count);
+//         mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
+//         attroff(A_BOLD);
+//         refresh();
+
+//         werase(ctx->pad_config.itself);
+//         show_processes(&ctx->processes, ctx->pad_config.itself, ctx->pad_config.height, *ctx->pad_config.y);
+//         prefresh(ctx->pad_config.itself,
+//                  *ctx->pad_config.y, ctx->pad_config.x,
+//                  ctx->pad_config.pad_view.y,
+//                  ctx->pad_config.pad_view.x,
+//                  ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+//                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+//         getch();
+//         sleep(2);
+//     }
+// }
+void initialize_task_manager(TaskManagerContext *ctx)
 {
     slk_init(1);
     initscr();
@@ -18,74 +59,84 @@ int main()
     slk_refresh();
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
-    int bar_width = COLS / 4;
-    MemoryInfo memory_info = {0};
-    CpuInfo cpu_info = {0};
-    Process *processes = NULL;
-    size_t processes_count = 0;
+    ctx->processes = NULL;
+    ctx->processes_count = malloc(sizeof(size_t));
+    *ctx->processes_count = 0;
+    //
+    ctx->memory_info = malloc(sizeof(MemoryInfo));
+    ctx->bar_width = COLS / 4;
+    memset(ctx->memory_info, 0, sizeof(MemoryInfo));
+    //
+    ctx->cpu_info = malloc(sizeof(CpuInfo));
+    memset(ctx->cpu_info, 0, sizeof(CpuInfo));
+    //
+    ctx->pad_config.height = 1000;
+    ctx->pad_config.width = 200;
+    ctx->pad_config.y = malloc(sizeof(int));
+    *ctx->pad_config.y = 0;
+    ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
+    //
+    ctx->pad_config.pad_view.height = (int)(.7 * LINES);
+    ctx->pad_config.pad_view.width = COLS;
+    ctx->pad_config.pad_view.y = 8;
+    ctx->pad_config.pad_view.x = 0;
 
-    // PAD Attributes (the container of the data)
-    int processes_pad_height = 1000;
-    int processes_pad_width = 200;
-    int pad_y = 0, pad_x = 0;
+    ctx->pad_config.pad_view.itself = newwin(ctx->pad_config.pad_view.height, ctx->pad_config.pad_view.width, *ctx->pad_config.y, ctx->pad_config.pad_view.x);
 
-    // WINDOW SIZE - What we can see on screen
-    int processes_window_height = (int)(.7 * LINES);
-    int processes_window_width = COLS;
-    int processes_window_y = 8, processes_window_x = 0;
-
-    WINDOW *pad = newpad(processes_pad_height, processes_pad_width);
-    WINDOW *view_border = newwin(processes_window_height, processes_window_width, processes_window_y, processes_window_x);
-    box(view_border, 0, 0);
-    wrefresh(view_border);
-
+    box(ctx->pad_config.pad_view.itself, 0, 0);
+    wrefresh(ctx->pad_config.pad_view.itself);
+}
+int main()
+{
+    TaskManagerContext ctx = {0};
+    initialize_task_manager(&ctx);
     while (1)
     {
-        memory_info = read_memory_info();
-        cpu_info = read_cpu_info();
-        show_memory_info(&memory_info, bar_width);
-        show_cpu_info(&cpu_info);
-        get_processes(&processes, &processes_count);
+        read_memory_info(ctx.memory_info);
+        show_memory_info(ctx.memory_info, ctx.bar_width);
+        read_cpu_info(ctx.cpu_info);
+        show_cpu_info(ctx.cpu_info);
+        read_processes(&ctx.processes, ctx.processes_count);
 
         attron(A_BOLD);
-        mvprintw(6, 0, "Processes count:%ld", processes_count);
-        mvprintw(6, 25, "Scrolled:%.1f%%", (float)pad_y / (processes_count - processes_window_height) * 100);
+        mvprintw(6, 0, "Processes count:%ld", *ctx.processes_count);
+        mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx.pad_config.y / (*ctx.processes_count - ctx.pad_config.pad_view.height) * 100);
         attroff(A_BOLD);
         refresh();
 
-        werase(pad);
-        show_processes(&processes, pad, processes_pad_height, pad_y);
-        prefresh(pad,
-                 pad_y, pad_x,
-                 processes_window_y, processes_window_x,
-                 processes_window_y + processes_window_height - 1, processes_window_x + processes_window_width - 1);
+        werase(ctx.pad_config.itself);
+        show_processes(&ctx.processes, ctx.pad_config.itself, ctx.pad_config.height, *ctx.pad_config.y);
+        prefresh(ctx.pad_config.itself,
+                 *ctx.pad_config.y, ctx.pad_config.x,
+                 ctx.pad_config.pad_view.y,
+                 ctx.pad_config.pad_view.x,
+                 ctx.pad_config.pad_view.y + ctx.pad_config.pad_view.height - 1,
+                 ctx.pad_config.pad_view.x + ctx.pad_config.pad_view.width - 1);
         int ch = getch();
         switch (ch)
         {
         case KEY_F(4):
             goto cleanup;
         case KEY_UP:
-            if (pad_y > 0)
-                pad_y--;
+            if (*ctx.pad_config.y > 0)
+                *ctx.pad_config.y -= 1;
             break;
         case KEY_DOWN:
-            if (pad_y < processes_count - processes_window_height)
-                pad_y++;
+            if (*ctx.pad_config.y < *ctx.processes_count - ctx.pad_config.pad_view.height)
+                *ctx.pad_config.y += 1;
             break;
         case KEY_HOME:
-            pad_y = 0;
+            *ctx.pad_config.y = 0;
             break;
         case KEY_END:
-            pad_y = processes_pad_height - processes_window_height;
+            *ctx.pad_config.y = ctx.pad_config.height - ctx.pad_config.pad_view.height;
             break;
         }
         sleep(2);
     }
-
 cleanup:
-    delwin(pad);
-    delwin(view_border);
-    cleanup_processes(&processes);
+    delwin(ctx.pad_config.itself);
+    delwin(ctx.pad_config.pad_view.itself);
+    cleanup_processes(&ctx.processes);
     endwin();
-    return 0;
 }

@@ -31,6 +31,18 @@ void read_process_stat(char *ep_name, char *destination)
     }
     fgets(line, sizeof(line), process_stat);
     sscanf(line, "%*d %*s %c", destination);
+    // char comm[17];
+    // sscanf(line, "%*d %16s %c", comm, destination);
+    // size_t len = strlen(comm);
+    // if (len >= 2 && comm[0] == '(' && comm[len - 1] == ')')
+    // {
+    //     memmove(comm, comm + 1, len - 2);
+    //     comm[len - 2] = '\0';
+    // }
+    // if (strncmp(comm, "index", 16) == 1)
+    // {
+    //     printf("Comm:%s\n", comm);
+    // }
     fclose(process_stat);
     free(stat_path);
 }
@@ -78,7 +90,7 @@ void remove_unseen_processes(Process **processes, size_t *processes_count)
         }
     }
 };
-void get_processes(Process **processes, size_t *count)
+void read_processes(Process **processes, size_t *count)
 {
     DIR *directory = opendir("/proc/");
     if (directory == NULL)

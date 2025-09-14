@@ -11,6 +11,7 @@
     "unistd.h": "c",
     "ncurses.h": "c",
     "types.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "main.h": "c"
   }
 }

@@ -2,7 +2,7 @@
 
 # Variables
 CC = gcc
-CFLAGS = -Wall -Iinclude
+CFLAGS = -Wall -Iinclude -pthread
 
 # Default target - builds the program
 all: index

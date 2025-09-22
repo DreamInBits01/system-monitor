@@ -12,37 +12,97 @@
 
 
 */
+void cleanup_context(TaskManagerContext *ctx)
+{
+    // processes
+    free(ctx->processes_count);
+    cleanup_processes(&ctx->processes);
+    // memory
+    free(ctx->memory_info);
+    // cpu
+    free(ctx->cpu_info);
+    // pad
+    free(ctx->pad_config.y);
+    delwin(ctx->pad_config.itself);
+    // pad view
+    delwin(ctx->pad_config.pad_view.itself);
+    ctx = NULL;
+}
+void *render_routine(void *data)
+{
+    TaskManagerContext *ctx = (TaskManagerContext *)data;
+    while (1)
+    {
+        clear();
+        read_memory_info(ctx->memory_info);
+        show_memory_info(ctx->memory_info, ctx->bar_width);
+        read_cpu_info(ctx->cpu_info);
+        show_cpu_info(ctx->cpu_info);
+        read_processes(&ctx->processes, ctx->processes_count);
 
-// void *render_routine(void *data)
-// {
-//     while (1)
-//     {
-//         TaskManagerContext *ctx = (TaskManagerContext *)data;
-//         read_memory_info(ctx->memory_info);
-//         show_memory_info(ctx->memory_info, ctx->bar_width);
-//         read_cpu_info(ctx->cpu_info);
-//         show_cpu_info(ctx->cpu_info);
-//         read_processes(&ctx->processes, ctx->processes_count);
+        attron(A_BOLD);
+        mvprintw(6, 0, "Processes count:%ld", *ctx->processes_count);
+        mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
+        attroff(A_BOLD);
+        refresh();
+        werase(ctx->pad_config.itself);
+        show_processes(&ctx->processes, ctx->pad_config.itself, ctx->pad_config.height, *ctx->pad_config.y);
+        prefresh(ctx->pad_config.itself,
+                 *ctx->pad_config.y, ctx->pad_config.x,
+                 ctx->pad_config.pad_view.y,
+                 ctx->pad_config.pad_view.x,
+                 ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+                 ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+        getch();
+        sleep(2);
+    }
+}
 
-//         attron(A_BOLD);
-//         mvprintw(6, 0, "Processes count:%ld", *ctx->processes_count);
-//         mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
-//         attroff(A_BOLD);
-//         refresh();
-
-//         werase(ctx->pad_config.itself);
-//         show_processes(&ctx->processes, ctx->pad_config.itself, ctx->pad_config.height, *ctx->pad_config.y);
-//         prefresh(ctx->pad_config.itself,
-//                  *ctx->pad_config.y, ctx->pad_config.x,
-//                  ctx->pad_config.pad_view.y,
-//                  ctx->pad_config.pad_view.x,
-//                  ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-//                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
-//         getch();
-//         sleep(2);
-//     }
-// }
-void initialize_task_manager(TaskManagerContext *ctx)
+void *interactivity_routine(void *data)
+{
+    TaskManagerContext *ctx = (TaskManagerContext *)data;
+    while (1)
+    {
+        int ch = getch();
+        switch (ch)
+        {
+        case KEY_F(4):
+            goto cleanup;
+        case KEY_UP:
+            if (*ctx->pad_config.y > 0)
+            {
+                pthread_mutex_lock(&ctx->pad_config.mutex);
+                *ctx->pad_config.y -= 1;
+                pthread_mutex_unlock(&ctx->pad_config.mutex);
+            }
+            break;
+        case KEY_DOWN:
+            if (*ctx->pad_config.y < *ctx->processes_count - ctx->pad_config.pad_view.height)
+            {
+                pthread_mutex_lock(&ctx->pad_config.mutex);
+                *ctx->pad_config.y += 1;
+                pthread_mutex_unlock(&ctx->pad_config.mutex);
+                // render_routine(ctx);
+            }
+            break;
+        case KEY_HOME:
+            pthread_mutex_lock(&ctx->pad_config.mutex);
+            *ctx->pad_config.y = 0;
+            pthread_mutex_unlock(&ctx->pad_config.mutex);
+            break;
+        case KEY_END:
+            pthread_mutex_lock(&ctx->pad_config.mutex);
+            *ctx->pad_config.y = ctx->pad_config.height - ctx->pad_config.pad_view.height;
+            pthread_mutex_unlock(&ctx->pad_config.mutex);
+            break;
+        }
+    }
+cleanup:
+    cleanup_context(ctx);
+    endwin();
+    return NULL;
+}
+void initialize_ncurses()
 {
     // Ncurses config
     slk_init(1);
@@ -60,6 +120,10 @@ void initialize_task_manager(TaskManagerContext *ctx)
     slk_refresh();
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
+}
+void initialize_task_manager(TaskManagerContext *ctx)
+{
+
     // Processes config
     ctx->processes = NULL;
     ctx->processes_count = malloc(sizeof(size_t));
@@ -77,6 +141,7 @@ void initialize_task_manager(TaskManagerContext *ctx)
     ctx->pad_config.y = malloc(sizeof(int));
     *ctx->pad_config.y = 200;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
+    pthread_mutex_init(&ctx->pad_config.mutex, NULL);
     // Pad view config
     ctx->pad_config.pad_view.height = (int)(.7 * LINES);
     ctx->pad_config.pad_view.width = COLS;
@@ -87,71 +152,69 @@ void initialize_task_manager(TaskManagerContext *ctx)
     box(ctx->pad_config.pad_view.itself, 0, 0);
     wrefresh(ctx->pad_config.pad_view.itself);
 }
-void cleanup_context(TaskManagerContext *ctx)
-{
-    // processes
-    free(ctx->processes_count);
-    cleanup_processes(&ctx->processes);
-    // memory
-    free(ctx->memory_info);
-    // cpu
-    free(ctx->cpu_info);
-    // pad
-    free(ctx->pad_config.y);
-    delwin(ctx->pad_config.itself);
-    // pad view
-    delwin(ctx->pad_config.pad_view.itself);
-    ctx = NULL;
-}
+
 int main()
 {
+    initialize_ncurses();
     TaskManagerContext ctx = {0};
     initialize_task_manager(&ctx);
-    while (1)
-    {
-        read_memory_info(ctx.memory_info);
-        show_memory_info(ctx.memory_info, ctx.bar_width);
-        read_cpu_info(ctx.cpu_info);
-        show_cpu_info(ctx.cpu_info);
-        read_processes(&ctx.processes, ctx.processes_count);
+    pthread_t interactivity_thread_id;
+    pthread_t render_thread_id;
+    // create threads
+    pthread_create(&interactivity_thread_id, NULL, interactivity_routine, &ctx);
+    pthread_create(&render_thread_id, NULL, render_routine, &ctx);
 
-        attron(A_BOLD);
-        mvprintw(6, 0, "Processes count:%ld", *ctx.processes_count);
-        mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx.pad_config.y / (*ctx.processes_count - ctx.pad_config.pad_view.height) * 100);
-        attroff(A_BOLD);
-        refresh();
+    // join thread
+    pthread_join(interactivity_thread_id, NULL);
+    pthread_join(render_thread_id, NULL);
 
-        werase(ctx.pad_config.itself);
-        show_processes(&ctx.processes, ctx.pad_config.itself, ctx.pad_config.height, *ctx.pad_config.y);
-        prefresh(ctx.pad_config.itself,
-                 *ctx.pad_config.y, ctx.pad_config.x,
-                 ctx.pad_config.pad_view.y,
-                 ctx.pad_config.pad_view.x,
-                 ctx.pad_config.pad_view.y + ctx.pad_config.pad_view.height - 1,
-                 ctx.pad_config.pad_view.x + ctx.pad_config.pad_view.width - 1);
-        int ch = getch();
-        switch (ch)
-        {
-        case KEY_F(4):
-            goto cleanup;
-        case KEY_UP:
-            if (*ctx.pad_config.y > 0)
-                *ctx.pad_config.y -= 1;
-            break;
-        case KEY_DOWN:
-            if (*ctx.pad_config.y < *ctx.processes_count - ctx.pad_config.pad_view.height)
-                *ctx.pad_config.y += 1;
-            break;
-        case KEY_HOME:
-            *ctx.pad_config.y = 0;
-            break;
-        case KEY_END:
-            *ctx.pad_config.y = ctx.pad_config.height - ctx.pad_config.pad_view.height;
-            break;
-        }
-        sleep(2);
-    }
-cleanup:
-    cleanup_context(&ctx);
-    endwin();
+    pthread_mutex_destroy(&ctx.pad_config.mutex);
+
+    //     while (1)
+    //     {
+    //         read_memory_info(ctx.memory_info);
+    //         show_memory_info(ctx.memory_info, ctx.bar_width);
+    //         read_cpu_info(ctx.cpu_info);
+    //         show_cpu_info(ctx.cpu_info);
+    //         read_processes(&ctx.processes, ctx.processes_count);
+
+    // attron(A_BOLD);
+    //         mvprintw(6, 0, "Processes count:%ld", *ctx.processes_count);
+    //                 mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx.pad_config.y / (*ctx.processes_count - ctx.pad_config.pad_view.height) * 100);
+    //         attroff(A_BOLD);
+    //         refresh();
+
+    //         werase(ctx.pad_config.itself);
+    //         show_processes(&ctx.processes, ctx.pad_config.itself, ctx.pad_config.height, *ctx.pad_config.y);
+    //         prefresh(ctx.pad_config.itself,
+    //                  *ctx.pad_config.y, ctx.pad_config.x,
+    //                  ctx.pad_config.pad_view.y,
+    //                  ctx.pad_config.pad_view.x,
+    //                  ctx.pad_config.pad_view.y + ctx.pad_config.pad_view.height - 1,
+    //                  ctx.pad_config.pad_view.x + ctx.pad_config.pad_view.width - 1);
+    //         int ch = getch();
+    //         switch (ch)
+    //         {
+    //         case KEY_F(4):
+    //             goto cleanup;
+    //         case KEY_UP:
+    //             if (*ctx.pad_config.y > 0)
+    //                 *ctx.pad_config.y -= 1;
+    //             break;
+    //         case KEY_DOWN:
+    //             if (*ctx.pad_config.y < *ctx.processes_count - ctx.pad_config.pad_view.height)
+    //                 *ctx.pad_config.y += 1;
+    //             break;
+    //         case KEY_HOME:
+    //             *ctx.pad_config.y = 0;
+    //             break;
+    //         case KEY_END:
+    //             *ctx.pad_config.y = ctx.pad_config.height - ctx.pad_config.pad_view.height;
+    //             break;
+    //         }
+    //         sleep(2);
+    //     }
+    // cleanup:
+    //     cleanup_context(&ctx);
+    //     endwin();
 }

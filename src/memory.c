@@ -10,7 +10,6 @@ void read_memory_info(MemoryInfo *memory_info)
         exit(1);
     }
     char line[256];
-    // MemoryInfo memory_info = {0};
     while (fgets(line, sizeof(line), memory_info_file))
     {
         if (strncmp("MemTotal:", line, 9) == 0)

@@ -25,6 +25,7 @@ typedef struct
     int *y;
     WINDOW *itself;
     PadView pad_view;
+    pthread_mutex_t mutex;
 } PadConfig;
 typedef struct
 {
@@ -34,6 +35,5 @@ typedef struct
     CpuInfo *cpu_info;
     Process *processes;
     PadConfig pad_config;
-    pthread_mutex_t mutex;
 } TaskManagerContext;
 #endif

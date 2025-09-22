@@ -74,6 +74,12 @@ void *interactivity_routine(void *data)
                 pthread_mutex_lock(&ctx->pad_config.mutex);
                 *ctx->pad_config.y -= 1;
                 pthread_mutex_unlock(&ctx->pad_config.mutex);
+                prefresh(ctx->pad_config.itself,
+                         *ctx->pad_config.y, ctx->pad_config.x,
+                         ctx->pad_config.pad_view.y,
+                         ctx->pad_config.pad_view.x,
+                         ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+                         ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
             }
             break;
         case KEY_DOWN:
@@ -82,18 +88,36 @@ void *interactivity_routine(void *data)
                 pthread_mutex_lock(&ctx->pad_config.mutex);
                 *ctx->pad_config.y += 1;
                 pthread_mutex_unlock(&ctx->pad_config.mutex);
-                // render_routine(ctx);
+                prefresh(ctx->pad_config.itself,
+                         *ctx->pad_config.y, ctx->pad_config.x,
+                         ctx->pad_config.pad_view.y,
+                         ctx->pad_config.pad_view.x,
+                         ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+                         ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
             }
             break;
         case KEY_HOME:
             pthread_mutex_lock(&ctx->pad_config.mutex);
             *ctx->pad_config.y = 0;
             pthread_mutex_unlock(&ctx->pad_config.mutex);
+
+            prefresh(ctx->pad_config.itself,
+                     *ctx->pad_config.y, ctx->pad_config.x,
+                     ctx->pad_config.pad_view.y,
+                     ctx->pad_config.pad_view.x,
+                     ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+                     ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
             break;
         case KEY_END:
             pthread_mutex_lock(&ctx->pad_config.mutex);
             *ctx->pad_config.y = ctx->pad_config.height - ctx->pad_config.pad_view.height;
             pthread_mutex_unlock(&ctx->pad_config.mutex);
+            prefresh(ctx->pad_config.itself,
+                     *ctx->pad_config.y, ctx->pad_config.x,
+                     ctx->pad_config.pad_view.y,
+                     ctx->pad_config.pad_view.x,
+                     ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+                     ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
             break;
         }
     }

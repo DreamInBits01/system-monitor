@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
+#include <time.h>
 #include "utils.h"
 #include "memory.h"
 #include "ncurses.h"
@@ -35,5 +36,7 @@ typedef struct
     CpuInfo *cpu_info;
     Process *processes;
     PadConfig pad_config;
+    pthread_mutex_t render_mutex;
+    volatile int running;
 } TaskManagerContext;
 #endif

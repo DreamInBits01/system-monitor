@@ -26,7 +26,7 @@ void read_process_stat(char *ep_name, char *destination)
     FILE *process_stat = fopen(stat_path, "r");
     if (process_stat == NULL)
     {
-        printf("Error while opening process's stat\n");
+        // printf("Error while opening process's stat\n");
         return;
     }
     fgets(line, sizeof(line), process_stat);
@@ -60,7 +60,7 @@ void read_process_location(char *ep_name, char **destination)
     }
     else
     {
-        *destination = strdup("[unavailable]");
+        *destination = NULL;
     }
     free(exe_file_name);
 }
@@ -122,7 +122,10 @@ void read_processes(Process **processes, size_t *count)
                 found_process->type = ep->d_type;
                 read_process_stat(ep->d_name, &found_process->state);
                 read_process_location(ep->d_name, &found_process->exe_path);
-                HASH_ADD_INT(*processes, pid, found_process);
+                if (found_process->exe_path != NULL)
+                {
+                    HASH_ADD_INT(*processes, pid, found_process);
+                }
             }
             else
             {
@@ -143,9 +146,9 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
     {
         if (line_height == pad_y)
         {
-            // wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+            wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             wprintw(pad, "Process: %s, %s", process->name, process->exe_path);
-            // wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+            wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {

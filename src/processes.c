@@ -12,7 +12,7 @@ void cleanup_processes(Process **processes)
     }
     free(processes);
 }
-void read_process_stat(char *ep_name, char *destination)
+void read_process_stat(char *ep_name, Process *found_process)
 {
     int pid_len = strlen(ep_name);
     char line[256];
@@ -29,8 +29,15 @@ void read_process_stat(char *ep_name, char *destination)
         // printf("Error while opening process's stat\n");
         return;
     }
-    fgets(line, sizeof(line), process_stat);
-    sscanf(line, "%*d %*s %c", destination);
+    if (fgets(line, sizeof(line), process_stat))
+    {
+        unsigned long utime, stime;
+        char state;
+        sscanf(line, " %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);
+        found_process->user_mode_time = utime;
+        found_process->kernal_mode_time = stime;
+    }
+
     // char comm[17];
     // sscanf(line, "%*d %16s %c", comm, destination);
     // size_t len = strlen(comm);
@@ -120,7 +127,7 @@ void read_processes(Process **processes, size_t *count)
                 found_process->seen = true;
                 found_process->name = strdup(ep->d_name);
                 found_process->type = ep->d_type;
-                read_process_stat(ep->d_name, &found_process->state);
+                // read_process_stat(ep->d_name, found_process);
                 read_process_location(ep->d_name, &found_process->exe_path);
                 if (found_process->exe_path != NULL)
                 {

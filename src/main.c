@@ -26,8 +26,6 @@ void cleanup_context(TaskManagerContext *ctx)
     delwin(ctx->pad_config.itself);
     // pad view
     delwin(ctx->pad_config.pad_view.itself);
-    // ctx = NULL;
-    // clean up mutexes
     ctx->running = 0;
     pthread_mutex_destroy(&ctx->pad_config.mutex);
     pthread_mutex_destroy(&ctx->render_mutex);
@@ -207,53 +205,4 @@ int main()
     pthread_join(interactivity_thread_id, NULL);
     pthread_join(render_thread_id, NULL);
     return 0;
-    // // destroy pad mutex
-    //     while (1)
-    //     {
-    //         read_memory_info(ctx.memory_info);
-    //         show_memory_info(ctx.memory_info, ctx.bar_width);
-    //         read_cpu_info(ctx.cpu_info);
-    //         show_cpu_info(ctx.cpu_info);
-    //         read_processes(&ctx.processes, ctx.processes_count);
-
-    //         attron(A_BOLD);
-    //         mvprintw(6, 0, "Processes count:%ld", *ctx.processes_count);
-    //         mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx.pad_config.y / (*ctx.processes_count - ctx.pad_config.pad_view.height) * 100);
-    //         attroff(A_BOLD);
-    //         refresh();
-
-    //         werase(ctx.pad_config.itself);
-    //         show_processes(&ctx.processes, ctx.pad_config.itself, ctx.pad_config.height, *ctx.pad_config.y);
-    //         prefresh(ctx.pad_config.itself,
-    //                  *ctx.pad_config.y, ctx.pad_config.x,
-    //                  ctx.pad_config.pad_view.y,
-    //                  ctx.pad_config.pad_view.x,
-    //                  ctx.pad_config.pad_view.y + ctx.pad_config.pad_view.height - 1,
-    //                  ctx.pad_config.pad_view.x + ctx.pad_config.pad_view.width - 1);
-    //         int ch = getch();
-    //         switch (ch)
-    //         {
-    //         case KEY_F(4):
-    //             goto cleanup;
-    //         case KEY_UP:
-    //             if (*ctx.pad_config.y > 0)
-    //                 *ctx.pad_config.y -= 1;
-    //             break;
-    //         case KEY_DOWN:
-    //             if (*ctx.pad_config.y < *ctx.processes_count - ctx.pad_config.pad_view.height)
-    //                 *ctx.pad_config.y += 1;
-    //             break;
-    //         case KEY_HOME:
-    //             *ctx.pad_config.y = 0;
-    //             break;
-    //         case KEY_END:
-    //             *ctx.pad_config.y = ctx.pad_config.height - ctx.pad_config.pad_view.height;
-    //             break;
-    //         }
-    //         sleep(2);
-    //     }
-    // cleanup:
-    //     cleanup_context(&ctx);
-    //     endwin();
-    //     return 0;
 }

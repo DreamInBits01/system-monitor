@@ -20,13 +20,15 @@ typedef struct
   char state;
   char *name;
   char *exe_path;
+  unsigned long user_mode_time;
+  unsigned long kernal_mode_time;
   UT_hash_handle hh;
 } Process;
 void read_processes(Process **processes, size_t *count);
 void mark_processes_unseen(Process **processes);
 void remove_unseen_processes(Process **processes, size_t *processes_count);
 void cleanup_processes(Process **processes);
-void read_process_stat(char *ep_name, char *destination);
+void read_process_stat(char *ep_name, Process *found_process);
 void read_process_location(char *ep_name, char **destination);
 void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y);
 #endif

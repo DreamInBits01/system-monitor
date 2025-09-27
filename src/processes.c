@@ -12,6 +12,14 @@ void cleanup_processes(Process **processes)
     }
     free(processes);
 }
+void read_uptime(double *uptime, double *idle_time)
+{
+    FILE *proc_uptime = fopen("/proc/uptime", "r");
+    if (!proc_uptime)
+        return;
+    fscanf(proc_uptime, "%lf %lf", uptime, idle_time);
+    fclose(proc_uptime);
+}
 void read_process_stat(char *ep_name, Process *found_process)
 {
     int pid_len = strlen(ep_name);
@@ -25,17 +33,41 @@ void read_process_stat(char *ep_name, Process *found_process)
     sprintf(stat_path, "/proc/%s/stat", ep_name);
     FILE *process_stat = fopen(stat_path, "r");
     if (process_stat == NULL)
-    {
-        // printf("Error while opening process's stat\n");
         return;
-    }
+
     if (fgets(line, sizeof(line), process_stat))
     {
+        // total process cpu usage in seconds / the time the system has been running in seconds
+        // on multi-core systems, this calculation gives the number of cores used, so it can be 1 core or 1.5 cores etc...
         unsigned long utime, stime;
         char state;
-        sscanf(line, " %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);
-        found_process->user_mode_time = utime;
-        found_process->kernal_mode_time = stime;
+        sscanf(line, "%*d %*s %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);
+        found_process->state = state;
+        // calculate the cpu && wall time delta
+        long tick_per_sec = sysconf(_SC_CLK_TCK);
+        // divide by tick_per_sec to convert from clock tick unit to seconds
+        double current_cpu_time = (double)(utime + stime) / tick_per_sec;
+        double uptime, idle_time;
+        read_uptime(&uptime, &idle_time);
+        if (found_process->cpu_time)
+        {
+            // calc the delta
+            double cpu_delta = current_cpu_time - found_process->cpu_time;
+            double uptime_delta = uptime - found_process->last_uptime;
+            if (uptime_delta > 0)
+            {
+                int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+                // divide by the total cores to get the percentage overall
+                found_process->cpu_usage = cpu_delta / uptime_delta * 100 / num_cores;
+            }
+        }
+        else
+        {
+            found_process->cpu_usage = 0;
+        };
+        // store the current raw values to be used next
+        found_process->cpu_time = current_cpu_time;
+        found_process->last_uptime = uptime;
     }
 
     // char comm[17];
@@ -101,9 +133,8 @@ void read_processes(Process **processes, size_t *count)
 {
     DIR *directory = opendir("/proc/");
     if (directory == NULL)
-    {
-        printf("Error while opening a directory!\n");
-    };
+        return;
+
     struct dirent *ep;
     size_t processes_count = 0;
     // mark all processes unseen
@@ -127,7 +158,7 @@ void read_processes(Process **processes, size_t *count)
                 found_process->seen = true;
                 found_process->name = strdup(ep->d_name);
                 found_process->type = ep->d_type;
-                // read_process_stat(ep->d_name, found_process);
+                read_process_stat(ep->d_name, found_process);
                 read_process_location(ep->d_name, &found_process->exe_path);
                 if (found_process->exe_path != NULL)
                 {
@@ -137,6 +168,7 @@ void read_processes(Process **processes, size_t *count)
             else
             {
                 found_process->seen = true;
+                read_process_stat(ep->d_name, found_process);
             }
         }
     };
@@ -154,12 +186,12 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            wprintw(pad, "Process: %s, %s", process->name, process->exe_path);
+            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {
-            wprintw(pad, "Process: %s, %s", process->name, process->exe_path);
+            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
         }
         wprintw(pad, "\n");
         line_height++;

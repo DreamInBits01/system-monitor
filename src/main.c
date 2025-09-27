@@ -118,7 +118,7 @@ void *interactivity_routine(void *data)
             break;
         case KEY_END:
             pthread_mutex_lock(&ctx->pad_config.mutex);
-            *ctx->pad_config.y = ctx->pad_config.height - ctx->pad_config.pad_view.height;
+            *ctx->pad_config.y = *ctx->processes_count - ctx->pad_config.pad_view.height;
             pthread_mutex_unlock(&ctx->pad_config.mutex);
             prefresh(ctx->pad_config.itself,
                      *ctx->pad_config.y, ctx->pad_config.x,

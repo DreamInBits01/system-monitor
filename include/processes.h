@@ -7,8 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 #include "ncurses.h"
+
 #define PROCESS_EXE_PATH_SIZE 1024
 #define INITIAL_PROCESSES_CAPACITY 20
 
@@ -20,8 +22,9 @@ typedef struct
   char state;
   char *name;
   char *exe_path;
-  unsigned long user_mode_time;
-  unsigned long kernal_mode_time;
+  double cpu_time;
+  double last_uptime;
+  float cpu_usage;
   UT_hash_handle hh;
 } Process;
 void read_processes(Process **processes, size_t *count);

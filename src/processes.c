@@ -39,6 +39,7 @@ void read_process_stat(char *ep_name, Process *found_process)
     {
         // total process cpu usage in seconds / the time the system has been running in seconds
         // on multi-core systems, this calculation gives the number of cores used, so it can be 1 core or 1.5 cores etc...
+        // CPU Usage % = (CPU time delta / Wall time delta) × 100
         unsigned long utime, stime;
         char state;
         sscanf(line, "%*d %*s %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);

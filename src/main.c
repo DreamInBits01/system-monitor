@@ -20,7 +20,8 @@ void cleanup_context(TaskManagerContext *ctx)
     // memory
     free(ctx->memory_info);
     // cpu
-    free(ctx->cpu_info);
+    free(ctx->dynamic_cpu_info);
+    free(ctx->static_cpu_info);
     // pad
     free(ctx->pad_config.y);
     delwin(ctx->pad_config.itself);
@@ -33,14 +34,17 @@ void cleanup_context(TaskManagerContext *ctx)
 void *render_routine(void *data)
 {
     TaskManagerContext *ctx = (TaskManagerContext *)data;
+    pthread_mutex_lock(&ctx->render_mutex);
+    clear();
+    show_static_cpu_info(ctx->static_cpu_info);
+    pthread_mutex_unlock(&ctx->render_mutex);
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->render_mutex);
-        clear();
         read_memory_info(ctx->memory_info);
         show_memory_info(ctx->memory_info, ctx->bar_width);
-        read_cpu_info(ctx->cpu_info);
-        show_cpu_info(ctx->cpu_info);
+        read_dynamic_cpu_info(ctx->dynamic_cpu_info);
+        show_dynamic_cpu_info(ctx->dynamic_cpu_info);
         read_processes(&ctx->processes, ctx->processes_count);
 
         attron(A_BOLD);
@@ -64,7 +68,6 @@ void *render_routine(void *data)
     }
     return NULL;
 }
-
 void *interactivity_routine(void *data)
 {
     TaskManagerContext *ctx = (TaskManagerContext *)data;
@@ -170,8 +173,11 @@ void initialize_task_manager(TaskManagerContext *ctx)
     ctx->bar_width = COLS / 4;
     memset(ctx->memory_info, 0, sizeof(MemoryInfo));
     // Cpu config
-    ctx->cpu_info = malloc(sizeof(CpuInfo));
-    memset(ctx->cpu_info, 0, sizeof(CpuInfo));
+    ctx->dynamic_cpu_info = malloc(sizeof(DynamicCpuInfo));
+    memset(ctx->dynamic_cpu_info, 0, sizeof(DynamicCpuInfo));
+
+    ctx->static_cpu_info = malloc(sizeof(StaticCpuInfo));
+    read_static_cpu_info(ctx->static_cpu_info);
     // Pad config
     ctx->pad_config.height = 1000;
     ctx->pad_config.width = 200;
@@ -197,6 +203,7 @@ int main()
     initialize_task_manager(&ctx);
     pthread_t interactivity_thread_id;
     pthread_t render_thread_id;
+
     // create threads
     pthread_create(&interactivity_thread_id, NULL, interactivity_routine, &ctx);
     pthread_create(&render_thread_id, NULL, render_routine, &ctx);

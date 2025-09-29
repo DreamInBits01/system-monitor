@@ -33,7 +33,8 @@ typedef struct
     int bar_width;
     size_t *processes_count;
     MemoryInfo *memory_info;
-    CpuInfo *cpu_info;
+    DynamicCpuInfo *dynamic_cpu_info;
+    StaticCpuInfo *static_cpu_info;
     Process *processes;
     PadConfig pad_config;
     pthread_mutex_t render_mutex;

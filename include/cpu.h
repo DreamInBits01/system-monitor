@@ -6,14 +6,16 @@
 #include "ncurses.h"
 typedef struct
 {
+    float avg_mhz;
+} DynamicCpuInfo;
+typedef struct
+{
     int logical_cpus;
     int physical_cores;
-    int mhz_occurrence;
-    float total_mhz;
-    float avg_mhz;
     char model_name[128];
-
-} CpuInfo;
-void read_cpu_info(CpuInfo *cpu_info);
-void show_cpu_info(CpuInfo *cpu_info);
+} StaticCpuInfo;
+void read_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info);
+void show_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info);
+void read_static_cpu_info(StaticCpuInfo *static_cpu_info);
+void show_static_cpu_info(StaticCpuInfo *static_cpu_info);
 #endif

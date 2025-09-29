@@ -26,10 +26,7 @@ void read_process_stat(char *ep_name, Process *found_process)
     char line[256];
     char *stat_path = malloc(7 + 6 + pid_len + 1);
     if (stat_path == NULL)
-    {
-        printf("Error while alloacting file name\n");
         return;
-    }
     sprintf(stat_path, "/proc/%s/stat", ep_name);
     FILE *process_stat = fopen(stat_path, "r");
     if (process_stat == NULL)
@@ -37,7 +34,7 @@ void read_process_stat(char *ep_name, Process *found_process)
 
     if (fgets(line, sizeof(line), process_stat))
     {
-        // total process cpu usage in seconds / the time the system has been running in seconds
+        // the total time that the process has spent in the cpu, measured in seconds / the time the system has been running in seconds
         // on multi-core systems, this calculation gives the number of cores used, so it can be 1 core or 1.5 cores etc...
         // CPU Usage % = (CPU time delta / Wall time delta) × 100
         unsigned long utime, stime;

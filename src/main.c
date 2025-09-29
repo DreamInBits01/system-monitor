@@ -62,8 +62,6 @@ void *render_routine(void *data)
                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
         pthread_mutex_unlock(&ctx->pad_config.mutex);
         pthread_mutex_unlock(&ctx->render_mutex);
-        // struct timespec sleep_time = {2, 2000000000};
-        // nanosleep(&sleep_time, NULL);
         sleep(3.1);
     }
     return NULL;
@@ -135,6 +133,7 @@ void *interactivity_routine(void *data)
             break;
         }
         pthread_mutex_unlock(&ctx->render_mutex);
+        sleep(.4);
     }
 cleanup:
     cleanup_context(ctx);

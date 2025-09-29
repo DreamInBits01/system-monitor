@@ -7,14 +7,22 @@
 #include "utils.h"
 typedef struct
 {
-    // kb
-    unsigned buffers;
-    // gb
-    unsigned cached;
-    float total;
-    float free;
+    unsigned buffers; // kb
+    unsigned cached;  // kb
+    float free;       // gb
+    float total;      // gb
 } MemoryInfo;
+// typedef struct
+// {
+//     unsigned buffers; // kb
+//     unsigned cached;  // kb
+//     float free;       // gb
+// } DynamicMemoryInfo;
+// typedef struct
+// {
+//     float total; // gb
 
+// } StaticMemoryInfo;
 void read_memory_info(MemoryInfo *memory_info);
 void show_memory_info(MemoryInfo *memory_info, int bar_width);
 #endif

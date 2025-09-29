@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "../include/memory.h"
 
 void read_memory_info(MemoryInfo *memory_info)
 {
@@ -12,7 +12,7 @@ void read_memory_info(MemoryInfo *memory_info)
     char line[256];
     while (fgets(line, sizeof(line), memory_info_file))
     {
-        if (strncmp("MemTotal:", line, 9) == 0)
+        if (memory_info->total == 0 && strncmp("MemTotal:", line, 9) == 0)
         {
             float kb;
             sscanf(line, "MemTotal: %f", &kb);

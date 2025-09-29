@@ -49,7 +49,6 @@ void *render_routine(void *data)
 
         attron(A_BOLD);
         mvprintw(6, 0, "Processes count:%ld", *ctx->processes_count);
-        mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
         attroff(A_BOLD);
         refresh();
         werase(ctx->pad_config.itself);
@@ -63,8 +62,9 @@ void *render_routine(void *data)
                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
         pthread_mutex_unlock(&ctx->pad_config.mutex);
         pthread_mutex_unlock(&ctx->render_mutex);
-        struct timespec sleep_time = {2, 200000000};
-        nanosleep(&sleep_time, NULL);
+        // struct timespec sleep_time = {2, 2000000000};
+        // nanosleep(&sleep_time, NULL);
+        sleep(3.1);
     }
     return NULL;
 }
@@ -74,6 +74,9 @@ void *interactivity_routine(void *data)
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->render_mutex);
+        attron(A_BOLD);
+        mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
+        attroff(A_BOLD);
         int ch = getch();
         switch (ch)
         {

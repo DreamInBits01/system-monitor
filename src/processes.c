@@ -20,7 +20,7 @@ void read_uptime(double *uptime, double *idle_time)
     fscanf(proc_uptime, "%lf %lf", uptime, idle_time);
     fclose(proc_uptime);
 }
-void read_process_stat(char *ep_name, Process *found_process)
+void read_process_cpu_usage(char *ep_name, Process *found_process)
 {
     int pid_len = strlen(ep_name);
     char line[256];
@@ -52,7 +52,7 @@ void read_process_stat(char *ep_name, Process *found_process)
             // calc the delta
             double cpu_delta = current_cpu_time - found_process->cpu_time;
             double uptime_delta = uptime - found_process->last_uptime;
-            if (uptime_delta > 0)
+            if (uptime_delta > 0.1)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
                 // divide by the total cores to get the percentage overall
@@ -147,16 +147,16 @@ void read_processes(Process **processes, size_t *count)
             if (found_process == NULL)
             {
                 found_process = malloc(sizeof(Process));
-                memset(found_process, 0, sizeof(*found_process));
                 if (found_process == NULL)
                 {
                     printf("Error while allocating memory\n");
                 }
+                memset(found_process, 0, sizeof(*found_process));
                 found_process->pid = pid;
                 found_process->seen = true;
                 found_process->name = strdup(ep->d_name);
                 found_process->type = ep->d_type;
-                read_process_stat(ep->d_name, found_process);
+                read_process_cpu_usage(ep->d_name, found_process);
                 read_process_location(ep->d_name, &found_process->exe_path);
                 if (found_process->exe_path != NULL)
                 {
@@ -166,7 +166,7 @@ void read_processes(Process **processes, size_t *count)
             else
             {
                 found_process->seen = true;
-                read_process_stat(ep->d_name, found_process);
+                read_process_cpu_usage(ep->d_name, found_process);
             }
         }
     };

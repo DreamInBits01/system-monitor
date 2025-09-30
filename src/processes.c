@@ -1,5 +1,17 @@
 #include "processes.h"
 #include "utils.h"
+void get_selected_process(Process **processes, pid_t *pid, int target_y)
+{
+    Process *current_process = *processes;
+    while (current_process != NULL)
+    {
+        if (current_process->y == target_y)
+        {
+            *pid = current_process->pid;
+        }
+        current_process = current_process->hh.next;
+    }
+}
 void cleanup_processes(Process **processes)
 {
     Process *current, *tmp;
@@ -52,7 +64,7 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
             // calc the delta
             double cpu_delta = current_cpu_time - found_process->cpu_time;
             double uptime_delta = uptime - found_process->last_uptime;
-            if (uptime_delta > 0.15)
+            if (uptime_delta > .5)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
                 // divide by the total cores to get the percentage overall
@@ -184,7 +196,7 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
+            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%, line-h:%ld", process->name, process->exe_path, process->cpu_usage, line_height);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
@@ -192,6 +204,7 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
             wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
         }
         wprintw(pad, "\n");
+        process->y = line_height;
         line_height++;
         process = process->hh.next;
     }

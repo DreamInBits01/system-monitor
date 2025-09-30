@@ -24,6 +24,7 @@ void cleanup_context(TaskManagerContext *ctx)
     free(ctx->static_cpu_info);
     // pad
     free(ctx->pad_config.y);
+    free(ctx->pad_config.selected_process_pid);
     delwin(ctx->pad_config.itself);
     // pad view
     delwin(ctx->pad_config.pad_view.itself);
@@ -74,6 +75,7 @@ void *interactivity_routine(void *data)
         pthread_mutex_lock(&ctx->render_mutex);
         attron(A_BOLD);
         mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
+        mvprintw(6, 45, "Selected process:%d", *ctx->pad_config.selected_process_pid);
         attroff(A_BOLD);
         int ch = getch();
         switch (ch)
@@ -86,6 +88,7 @@ void *interactivity_routine(void *data)
                 pthread_mutex_lock(&ctx->pad_config.mutex);
                 *ctx->pad_config.y -= 1;
                 pthread_mutex_unlock(&ctx->pad_config.mutex);
+                get_selected_process(&ctx->processes, ctx->pad_config.selected_process_pid, *ctx->pad_config.y);
                 prefresh(ctx->pad_config.itself,
                          *ctx->pad_config.y, ctx->pad_config.x,
                          ctx->pad_config.pad_view.y,
@@ -95,11 +98,12 @@ void *interactivity_routine(void *data)
             }
             break;
         case KEY_DOWN:
-            if (*ctx->pad_config.y < *ctx->processes_count - ctx->pad_config.pad_view.height)
+            if (*ctx->pad_config.y < *ctx->processes_count - 1)
             {
                 pthread_mutex_lock(&ctx->pad_config.mutex);
                 *ctx->pad_config.y += 1;
                 pthread_mutex_unlock(&ctx->pad_config.mutex);
+                get_selected_process(&ctx->processes, ctx->pad_config.selected_process_pid, *ctx->pad_config.y);
                 prefresh(ctx->pad_config.itself,
                          *ctx->pad_config.y, ctx->pad_config.x,
                          ctx->pad_config.pad_view.y,
@@ -122,7 +126,7 @@ void *interactivity_routine(void *data)
             break;
         case KEY_END:
             pthread_mutex_lock(&ctx->pad_config.mutex);
-            *ctx->pad_config.y = *ctx->processes_count - ctx->pad_config.pad_view.height;
+            *ctx->pad_config.y = *ctx->processes_count - 1;
             pthread_mutex_unlock(&ctx->pad_config.mutex);
             prefresh(ctx->pad_config.itself,
                      *ctx->pad_config.y, ctx->pad_config.x,
@@ -133,7 +137,7 @@ void *interactivity_routine(void *data)
             break;
         }
         pthread_mutex_unlock(&ctx->render_mutex);
-        sleep(.4);
+        sleep(.5);
     }
 cleanup:
     cleanup_context(ctx);
@@ -185,6 +189,8 @@ void initialize_task_manager(TaskManagerContext *ctx)
     ctx->pad_config.width = 200;
     ctx->pad_config.y = malloc(sizeof(int));
     *ctx->pad_config.y = 0;
+    ctx->pad_config.selected_process_pid = malloc(sizeof(pid_t));
+    *ctx->pad_config.selected_process_pid = 0;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
     pthread_mutex_init(&ctx->pad_config.mutex, NULL);
     // Pad view config

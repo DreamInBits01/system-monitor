@@ -24,6 +24,7 @@ typedef struct
 {
     int height, width, x;
     int *y;
+    pid_t *selected_process_pid;
     WINDOW *itself;
     PadView pad_view;
     pthread_mutex_t mutex;

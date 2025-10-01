@@ -1,3 +1,1 @@
--Separate reading the process's usage from the main read_process_stat
-
--
+-create an index table to map the y position to the corresponding pid

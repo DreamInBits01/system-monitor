@@ -37,6 +37,7 @@ void *render_routine(void *data)
     TaskManagerContext *ctx = (TaskManagerContext *)data;
     pthread_mutex_lock(&ctx->render_mutex);
     clear();
+    read_static_cpu_info(ctx->static_cpu_info);
     show_static_cpu_info(ctx->static_cpu_info);
     pthread_mutex_unlock(&ctx->render_mutex);
     while (ctx->running)
@@ -63,7 +64,7 @@ void *render_routine(void *data)
                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
         pthread_mutex_unlock(&ctx->pad_config.mutex);
         pthread_mutex_unlock(&ctx->render_mutex);
-        sleep(3.1);
+        sleep(3.2);
     }
     return NULL;
 }
@@ -80,8 +81,12 @@ void *interactivity_routine(void *data)
         int ch = getch();
         switch (ch)
         {
+        case KEY_F(2):
+            kill(*ctx->pad_config.selected_process_pid, SIGKILL);
+            break;
         case KEY_F(4):
             goto cleanup;
+            break;
         case KEY_UP:
             if (*ctx->pad_config.y > 0)
             {
@@ -116,7 +121,7 @@ void *interactivity_routine(void *data)
             pthread_mutex_lock(&ctx->pad_config.mutex);
             *ctx->pad_config.y = 0;
             pthread_mutex_unlock(&ctx->pad_config.mutex);
-
+            get_selected_process(&ctx->processes, ctx->pad_config.selected_process_pid, *ctx->pad_config.y);
             prefresh(ctx->pad_config.itself,
                      *ctx->pad_config.y, ctx->pad_config.x,
                      ctx->pad_config.pad_view.y,
@@ -128,6 +133,7 @@ void *interactivity_routine(void *data)
             pthread_mutex_lock(&ctx->pad_config.mutex);
             *ctx->pad_config.y = *ctx->processes_count - 1;
             pthread_mutex_unlock(&ctx->pad_config.mutex);
+            get_selected_process(&ctx->processes, ctx->pad_config.selected_process_pid, *ctx->pad_config.y);
             prefresh(ctx->pad_config.itself,
                      *ctx->pad_config.y, ctx->pad_config.x,
                      ctx->pad_config.pad_view.y,
@@ -157,7 +163,7 @@ void initialize_ncurses()
     cbreak();
     curs_set(0);
     slk_set(1, "Help", 1);
-    slk_set(2, "Save", 1);
+    slk_set(2, "Kill", 1);
     slk_set(3, "Load", 1);
     slk_set(4, "Quit", 1);
     slk_refresh();
@@ -183,7 +189,7 @@ void initialize_task_manager(TaskManagerContext *ctx)
     memset(ctx->dynamic_cpu_info, 0, sizeof(DynamicCpuInfo));
 
     ctx->static_cpu_info = malloc(sizeof(StaticCpuInfo));
-    read_static_cpu_info(ctx->static_cpu_info);
+    memset(ctx->static_cpu_info, 0, sizeof(StaticCpuInfo));
     // Pad config
     ctx->pad_config.height = 1000;
     ctx->pad_config.width = 200;

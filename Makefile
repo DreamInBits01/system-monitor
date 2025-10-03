@@ -12,7 +12,7 @@ all: index
 # Dependencies: all .c files in src/
 # Command: compile everything together
 index: src/main.c
-	$(CC) $(CFLAGS) -o bin/index src/utils.c src/main.c src/memory.c src/processes.c  src/cpu.c  -lncurses -pthread
+	$(CC) $(CFLAGS) -o bin/index src/utils.c src/main.c src/routines.c src/memory.c src/processes.c  src/cpu.c  -lncurses -pthread
 
 # Clean up - removes built files
 clean:

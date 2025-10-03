@@ -12,6 +12,8 @@
     "ncurses.h": "c",
     "types.h": "c",
     "stdio.h": "c",
-    "main.h": "c"
+    "main.h": "c",
+    "context.h": "c",
+    "routines.h": "c"
   }
 }

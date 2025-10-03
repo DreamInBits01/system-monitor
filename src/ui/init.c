@@ -1,0 +1,21 @@
+#include "ui/init.h"
+void initialize_ncurses()
+{
+    // Ncurses config
+    slk_init(1);
+    initscr();
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(3, COLOR_RED, COLOR_BLACK);
+    noecho();
+    cbreak();
+    curs_set(0);
+    slk_set(1, "Help", 1);
+    slk_set(2, "Kill", 1);
+    slk_set(3, "Load", 1);
+    slk_set(4, "Quit", 1);
+    slk_refresh();
+    keypad(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
+}

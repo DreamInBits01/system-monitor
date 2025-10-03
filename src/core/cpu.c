@@ -1,4 +1,4 @@
-#include "cpu.h"
+#include "core/cpu.h"
 
 void read_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info)
 {

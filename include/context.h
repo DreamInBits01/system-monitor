@@ -2,9 +2,9 @@
 #define CONTEXT_H
 #include <ncurses.h>
 #include <pthread.h>
-#include "cpu.h"
-#include "processes.h"
-#include "memory.h"
+#include "core/cpu.h"
+#include "core/processes.h"
+#include "core/memory.h"
 typedef struct
 {
     WINDOW *itself;
@@ -31,6 +31,7 @@ typedef struct
     PadConfig pad_config;
     pthread_mutex_t render_mutex;
     volatile int running;
-} TaskManagerContext;
-
+} AppContext;
+void initialize_context(AppContext *ctx);
+void cleanup_context(AppContext *ctx);
 #endif

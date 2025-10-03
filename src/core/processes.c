@@ -1,4 +1,4 @@
-#include "processes.h"
+#include "core/processes.h"
 #include "utils.h"
 void get_selected_process(Process **processes, pid_t *pid, int target_y)
 {

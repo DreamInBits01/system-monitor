@@ -10,70 +10,11 @@
 -the pad variables are shared between these two threads
 */
 
-void initialize_ncurses()
-{
-    // Ncurses config
-    slk_init(1);
-    initscr();
-    start_color();
-    init_pair(1, COLOR_GREEN, COLOR_BLACK);
-    init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-    init_pair(3, COLOR_RED, COLOR_BLACK);
-    noecho();
-    cbreak();
-    curs_set(0);
-    slk_set(1, "Help", 1);
-    slk_set(2, "Kill", 1);
-    slk_set(3, "Load", 1);
-    slk_set(4, "Quit", 1);
-    slk_refresh();
-    keypad(stdscr, TRUE);
-    nodelay(stdscr, TRUE);
-}
-void initialize_task_manager(TaskManagerContext *ctx)
-{
-    //*Todo, add error handling for malloc
-    // ctx mutex
-    ctx->running = 1;
-    pthread_mutex_init(&ctx->render_mutex, NULL);
-    // Processes config
-    ctx->processes = NULL;
-    ctx->processes_count = malloc(sizeof(size_t));
-    *ctx->processes_count = 0;
-    // Memory config
-    ctx->memory_info = malloc(sizeof(MemoryInfo));
-    ctx->bar_width = COLS / 4;
-    memset(ctx->memory_info, 0, sizeof(MemoryInfo));
-    // Cpu config
-    ctx->dynamic_cpu_info = malloc(sizeof(DynamicCpuInfo));
-    memset(ctx->dynamic_cpu_info, 0, sizeof(DynamicCpuInfo));
-
-    ctx->static_cpu_info = malloc(sizeof(StaticCpuInfo));
-    memset(ctx->static_cpu_info, 0, sizeof(StaticCpuInfo));
-    // Pad config
-    ctx->pad_config.height = 1000;
-    ctx->pad_config.width = 200;
-    ctx->pad_config.y = malloc(sizeof(int));
-    *ctx->pad_config.y = 0;
-    ctx->pad_config.selected_process_pid = malloc(sizeof(pid_t));
-    *ctx->pad_config.selected_process_pid = 0;
-    ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
-    pthread_mutex_init(&ctx->pad_config.mutex, NULL);
-    // Pad view config
-    ctx->pad_config.pad_view.height = (int)(.7 * LINES);
-    ctx->pad_config.pad_view.width = COLS;
-    ctx->pad_config.pad_view.y = 8;
-    ctx->pad_config.pad_view.x = 0;
-    ctx->pad_config.pad_view.itself = newwin(ctx->pad_config.pad_view.height, ctx->pad_config.pad_view.width, *ctx->pad_config.y, ctx->pad_config.pad_view.x);
-    // Rendering the pad
-    box(ctx->pad_config.pad_view.itself, 0, 0);
-    wrefresh(ctx->pad_config.pad_view.itself);
-}
 int main()
 {
     initialize_ncurses();
-    TaskManagerContext ctx = {0};
-    initialize_task_manager(&ctx);
+    AppContext ctx = {0};
+    initialize_context(&ctx);
     pthread_t interactivity_thread_id;
     pthread_t render_thread_id;
 

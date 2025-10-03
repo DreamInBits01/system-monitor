@@ -1,10 +1,9 @@
 #ifndef MAIN_H
 #define MAIN_H
 #include "utils.h"
-#include "memory.h"
-#include "ncurses.h"
-#include "cpu.h"
-#include "processes.h"
-#include "routines.h"
+#include "context.h"
+#include "ui/init.h"
+#include "ui/interactivity.h"
+#include "ui/render.h"
 #include "./third_party/uthash/src/uthash.h"
 #endif

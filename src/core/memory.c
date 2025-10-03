@@ -1,4 +1,4 @@
-#include "../include/memory.h"
+#include "core/memory.h"
 
 void read_memory_info(MemoryInfo *memory_info)
 {

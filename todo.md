@@ -1,1 +1,2 @@
 -create an index table to map the y position to the corresponding pid
+-add better error handling for malloc

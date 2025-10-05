@@ -67,7 +67,7 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
             if (uptime_delta > .5)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
-                // divide by the total cores to get the percentage overall
+                // divide by the total cores to get the overall percentage
                 found_process->cpu_usage = cpu_delta / uptime_delta * 100 / num_cores;
             }
         }
@@ -151,6 +151,7 @@ void read_processes(Process **processes, size_t *count)
     mark_processes_unseen(processes);
     while ((ep = readdir(directory)) != NULL)
     {
+        // check if the filename is numeric to determine if the file is a process
         if (is_numeric(ep->d_name))
         {
             int pid = atoi(ep->d_name);
@@ -196,7 +197,7 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%, line-h:%ld", process->name, process->exe_path, process->cpu_usage, line_height);
+            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else

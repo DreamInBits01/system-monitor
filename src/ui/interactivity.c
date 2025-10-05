@@ -7,7 +7,7 @@ void *interactivity_routine(void *data)
     {
         pthread_mutex_lock(&ctx->render_mutex);
         attron(A_BOLD);
-        mvprintw(6, 25, "Scrolled:%.1f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - ctx->pad_config.pad_view.height) * 100);
+        mvprintw(6, 25, "Scrolled:%.0f%%", (float)*ctx->pad_config.y / (*ctx->processes_count - 1) * 100);
         mvprintw(6, 45, "Selected process:%d", *ctx->pad_config.selected_process_pid);
         attroff(A_BOLD);
         int ch = getch();

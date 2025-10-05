@@ -1,13 +1,7 @@
 #include "main.h"
-// main thread for handling rendering
-//  worker thread for handling interactivity
-// Create a Consumer, producer pattern for threads,
-// one thread generates the action (producer), the other executes it (consumer)
-
 /*
--Refreshing happens on the rendering worker
--The switch case responsible for interactivity works on another thread
--the pad variables are shared between these two threads
+-Render thread
+-Interactivity thread
 */
 
 int main()

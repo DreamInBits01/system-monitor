@@ -14,7 +14,14 @@ void *interactivity_routine(void *data)
         switch (ch)
         {
         case KEY_F(2):
-            kill(*ctx->pad_config.selected_process_pid, SIGKILL);
+            if (*ctx->pad_config.selected_process_pid == 0)
+                return;
+            int kill_result = kill(*ctx->pad_config.selected_process_pid, SIGKILL);
+            if (kill_result == -1)
+            {
+                perror("Kill faild!\n");
+            }
+            goto cleanup;
             break;
         case KEY_F(4):
             goto cleanup;
@@ -79,6 +86,6 @@ void *interactivity_routine(void *data)
     }
 cleanup:
     cleanup_context(ctx);
-    endwin();
+    // endwin();
     return NULL;
 }

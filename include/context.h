@@ -14,7 +14,7 @@ typedef struct
 typedef struct
 {
     int height, width, x;
-    int *y;
+    size_t *y;
     pid_t *selected_process_pid;
     WINDOW *itself;
     PadView pad_view;

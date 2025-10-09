@@ -13,26 +13,28 @@ typedef struct
 } PadView;
 typedef struct
 {
-    unsigned height, width, x;
-    unsigned y;
-    pid_t selected_process_pid;
     WINDOW *itself;
-    PadView pad_view;
     pthread_mutex_t mutex;
+    PadView pad_view;
+
+    unsigned height, width, x, y;
+    pid_t selected_process_pid;
 } PadConfig;
 
 typedef struct
 {
-    int bar_width;
-    unsigned processes_count;
     MemoryInfo *memory_info;
     DynamicCpuInfo *dynamic_cpu_info;
     StaticCpuInfo *static_cpu_info;
     Process *processes;
-    // YToPid *y_to_pid;
-    PadConfig pad_config;
+
     pthread_mutex_t render_mutex;
+    PadConfig pad_config;
+
+    int bar_width;
     volatile int running;
+    unsigned processes_count;
+    // YToPid *y_to_pid;
 } AppContext;
 void initialize_context(AppContext *ctx);
 void cleanup_context(AppContext *ctx);

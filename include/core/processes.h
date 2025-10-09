@@ -16,17 +16,20 @@
 
 typedef struct
 {
-  pid_t pid;
-  unsigned char type;
-  bool seen;
-  char state;
+  // 8 bytes
   char *name;
   char *exe_path;
   double cpu_time;
   double last_uptime;
-  float cpu_usage;
-  unsigned y;
   UT_hash_handle hh;
+  // 4 bytes
+  float cpu_usage;
+  pid_t pid;
+  unsigned y;
+  // 1 byte
+  char state;
+  unsigned char type;
+  bool seen;
 } Process;
 typedef struct
 {

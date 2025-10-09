@@ -15,17 +15,17 @@ void *render_routine(void *data)
         show_memory_info(ctx->memory_info, ctx->bar_width);
         read_dynamic_cpu_info(ctx->dynamic_cpu_info);
         show_dynamic_cpu_info(ctx->dynamic_cpu_info);
-        read_processes(&ctx->processes, ctx->processes_count);
+        read_processes(&ctx->processes, &ctx->processes_count);
 
         attron(A_BOLD);
-        mvprintw(6, 0, "Processes count:%ld", *ctx->processes_count);
+        mvprintw(6, 0, "Processes count:%d", ctx->processes_count);
         attroff(A_BOLD);
         refresh();
         werase(ctx->pad_config.itself);
-        show_processes(&ctx->processes, ctx->pad_config.itself, ctx->pad_config.height, *ctx->pad_config.y);
+        show_processes(&ctx->processes, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
         pthread_mutex_lock(&ctx->pad_config.mutex);
         prefresh(ctx->pad_config.itself,
-                 *ctx->pad_config.y, ctx->pad_config.x,
+                 ctx->pad_config.y, ctx->pad_config.x,
                  ctx->pad_config.pad_view.y,
                  ctx->pad_config.pad_view.x,
                  ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,

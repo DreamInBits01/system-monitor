@@ -1,6 +1,6 @@
 #include "core/processes.h"
 #include "utils.h"
-void get_selected_process(Process **processes, pid_t *pid, int target_y)
+void get_selected_process(Process **processes, pid_t *pid, unsigned target_y)
 {
     Process *current_process = *processes;
     while (current_process != NULL)
@@ -95,13 +95,34 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
     fclose(process_stat);
     free(stat_path);
 }
+
+// void mark_y_to_pid_unseen(YToPid **y_to_pid)
+// {
+//     YToPid *y_to_pid_entry;
+//     for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
+//     {
+//         y_to_pid_entry->seen = false;
+//     };
+// }
+// void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
+// {
+//     YToPid *current, *tmp;
+//     HASH_ITER(hh, *y_to_pid, current, tmp)
+//     {
+//         if (current->seen == false)
+//         {
+//             HASH_DEL(*y_to_pid, current);
+//             free(current);
+//         }
+//     }
+// }
 void read_process_location(char *ep_name, char **destination)
 {
     int pid_len = strlen(ep_name);
     char exe_path[PROCESS_EXE_PATH_SIZE];
     char *exe_file_name = malloc(7 + pid_len + 5 + 1);
     sprintf(exe_file_name, "/proc/%s/exe", ep_name);
-    size_t len = readlink(exe_file_name, exe_path, sizeof(exe_path) - 1);
+    int len = readlink(exe_file_name, exe_path, sizeof(exe_path) - 1);
     if (len != -1)
     {
         exe_path[len] = '\0';
@@ -121,7 +142,7 @@ void mark_processes_unseen(Process **processes)
         process->seen = false;
     }
 };
-void remove_unseen_processes(Process **processes, size_t *processes_count)
+void remove_unseen_processes(Process **processes, unsigned *processes_count)
 {
     Process *current, *tmp;
     HASH_ITER(hh, *processes, current, tmp)
@@ -139,14 +160,14 @@ void remove_unseen_processes(Process **processes, size_t *processes_count)
         }
     }
 };
-void read_processes(Process **processes, size_t *count)
+void read_processes(Process **processes, unsigned *count)
 {
     DIR *directory = opendir("/proc/");
     if (directory == NULL)
         return;
 
     struct dirent *ep;
-    size_t processes_count = 0;
+    unsigned processes_count = 0;
     // mark all processes unseen
     mark_processes_unseen(processes);
     while ((ep = readdir(directory)) != NULL)
@@ -188,13 +209,30 @@ void read_processes(Process **processes, size_t *count)
     closedir(directory);
     *count = processes_count;
 }
-void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
+void show_processes(Process **processes, WINDOW *pad, unsigned pad_height, unsigned pad_y)
 {
-    size_t line_height = 0;
+    unsigned line_height = 0;
     Process *process = *processes;
-
+    // mark_y_to_pid_unseen(y_to_pid);
     while (line_height < pad_height && process != NULL)
     {
+        //
+        // YToPid *found_y_to_pid_entry = NULL;
+        // HASH_FIND_INT(*y_to_pid, &line_height, found_y_to_pid_entry);
+        // if (found_y_to_pid_entry == NULL)
+        // {
+        //     found_y_to_pid_entry->pid = process->pid;
+        //     found_y_to_pid_entry->y = line_height;
+        //     found_y_to_pid_entry->seen = true;
+        //     HASH_ADD_INT(*y_to_pid, y, found_y_to_pid_entry);
+        // }
+        // else
+        // {
+        //     found_y_to_pid_entry->seen = true;
+        // }
+        // remove_y_to_pid_unseen_entries(y_to_pid);
+
+        // render
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
@@ -207,8 +245,8 @@ void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y)
         }
         wprintw(pad, "\n");
         process->y = line_height;
-        line_height++;
         process = process->hh.next;
+        line_height++;
     }
 }
 /*

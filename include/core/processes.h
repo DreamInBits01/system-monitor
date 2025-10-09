@@ -25,15 +25,24 @@ typedef struct
   double cpu_time;
   double last_uptime;
   float cpu_usage;
-  int y;
+  unsigned y;
   UT_hash_handle hh;
 } Process;
-void read_processes(Process **processes, size_t *count);
+typedef struct
+{
+  unsigned y;
+  pid_t pid;
+  bool seen;
+  UT_hash_handle hh;
+} YToPid;
+void read_processes(Process **processes, unsigned *count);
+// void mark_y_to_pid_unseen(YToPid **y_to_pid);
+// void remove_y_to_pid_unseen_entries(YToPid **y_to_pid);
 void mark_processes_unseen(Process **processes);
-void remove_unseen_processes(Process **processes, size_t *processes_count);
+void remove_unseen_processes(Process **processes, unsigned *processes_count);
 void cleanup_processes(Process **processes);
 void read_process_cpu_usage(char *ep_name, Process *found_process);
 void read_process_location(char *ep_name, char **destination);
-void show_processes(Process **processes, WINDOW *pad, int pad_height, int pad_y);
-void get_selected_process(Process **processes, pid_t *pid, int target_y);
+void show_processes(Process **processes, WINDOW *pad, unsigned pad_height, unsigned pad_y);
+void get_selected_process(Process **processes, pid_t *pid, unsigned target_y);
 #endif

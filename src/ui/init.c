@@ -11,10 +11,8 @@ void initialize_ncurses()
     noecho();
     cbreak();
     curs_set(0);
-    slk_set(1, "Help", 1);
-    slk_set(2, "Kill", 1);
-    slk_set(3, "Load", 1);
-    slk_set(4, "Quit", 1);
+    slk_set(2, "Quit", 1);
+    slk_set(3, "Kill", 1);
     slk_refresh();
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);

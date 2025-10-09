@@ -171,10 +171,11 @@ void read_processes(Process **processes, size_t *count)
                 found_process->type = ep->d_type;
                 read_process_cpu_usage(ep->d_name, found_process);
                 read_process_location(ep->d_name, &found_process->exe_path);
-                if (found_process->exe_path != NULL)
-                {
-                    HASH_ADD_INT(*processes, pid, found_process);
-                }
+                // if (found_process->exe_path != NULL)
+                // {
+                //     HASH_ADD_INT(*processes, pid, found_process);
+                // }
+                HASH_ADD_INT(*processes, pid, found_process);
             }
             else
             {

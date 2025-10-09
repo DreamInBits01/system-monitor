@@ -20,15 +20,6 @@ void cleanup_context(AppContext *ctx)
     {
         free(ctx->static_cpu_info);
     }
-    // // pad
-    // if (ctx->pad_config.y)
-    // {
-    //     free(ctx->pad_config.y);
-    // }
-    // if (ctx->pad_config.selected_process_pid)
-    // {
-    //     free(ctx->pad_config.selected_process_pid);
-    // }
     delwin(ctx->pad_config.pad_view.itself);
     // pad view
     delwin(ctx->pad_config.itself);
@@ -41,12 +32,6 @@ void initialize_context(AppContext *ctx)
     // Processes config
     // ctx->y_to_pid = NULL;
     ctx->processes = NULL;
-    // ctx->processes_count = malloc(sizeof(size_t));
-    // if (ctx->processes_count == NULL)
-    // {
-    //     cleanup_context(ctx);
-    //     exit(1);
-    // }
     ctx->processes_count = 0;
     // Memory config
     ctx->memory_info = malloc(sizeof(MemoryInfo));
@@ -75,27 +60,12 @@ void initialize_context(AppContext *ctx)
     // Pad config
     ctx->pad_config.height = 1000;
     ctx->pad_config.width = 200;
-    // ctx->pad_config.y = malloc(sizeof(int));
-    // if (ctx->pad_config.y == NULL)
-    // {
-    //     cleanup_context(ctx);
-    //     exit(1);
-    // }
-    ctx->pad_config.y = 0;
-    // ctx->pad_config.selected_process_pid = malloc(sizeof(pid_t));
-    // if (ctx->pad_config.selected_process_pid == NULL)
-    // {
-    //     cleanup_context(ctx);
-    //     exit(1);
-    // }
-    ctx->pad_config.selected_process_pid = 0;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
     pthread_mutex_init(&ctx->pad_config.mutex, NULL);
     // Pad view config
     ctx->pad_config.pad_view.height = (int)(.7 * LINES);
     ctx->pad_config.pad_view.width = COLS;
     ctx->pad_config.pad_view.y = 8;
-    ctx->pad_config.pad_view.x = 0;
     ctx->pad_config.pad_view.itself = newwin(ctx->pad_config.pad_view.height, ctx->pad_config.pad_view.width, ctx->pad_config.y, ctx->pad_config.pad_view.x);
     // ctx mutex
     ctx->running = 1;

@@ -15,7 +15,7 @@ void *interactivity_routine(void *data)
         {
         case KEY_F(2):
             if (ctx->pad_config.selected_process_pid == 0)
-                return;
+                return NULL;
             int kill_result = kill(ctx->pad_config.selected_process_pid, SIGKILL);
             if (kill_result == -1)
             {

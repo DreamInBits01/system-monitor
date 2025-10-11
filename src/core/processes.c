@@ -126,7 +126,7 @@ void read_process_location(char *ep_name, char **destination)
     }
     else
     {
-        *destination = NULL;
+        *destination = strdup("unknown");
     }
     free(exe_file_name);
 }

@@ -30,7 +30,7 @@ void cleanup_context(AppContext *ctx)
 void initialize_context(AppContext *ctx)
 {
     // Processes config
-    // ctx->y_to_pid = NULL;
+    ctx->y_to_pid = NULL;
     ctx->processes = NULL;
     ctx->processes_count = 0;
     // Memory config
@@ -58,7 +58,7 @@ void initialize_context(AppContext *ctx)
     }
     memset(ctx->static_cpu_info, 0, sizeof(StaticCpuInfo));
     // Pad config
-    ctx->pad_config.height = 1000;
+    ctx->pad_config.height = 600;
     ctx->pad_config.width = 200;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
     pthread_mutex_init(&ctx->pad_config.mutex, NULL);

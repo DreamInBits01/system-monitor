@@ -213,7 +213,7 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
     mark_y_to_pid_unseen(y_to_pid);
     while (line_height < pad_height && process != NULL)
     {
-        //
+        // add to the table
         YToPid *found_y_to_pid_entry;
         HASH_FIND_INT(*y_to_pid, &line_height, found_y_to_pid_entry);
         if (found_y_to_pid_entry == NULL)

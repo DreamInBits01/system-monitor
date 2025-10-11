@@ -7,7 +7,6 @@
 int main()
 {
     initialize_ncurses();
-    // AppContext ctx = {0};
     AppContext *ctx = malloc(sizeof(AppContext));
     memset(ctx, 0, sizeof(AppContext));
     initialize_context(ctx);

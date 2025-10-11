@@ -23,7 +23,7 @@ void cleanup_context(AppContext *ctx)
     // pad view
     delwin(ctx->pad_config.itself);
     delwin(ctx->pad_config.pad_view.itself);
-    pthread_mutex_destroy(&ctx->pad_config.mutex);
+    // pthread_mutex_destroy(&ctx->pad_config.mutex);
     pthread_mutex_destroy(&ctx->render_mutex);
     free(ctx);
     endwin();
@@ -62,7 +62,7 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.height = 600;
     ctx->pad_config.width = 200;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
-    pthread_mutex_init(&ctx->pad_config.mutex, NULL);
+    // pthread_mutex_init(&ctx->pad_config.mutex, NULL);
     // Pad view config
     ctx->pad_config.pad_view.height = (int)(.7 * LINES);
     ctx->pad_config.pad_view.width = COLS;

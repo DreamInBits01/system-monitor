@@ -27,14 +27,12 @@ void *render_routine(void *data)
         refresh();
         werase(ctx->pad_config.itself);
         show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
-        // pthread_mutex_lock(&ctx->pad_config.mutex);
         prefresh(ctx->pad_config.itself,
                  ctx->pad_config.y, ctx->pad_config.x,
                  ctx->pad_config.pad_view.y,
                  ctx->pad_config.pad_view.x,
                  ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
-        // pthread_mutex_unlock(&ctx->pad_config.mutex);
         pthread_mutex_unlock(&ctx->render_mutex);
         sleep(3.2);
     }

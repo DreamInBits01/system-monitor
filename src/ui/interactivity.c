@@ -13,9 +13,6 @@ void update_interactivity_status(PadConfig *pad_config, int processes_count)
     attroff(A_BOLD);
     refresh();
 }
-// void print_selected_process(Process *selected_process) {
-
-// }
 void *interactivity_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
@@ -44,7 +41,6 @@ void *interactivity_routine(void *data)
             if (ctx->pad_config.y > 0)
             {
                 // remove highlighting
-                // pthread_mutex_lock(&ctx->pad_config.mutex);
                 if (ctx->pad_config.selected_process != NULL)
                 {
                     mvwprintw(ctx->pad_config.itself, ctx->pad_config.selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
@@ -58,7 +54,6 @@ void *interactivity_routine(void *data)
                 wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
                 mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
                 wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                // pthread_mutex_unlock(&ctx->pad_config.mutex);
                 prefresh(ctx->pad_config.itself,
                          ctx->pad_config.y, ctx->pad_config.x,
                          ctx->pad_config.pad_view.y,
@@ -71,7 +66,6 @@ void *interactivity_routine(void *data)
         case KEY_DOWN:
             if (ctx->pad_config.y < ctx->processes_count - 1)
             {
-                // pthread_mutex_lock(&ctx->pad_config.mutex);
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)
                 {
@@ -86,8 +80,6 @@ void *interactivity_routine(void *data)
                 wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
                 mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
                 wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-
-                // pthread_mutex_unlock(&ctx->pad_config.mutex);
                 prefresh(ctx->pad_config.itself,
                          ctx->pad_config.y, ctx->pad_config.x,
                          ctx->pad_config.pad_view.y,
@@ -106,11 +98,8 @@ void *interactivity_routine(void *data)
                           ctx->pad_config.selected_process->exe_path,
                           ctx->pad_config.selected_process->cpu_usage);
             }
-            // pthread_mutex_lock(&ctx->pad_config.mutex);
             ctx->pad_config.y = 0;
             get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
-            // pthread_mutex_unlock(&ctx->pad_config.mutex);
-
             // highlight new process
             wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
@@ -130,10 +119,8 @@ void *interactivity_routine(void *data)
             {
                 mvwprintw(ctx->pad_config.itself, ctx->pad_config.selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
             }
-            // pthread_mutex_lock(&ctx->pad_config.mutex);
             ctx->pad_config.y = ctx->processes_count - 1;
             get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
-            // pthread_mutex_unlock(&ctx->pad_config.mutex);
             // highlight new process
             wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);

@@ -22,7 +22,7 @@ void *render_routine(void *data)
         attroff(A_BOLD);
         refresh();
         werase(ctx->pad_config.itself);
-        show_processes(&ctx->processes, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
+        show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
         pthread_mutex_lock(&ctx->pad_config.mutex);
         prefresh(ctx->pad_config.itself,
                  ctx->pad_config.y, ctx->pad_config.x,

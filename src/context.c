@@ -25,6 +25,7 @@ void cleanup_context(AppContext *ctx)
     delwin(ctx->pad_config.itself);
     pthread_mutex_destroy(&ctx->pad_config.mutex);
     pthread_mutex_destroy(&ctx->render_mutex);
+    free(ctx);
     endwin();
 }
 void initialize_context(AppContext *ctx)

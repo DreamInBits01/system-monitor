@@ -1,15 +1,12 @@
 #include "core/processes.h"
 #include "utils.h"
-void get_selected_process(Process **processes, pid_t *pid, unsigned target_y)
+void get_selected_process(YToPid **y_to_pid, pid_t *pid, unsigned target_y)
 {
-    Process *current_process = *processes;
-    while (current_process != NULL)
+    YToPid *found_process;
+    HASH_FIND_INT(*y_to_pid, &target_y, found_process);
+    if (found_process != NULL)
     {
-        if (current_process->y == target_y)
-        {
-            *pid = current_process->pid;
-        }
-        current_process = current_process->hh.next;
+        *pid = found_process->pid;
     }
 }
 void cleanup_processes(Process **processes)
@@ -96,26 +93,26 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
     free(stat_path);
 }
 
-// void mark_y_to_pid_unseen(YToPid **y_to_pid)
-// {
-//     YToPid *y_to_pid_entry;
-//     for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
-//     {
-//         y_to_pid_entry->seen = false;
-//     };
-// }
-// void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
-// {
-//     YToPid *current, *tmp;
-//     HASH_ITER(hh, *y_to_pid, current, tmp)
-//     {
-//         if (current->seen == false)
-//         {
-//             HASH_DEL(*y_to_pid, current);
-//             free(current);
-//         }
-//     }
-// }
+void mark_y_to_pid_unseen(YToPid **y_to_pid)
+{
+    YToPid *y_to_pid_entry;
+    for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
+    {
+        y_to_pid_entry->seen = false;
+    };
+}
+void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
+{
+    YToPid *current, *tmp;
+    HASH_ITER(hh, *y_to_pid, current, tmp)
+    {
+        if (current->seen == false)
+        {
+            HASH_DEL(*y_to_pid, current);
+            free(current);
+        }
+    }
+}
 void read_process_location(char *ep_name, char **destination)
 {
     int pid_len = strlen(ep_name);
@@ -209,28 +206,28 @@ void read_processes(Process **processes, unsigned *count)
     closedir(directory);
     *count = processes_count;
 }
-void show_processes(Process **processes, WINDOW *pad, unsigned pad_height, unsigned pad_y)
+void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigned pad_height, unsigned pad_y)
 {
     unsigned line_height = 0;
     Process *process = *processes;
-    // mark_y_to_pid_unseen(y_to_pid);
+    mark_y_to_pid_unseen(y_to_pid);
     while (line_height < pad_height && process != NULL)
     {
         //
-        // YToPid *found_y_to_pid_entry = NULL;
-        // HASH_FIND_INT(*y_to_pid, &line_height, found_y_to_pid_entry);
-        // if (found_y_to_pid_entry == NULL)
-        // {
-        //     found_y_to_pid_entry->pid = process->pid;
-        //     found_y_to_pid_entry->y = line_height;
-        //     found_y_to_pid_entry->seen = true;
-        //     HASH_ADD_INT(*y_to_pid, y, found_y_to_pid_entry);
-        // }
-        // else
-        // {
-        //     found_y_to_pid_entry->seen = true;
-        // }
-        // remove_y_to_pid_unseen_entries(y_to_pid);
+        YToPid *found_y_to_pid_entry;
+        HASH_FIND_INT(*y_to_pid, &line_height, found_y_to_pid_entry);
+        if (found_y_to_pid_entry == NULL)
+        {
+            found_y_to_pid_entry = malloc(sizeof(YToPid));
+            found_y_to_pid_entry->pid = process->pid;
+            found_y_to_pid_entry->y = line_height;
+            found_y_to_pid_entry->seen = true;
+            HASH_ADD_INT(*y_to_pid, y, found_y_to_pid_entry);
+        }
+        else
+        {
+            found_y_to_pid_entry->seen = true;
+        }
 
         // render
         if (line_height == pad_y)
@@ -248,6 +245,7 @@ void show_processes(Process **processes, WINDOW *pad, unsigned pad_height, unsig
         process = process->hh.next;
         line_height++;
     }
+    remove_y_to_pid_unseen_entries(y_to_pid);
 }
 /*
 

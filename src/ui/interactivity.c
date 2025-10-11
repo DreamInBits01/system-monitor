@@ -47,6 +47,7 @@ void *interactivity_routine(void *data)
                 pthread_mutex_lock(&ctx->pad_config.mutex);
                 ctx->pad_config.y += 1;
                 pthread_mutex_unlock(&ctx->pad_config.mutex);
+                Process *found_process;
                 get_selected_process(&ctx->y_to_pid, &ctx->pad_config.selected_process_pid, ctx->pad_config.y);
                 prefresh(ctx->pad_config.itself,
                          ctx->pad_config.y, ctx->pad_config.x,

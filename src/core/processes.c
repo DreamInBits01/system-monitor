@@ -2,22 +2,22 @@
 #include "utils.h"
 void get_selected_process(YToPid **y_to_pid, pid_t *pid, unsigned target_y)
 {
-    YToPid *found_process;
-    HASH_FIND_INT(*y_to_pid, &target_y, found_process);
-    if (found_process != NULL)
+    // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
+    YToPid *found_y_to_pid_entry;
+    HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
+    if (found_y_to_pid_entry != NULL)
     {
-        *pid = found_process->pid;
+        *pid = found_y_to_pid_entry->pid;
     }
 }
 void cleanup_processes(Process **processes)
 {
-    Process *current, *tmp;
-    HASH_ITER(hh, *processes, current, tmp)
+    Process *current_process, *tmp;
+    HASH_ITER(hh, *processes, current_process, tmp)
     {
-        HASH_DEL(*processes, current);
-        free(current->name);
-        free(current->exe_path);
-        free(current);
+        HASH_DEL(*processes, current_process);
+        free(current_process->exe_path);
+        free(current_process);
     }
     free(processes);
 }
@@ -148,7 +148,7 @@ void remove_unseen_processes(Process **processes, unsigned *processes_count)
         {
             HASH_DEL(*processes, current);
             free(current->exe_path);
-            free(current->name);
+            // free(current->name);
             free(current);
         }
         else if (current->seen == true)
@@ -185,7 +185,6 @@ void read_processes(Process **processes, unsigned *count)
                 memset(found_process, 0, sizeof(*found_process));
                 found_process->pid = pid;
                 found_process->seen = true;
-                found_process->name = strdup(ep->d_name);
                 found_process->type = ep->d_type;
                 read_process_cpu_usage(ep->d_name, found_process);
                 read_process_location(ep->d_name, &found_process->exe_path);
@@ -233,14 +232,13 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
+            mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {
-            wprintw(pad, "Process: %s, %s, cpu_usage:%.2f%%", process->name, process->exe_path, process->cpu_usage);
+            mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
         }
-        wprintw(pad, "\n");
         process->y = line_height;
         process = process->hh.next;
         line_height++;

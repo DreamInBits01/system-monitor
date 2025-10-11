@@ -7,22 +7,22 @@ void cleanup_context(AppContext *ctx)
         cleanup_processes(&ctx->processes);
     }
     // memory
-    if (ctx->memory_info)
+    if (ctx->memory_info != NULL)
     {
         free(ctx->memory_info);
     }
     // cpu
-    if (ctx->dynamic_cpu_info)
+    if (ctx->dynamic_cpu_info != NULL)
     {
         free(ctx->dynamic_cpu_info);
     };
-    if (ctx->static_cpu_info)
+    if (ctx->static_cpu_info != NULL)
     {
         free(ctx->static_cpu_info);
     }
-    delwin(ctx->pad_config.pad_view.itself);
     // pad view
     delwin(ctx->pad_config.itself);
+    delwin(ctx->pad_config.pad_view.itself);
     pthread_mutex_destroy(&ctx->pad_config.mutex);
     pthread_mutex_destroy(&ctx->render_mutex);
     free(ctx);

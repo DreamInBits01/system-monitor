@@ -17,7 +17,7 @@
 typedef struct
 {
   // 8 bytes
-  char *name;
+  // char *name;
   char *exe_path;
   double cpu_time;
   double last_uptime;

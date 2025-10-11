@@ -47,5 +47,5 @@ void cleanup_processes(Process **processes);
 void read_process_cpu_usage(char *ep_name, Process *found_process);
 void read_process_location(char *ep_name, char **destination);
 void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigned pad_height, unsigned pad_y);
-void get_selected_process(YToPid **y_to_pid, pid_t *pid, unsigned target_y);
+void get_selected_process(Process **processes, YToPid **y_to_pid, Process **found_process, unsigned target_y);
 #endif

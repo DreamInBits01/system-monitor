@@ -13,11 +13,11 @@ typedef struct
 typedef struct
 {
     WINDOW *itself;
+    Process *selected_process;
     pthread_mutex_t mutex;
     PadView pad_view;
 
     unsigned height, width, x, y;
-    pid_t selected_process_pid;
 } PadConfig;
 typedef struct
 {

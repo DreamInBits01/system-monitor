@@ -16,9 +16,13 @@ void *render_routine(void *data)
         read_dynamic_cpu_info(ctx->dynamic_cpu_info);
         show_dynamic_cpu_info(ctx->dynamic_cpu_info);
         read_processes(&ctx->processes, &ctx->processes_count);
-
         attron(A_BOLD);
         mvprintw(6, 0, "Processes count:%d", ctx->processes_count);
+        mvprintw(6, 25, "Scrolled:%.0f%%", (float)ctx->pad_config.y / (ctx->processes_count - 1) * 100);
+        if (ctx->pad_config.selected_process != NULL)
+        {
+            mvprintw(6, 45, "Selected process:%d, y:%d", ctx->pad_config.selected_process->pid, ctx->pad_config.y);
+        }
         attroff(A_BOLD);
         refresh();
         werase(ctx->pad_config.itself);

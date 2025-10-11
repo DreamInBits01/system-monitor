@@ -1,14 +1,13 @@
 #include "core/processes.h"
 #include "utils.h"
-void get_selected_process(YToPid **y_to_pid, pid_t *pid, unsigned target_y)
+void get_selected_process(Process **processes, YToPid **y_to_pid, Process **output, unsigned target_y)
 {
     // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
     YToPid *found_y_to_pid_entry;
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
-    if (found_y_to_pid_entry != NULL)
-    {
-        *pid = found_y_to_pid_entry->pid;
-    }
+    if (found_y_to_pid_entry == NULL)
+        return;
+    HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
 }
 void cleanup_processes(Process **processes)
 {

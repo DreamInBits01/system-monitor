@@ -27,7 +27,7 @@ typedef struct
     Process *processes;
     YToPid *y_to_pid;
 
-    pthread_mutex_t render_mutex;
+    pthread_mutex_t mutex;
     PadConfig pad_config;
 
     unsigned bar_width;

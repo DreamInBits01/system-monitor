@@ -18,7 +18,7 @@ void *interactivity_routine(void *data)
     AppContext *ctx = (AppContext *)data;
     while (ctx->running)
     {
-        pthread_mutex_lock(&ctx->render_mutex);
+        pthread_mutex_lock(&ctx->mutex);
         int ch = getch();
         switch (ch)
         {
@@ -134,7 +134,7 @@ void *interactivity_routine(void *data)
             update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             break;
         }
-        pthread_mutex_unlock(&ctx->render_mutex);
+        pthread_mutex_unlock(&ctx->mutex);
         sleep(.4);
     }
 cleanup:

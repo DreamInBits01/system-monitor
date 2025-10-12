@@ -23,7 +23,7 @@ void cleanup_context(AppContext *ctx)
     // pad view
     delwin(ctx->pad_config.itself);
     delwin(ctx->pad_config.pad_view.itself);
-    pthread_mutex_destroy(&ctx->render_mutex);
+    pthread_mutex_destroy(&ctx->mutex);
     free(ctx);
     endwin();
 }
@@ -68,7 +68,7 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.pad_view.itself = newwin(ctx->pad_config.pad_view.height, ctx->pad_config.pad_view.width, ctx->pad_config.y, ctx->pad_config.pad_view.x);
     // ctx mutex
     ctx->running = 1;
-    pthread_mutex_init(&ctx->render_mutex, NULL);
+    pthread_mutex_init(&ctx->mutex, NULL);
     // Rendering the pad
     box(ctx->pad_config.pad_view.itself, 0, 0);
     wrefresh(ctx->pad_config.pad_view.itself);

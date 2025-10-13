@@ -65,7 +65,21 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.pad_view.height = (int)(.7 * LINES);
     ctx->pad_config.pad_view.width = COLS;
     ctx->pad_config.pad_view.y = 8;
-    ctx->pad_config.pad_view.itself = newwin(ctx->pad_config.pad_view.height, ctx->pad_config.pad_view.width, ctx->pad_config.y, ctx->pad_config.pad_view.x);
+    ctx->pad_config.pad_view.itself = newwin(
+        ctx->pad_config.pad_view.height,
+        ctx->pad_config.pad_view.width,
+        ctx->pad_config.y,
+        ctx->pad_config.pad_view.x);
+    // Sort menu
+    ctx->sort_menu.window = newwin(50, 50, LINES / 2, (COLS / 2) - 50);
+    waddstr(ctx->sort_menu.window, "Window 1");
+    ctx->sort_menu.panel = new_panel(ctx->sort_menu.window);
+    ctx->sort_menu.visible = false;
+    box(ctx->sort_menu.window, 1, 1);
+    top_panel(ctx->sort_menu.panel);
+    update_panels();
+    doupdate();
+    // wrefresh(ctx->sort_menu.window);
     // ctx mutex
     ctx->running = 1;
     pthread_mutex_init(&ctx->mutex, NULL);
@@ -73,3 +87,11 @@ void initialize_context(AppContext *ctx)
     box(ctx->pad_config.pad_view.itself, 0, 0);
     wrefresh(ctx->pad_config.pad_view.itself);
 }
+
+/*
+Forms
+    steps
+        rows
+            fields
+                type
+*/

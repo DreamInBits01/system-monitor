@@ -13,6 +13,15 @@ void update_interactivity_status(PadConfig *pad_config, int processes_count)
     attroff(A_BOLD);
     refresh();
 }
+void refresh_pad(PadConfig *pad_config)
+{
+    prefresh(pad_config->itself,
+             pad_config->y, pad_config->x,
+             pad_config->pad_view.y,
+             pad_config->pad_view.x,
+             pad_config->pad_view.y + pad_config->pad_view.height - 1,
+             pad_config->pad_view.x + pad_config->pad_view.width - 1);
+}
 void *interactivity_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
@@ -37,6 +46,8 @@ void *interactivity_routine(void *data)
         case KEY_F(4):
             goto cleanup;
             break;
+        case KEY_F(5):
+
         case KEY_UP:
             if (ctx->pad_config.y > 0)
             {
@@ -54,12 +65,7 @@ void *interactivity_routine(void *data)
                 wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
                 mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
                 wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                prefresh(ctx->pad_config.itself,
-                         ctx->pad_config.y, ctx->pad_config.x,
-                         ctx->pad_config.pad_view.y,
-                         ctx->pad_config.pad_view.x,
-                         ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-                         ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+                refresh_pad(&ctx->pad_config);
                 update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             }
             break;
@@ -80,12 +86,8 @@ void *interactivity_routine(void *data)
                 wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
                 mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
                 wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                prefresh(ctx->pad_config.itself,
-                         ctx->pad_config.y, ctx->pad_config.x,
-                         ctx->pad_config.pad_view.y,
-                         ctx->pad_config.pad_view.x,
-                         ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-                         ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+                refresh_pad(&ctx->pad_config);
+
                 update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             };
             break;
@@ -104,12 +106,7 @@ void *interactivity_routine(void *data)
             wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
             wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            prefresh(ctx->pad_config.itself,
-                     ctx->pad_config.y, ctx->pad_config.x,
-                     ctx->pad_config.pad_view.y,
-                     ctx->pad_config.pad_view.x,
-                     ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-                     ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+            refresh_pad(&ctx->pad_config);
             update_interactivity_status(&ctx->pad_config, ctx->processes_count);
 
             break;
@@ -125,12 +122,7 @@ void *interactivity_routine(void *data)
             wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
             wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            prefresh(ctx->pad_config.itself,
-                     ctx->pad_config.y, ctx->pad_config.x,
-                     ctx->pad_config.pad_view.y,
-                     ctx->pad_config.pad_view.x,
-                     ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-                     ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+            refresh_pad(&ctx->pad_config);
             update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             break;
         }

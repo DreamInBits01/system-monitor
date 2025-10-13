@@ -5,6 +5,14 @@
 #include "core/cpu.h"
 #include "core/processes.h"
 #include "core/memory.h"
+#include <panel.h>
+typedef struct
+{
+    WINDOW *window;
+    PANEL *panel;
+    bool visible;
+
+} SortMenu;
 typedef struct
 {
     WINDOW *itself;
@@ -14,7 +22,6 @@ typedef struct
 {
     WINDOW *itself;
     Process *selected_process;
-    // pthread_mutex_t mutex;
     PadView pad_view;
 
     unsigned height, width, x, y;
@@ -29,7 +36,7 @@ typedef struct
 
     pthread_mutex_t mutex;
     PadConfig pad_config;
-
+    SortMenu sort_menu;
     unsigned bar_width;
     volatile int running;
     unsigned processes_count;

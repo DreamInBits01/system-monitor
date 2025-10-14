@@ -13,6 +13,13 @@ void update_interactivity_status(PadConfig *pad_config, int processes_count)
     attroff(A_BOLD);
     refresh();
 }
+void remove_highlight(PadConfig *pad_config)
+{
+    mvwprintw(pad_config->itself, pad_config->selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
+              pad_config->selected_process->pid,
+              pad_config->selected_process->exe_path,
+              pad_config->selected_process->cpu_usage);
+}
 void refresh_pad(PadConfig *pad_config)
 {
     prefresh(pad_config->itself,
@@ -47,18 +54,14 @@ void *interactivity_routine(void *data)
             goto cleanup;
             break;
         case KEY_F(5):
-
+            break;
         case KEY_UP:
             if (ctx->pad_config.y > 0)
             {
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)
-                {
-                    mvwprintw(ctx->pad_config.itself, ctx->pad_config.selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
-                              ctx->pad_config.selected_process->pid,
-                              ctx->pad_config.selected_process->exe_path,
-                              ctx->pad_config.selected_process->cpu_usage);
-                }
+                    remove_highlight(&ctx->pad_config);
+
                 ctx->pad_config.y -= 1;
                 get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
                 // highlight new process
@@ -74,12 +77,7 @@ void *interactivity_routine(void *data)
             {
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)
-                {
-                    mvwprintw(ctx->pad_config.itself, ctx->pad_config.selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
-                              ctx->pad_config.selected_process->pid,
-                              ctx->pad_config.selected_process->exe_path,
-                              ctx->pad_config.selected_process->cpu_usage);
-                }
+                    remove_highlight(&ctx->pad_config);
                 ctx->pad_config.y += 1;
                 get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
                 // highlight new process
@@ -87,19 +85,13 @@ void *interactivity_routine(void *data)
                 mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
                 wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
                 refresh_pad(&ctx->pad_config);
-
                 update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             };
             break;
         case KEY_HOME:
             // remove highlighting
             if (ctx->pad_config.selected_process != NULL)
-            {
-                mvwprintw(ctx->pad_config.itself, ctx->pad_config.selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
-                          ctx->pad_config.selected_process->pid,
-                          ctx->pad_config.selected_process->exe_path,
-                          ctx->pad_config.selected_process->cpu_usage);
-            }
+                remove_highlight(&ctx->pad_config);
             ctx->pad_config.y = 0;
             get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
             // highlight new process
@@ -113,9 +105,7 @@ void *interactivity_routine(void *data)
         case KEY_END:
             // remove highlighting
             if (ctx->pad_config.selected_process != NULL)
-            {
-                mvwprintw(ctx->pad_config.itself, ctx->pad_config.selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-            }
+                remove_highlight(&ctx->pad_config);
             ctx->pad_config.y = ctx->processes_count - 1;
             get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
             // highlight new process

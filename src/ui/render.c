@@ -3,18 +3,20 @@
 void *render_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
-    pthread_mutex_lock(&ctx->mutex);
-    clear();
-    read_static_cpu_info(ctx->static_cpu_info);
-    show_static_cpu_info(ctx->static_cpu_info);
-    pthread_mutex_unlock(&ctx->mutex);
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
+        clear();
+        // memory info
         read_memory_info(ctx->memory_info);
         show_memory_info(ctx->memory_info, ctx->bar_width);
+        // cpu info
+        read_static_cpu_info(ctx->static_cpu_info);
+        show_static_cpu_info(ctx->static_cpu_info);
+
         read_dynamic_cpu_info(ctx->dynamic_cpu_info);
         show_dynamic_cpu_info(ctx->dynamic_cpu_info);
+        // processes info
         read_processes(&ctx->processes, &ctx->processes_count);
         attron(A_BOLD);
         mvprintw(6, 0, "Processes count:%d", ctx->processes_count);
@@ -24,7 +26,7 @@ void *render_routine(void *data)
             mvprintw(6, 45, "Selected process:%d, y:%d", ctx->pad_config.selected_process->pid, ctx->pad_config.y);
         }
         attroff(A_BOLD);
-        refresh();
+        wnoutrefresh(stdscr);
         werase(ctx->pad_config.itself);
         show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
         prefresh(ctx->pad_config.itself,
@@ -33,6 +35,17 @@ void *render_routine(void *data)
                  ctx->pad_config.pad_view.x,
                  ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
                  ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+
+        if (ctx->sort_menu.visible)
+        {
+            top_panel(ctx->sort_menu.panel);
+            // Force panel redraw
+            touchwin(ctx->sort_menu.window);
+            wnoutrefresh(ctx->sort_menu.window);
+            update_panels();
+            doupdate();
+        }
+
         pthread_mutex_unlock(&ctx->mutex);
         sleep(3.2);
     }

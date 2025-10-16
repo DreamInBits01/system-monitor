@@ -36,9 +36,10 @@ void *interactivity_routine(void *data)
     {
         pthread_mutex_lock(&ctx->mutex);
         int ch = getch();
+
         switch (ch)
         {
-        case KEY_F(2):
+        case KEY_F(1):
             if (ctx->pad_config.selected_process == NULL)
                 return NULL;
             if (ctx->pad_config.selected_process->pid == 0)
@@ -50,13 +51,28 @@ void *interactivity_routine(void *data)
             }
             goto cleanup;
             break;
-        case KEY_F(4):
+        case KEY_F(2):
             goto cleanup;
             break;
-        case KEY_F(5):
+        case KEY_F(3):
+            if (ctx->sort_menu.visible)
+            {
+                ctx->sort_menu.visible = false;
+                hide_panel(ctx->sort_menu.panel);
+                update_panels();
+                doupdate();
+            }
+            else
+            {
+                ctx->sort_menu.visible = true;
+                top_panel(ctx->sort_menu.panel);
+                update_panels();
+                doupdate();
+            }
             break;
+
         case KEY_UP:
-            if (ctx->pad_config.y > 0)
+            if (ctx->pad_config.y > 0 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)
@@ -73,7 +89,7 @@ void *interactivity_routine(void *data)
             }
             break;
         case KEY_DOWN:
-            if (ctx->pad_config.y < ctx->processes_count - 1)
+            if (ctx->pad_config.y < ctx->processes_count - 1 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)

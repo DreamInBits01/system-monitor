@@ -26,7 +26,7 @@ void *render_routine(void *data)
             mvprintw(6, 45, "Selected process:%d, y:%d", ctx->pad_config.selected_process->pid, ctx->pad_config.y);
         }
         attroff(A_BOLD);
-        wnoutrefresh(stdscr);
+        refresh();
         werase(ctx->pad_config.itself);
         show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
         prefresh(ctx->pad_config.itself,
@@ -41,7 +41,6 @@ void *render_routine(void *data)
             top_panel(ctx->sort_menu.panel);
             // Force panel redraw
             touchwin(ctx->sort_menu.window);
-            wnoutrefresh(ctx->sort_menu.window);
             update_panels();
             doupdate();
         }

@@ -52,6 +52,21 @@ void *render_routine(void *data)
     }
     return NULL;
 }
+void resize_screen(AppContext *ctx)
+{
+    // Pad view config
+    getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
+    clear();
+    ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
+    ctx->pad_config.pad_view.width = ctx->max_cols;
+    prefresh(ctx->pad_config.itself,
+             ctx->pad_config.y, ctx->pad_config.x,                             // Top-left corner of pad content to display (scroll position)
+             ctx->pad_config.pad_view.y,                                       // Top edge of screen area where pad appears
+             ctx->pad_config.pad_view.x,                                       // Left edge of screen area where pad appears
+             ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1, // Bottom edge of screen area where pad appears
+             ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1); // Right edge of screen area where pad appears
+    mvwin(ctx->sort_menu.window, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
+}
 void redraw_app(AppContext *ctx)
 {
     clear();

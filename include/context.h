@@ -44,6 +44,5 @@ typedef struct
     unsigned processes_count;
 } AppContext;
 void initialize_context(AppContext *ctx);
-void resize_program(AppContext *ctx);
 void cleanup_context(AppContext *ctx);
 #endif

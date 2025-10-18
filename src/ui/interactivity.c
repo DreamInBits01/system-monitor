@@ -40,7 +40,7 @@ void *interactivity_routine(void *data)
         switch (ch)
         {
         case KEY_RESIZE:
-            resize_program(ctx);
+            resize_screen(ctx);
             redraw_app(ctx);
             break;
         case KEY_F(1):

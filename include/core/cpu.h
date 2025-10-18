@@ -15,7 +15,7 @@ typedef struct
     char model_name[128];
 } StaticCpuInfo;
 void read_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info);
-void show_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info);
+void show_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info, int max_cols);
 void read_static_cpu_info(StaticCpuInfo *static_cpu_info);
-void show_static_cpu_info(StaticCpuInfo *static_cpu_info);
+void show_static_cpu_info(StaticCpuInfo *static_cpu_info, int max_cols);
 #endif

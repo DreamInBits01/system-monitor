@@ -1,6 +1,7 @@
 #ifndef INTERACTIVITY_H
 #define INTERACTIVITY_H
 #include <signal.h>
+#include "ui/render.h"
 void *interactivity_routine(void *data);
 void remove_highlight(PadConfig *pad_config);
 void refresh_pad(PadConfig *pad_config);

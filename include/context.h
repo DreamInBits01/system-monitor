@@ -37,10 +37,13 @@ typedef struct
     pthread_mutex_t mutex;
     PadConfig pad_config;
     SortMenu sort_menu;
+    int max_rows;
+    int max_cols;
     unsigned bar_width;
     volatile int running;
     unsigned processes_count;
 } AppContext;
 void initialize_context(AppContext *ctx);
+void resize_program(AppContext *ctx);
 void cleanup_context(AppContext *ctx);
 #endif

@@ -39,6 +39,10 @@ void *interactivity_routine(void *data)
 
         switch (ch)
         {
+        case KEY_RESIZE:
+            resize_program(ctx);
+            redraw_app(ctx);
+            break;
         case KEY_F(1):
             if (ctx->pad_config.selected_process == NULL)
                 return NULL;
@@ -57,18 +61,17 @@ void *interactivity_routine(void *data)
         case KEY_F(3):
             if (ctx->sort_menu.visible)
             {
-                ctx->sort_menu.visible = false;
                 hide_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
             }
             else
             {
-                ctx->sort_menu.visible = true;
                 top_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
             }
+            ctx->sort_menu.visible = !ctx->sort_menu.visible;
             break;
 
         case KEY_UP:
@@ -132,6 +135,7 @@ void *interactivity_routine(void *data)
             update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             break;
         }
+
         pthread_mutex_unlock(&ctx->mutex);
         sleep(.4);
     }

@@ -30,9 +30,9 @@ void read_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info)
     }
     fclose(cpu_info_file);
 }
-void show_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info)
+void show_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info, int max_cols)
 {
-    int x = COLS / 2;
+    int x = max_cols / 2;
     mvprintw(3, x, "Avg Mhz:%.2f", dynamic_cpu_info->avg_mhz);
 }
 void read_static_cpu_info(StaticCpuInfo *static_cpu_info)
@@ -65,9 +65,9 @@ void read_static_cpu_info(StaticCpuInfo *static_cpu_info)
     };
     fclose(cpu_info_file);
 }
-void show_static_cpu_info(StaticCpuInfo *static_cpu_info)
+void show_static_cpu_info(StaticCpuInfo *static_cpu_info, int max_cols)
 {
-    int x = COLS / 2;
+    int x = max_cols / 2;
     mvprintw(0, x, "Model name: %s", static_cpu_info->model_name);
     mvprintw(1, x, "Logical CPUs: %d", static_cpu_info->logical_cpus);
     mvprintw(2, x, "Pyhiscal cores: %d", static_cpu_info->physical_cores);

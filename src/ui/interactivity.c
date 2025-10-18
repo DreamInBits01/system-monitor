@@ -41,7 +41,7 @@ void *interactivity_routine(void *data)
         {
         case KEY_RESIZE:
             resize_screen(ctx);
-            redraw_app(ctx);
+            redraw_screen(ctx);
             break;
         case KEY_F(1):
             if (ctx->pad_config.selected_process == NULL)

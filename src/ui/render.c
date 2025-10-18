@@ -67,7 +67,7 @@ void resize_screen(AppContext *ctx)
              ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1); // Right edge of screen area where pad appears
     mvwin(ctx->sort_menu.window, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
 }
-void redraw_app(AppContext *ctx)
+void redraw_screen(AppContext *ctx)
 {
     clear();
     // memory info

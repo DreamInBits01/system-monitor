@@ -1,5 +1,12 @@
 #include "context.h"
 #include "ui/interactivity.h"
+/*
+    TOOODOODOO
+        Undoes what happens when get_selected_process keeps the same process even when
+        it doesn't find anything
+
+    Selected process is only null initially
+*/
 void update_interactivity_status(PadConfig *pad_config, int processes_count)
 {
     move(6, 25);

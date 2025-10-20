@@ -1,15 +1,46 @@
 #include "core/processes.h"
 #include "utils.h"
+void mark_processes_unseen(Process **processes)
+{
+    Process *process;
+    for (process = *processes; process != NULL; process = process->hh.next)
+    {
+        process->seen = false;
+    }
+};
+void remove_unseen_processes(Process **processes, unsigned *processes_count)
+{
+    Process *current, *tmp;
+    HASH_ITER(hh, *processes, current, tmp)
+    {
+        if (current->seen == false)
+        {
+            HASH_DEL(*processes, current);
+            free(current->exe_path);
+            // free(current->name);
+            free(current);
+        }
+        else if (current->seen == true)
+        {
+            *processes_count += 1;
+        }
+    }
+};
 void get_selected_process(Process **processes, YToPid **y_to_pid, Process **output, unsigned target_y)
 {
     // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
     YToPid *found_y_to_pid_entry;
+    Process *previous_process = *output;
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
     if (found_y_to_pid_entry == NULL)
         return NULL;
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
     if (*output == NULL)
+    {
+        // to not go out of boundry;
+        *output = previous_process;
         return NULL;
+    }
 }
 void cleanup_processes(Process **processes)
 {
@@ -21,6 +52,37 @@ void cleanup_processes(Process **processes)
         free(current_process);
     }
     free(processes);
+}
+void mark_y_to_pid_unseen(YToPid **y_to_pid)
+{
+    YToPid *y_to_pid_entry;
+    for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
+    {
+        y_to_pid_entry->seen = false;
+    };
+}
+void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
+{
+    YToPid *current, *tmp;
+    HASH_ITER(hh, *y_to_pid, current, tmp)
+    {
+        if (current->seen == false)
+        {
+            HASH_DEL(*y_to_pid, current);
+            free(current);
+        }
+    }
+}
+void cleanup_y_to_pid(YToPid **y_to_pid)
+{
+    Process *current_entry, *tmp;
+    HASH_ITER(hh, *y_to_pid, current_entry, tmp)
+    {
+        HASH_DEL(*y_to_pid, current_entry);
+        free(current_entry->exe_path);
+        free(current_entry);
+    }
+    free(y_to_pid);
 }
 void read_uptime(double *uptime, double *idle_time)
 {
@@ -93,27 +155,6 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
     fclose(process_stat);
     free(stat_path);
 }
-
-void mark_y_to_pid_unseen(YToPid **y_to_pid)
-{
-    YToPid *y_to_pid_entry;
-    for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
-    {
-        y_to_pid_entry->seen = false;
-    };
-}
-void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
-{
-    YToPid *current, *tmp;
-    HASH_ITER(hh, *y_to_pid, current, tmp)
-    {
-        if (current->seen == false)
-        {
-            HASH_DEL(*y_to_pid, current);
-            free(current);
-        }
-    }
-}
 void read_process_location(char *ep_name, char **destination)
 {
     int pid_len = strlen(ep_name);
@@ -132,32 +173,7 @@ void read_process_location(char *ep_name, char **destination)
     }
     free(exe_file_name);
 }
-void mark_processes_unseen(Process **processes)
-{
-    Process *process;
-    for (process = *processes; process != NULL; process = process->hh.next)
-    {
-        process->seen = false;
-    }
-};
-void remove_unseen_processes(Process **processes, unsigned *processes_count)
-{
-    Process *current, *tmp;
-    HASH_ITER(hh, *processes, current, tmp)
-    {
-        if (current->seen == false)
-        {
-            HASH_DEL(*processes, current);
-            free(current->exe_path);
-            // free(current->name);
-            free(current);
-        }
-        else if (current->seen == true)
-        {
-            *processes_count += 1;
-        }
-    }
-};
+
 void read_processes(Process **processes, unsigned *count)
 {
     DIR *directory = opendir("/proc/");

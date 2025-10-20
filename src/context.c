@@ -6,6 +6,10 @@ void cleanup_context(AppContext *ctx)
     {
         cleanup_processes(&ctx->processes);
     }
+    if (ctx->y_to_pid)
+    {
+        cleanup_y_to_pid(&cleanup_y_to_pid);
+    }
     // memory
     if (ctx->memory_info != NULL)
     {

@@ -31,6 +31,10 @@ void *render_routine(void *data)
         refresh();
         werase(ctx->pad_config.itself);
         show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
+        if (ctx->pad_config.y > ctx->processes_count)
+        {
+            ctx->pad_config.y = ctx->processes_count;
+        }
         prefresh(ctx->pad_config.itself,
                  ctx->pad_config.y, ctx->pad_config.x,
                  ctx->pad_config.pad_view.y,

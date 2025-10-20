@@ -6,8 +6,10 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     YToPid *found_y_to_pid_entry;
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
     if (found_y_to_pid_entry == NULL)
-        return;
+        return NULL;
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
+    if (*output == NULL)
+        return NULL;
 }
 void cleanup_processes(Process **processes)
 {

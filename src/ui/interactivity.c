@@ -84,11 +84,18 @@ void *interactivity_routine(void *data)
                 ctx->pad_config.y -= 1;
                 get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
                 // highlight new process
-                wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-                wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                refresh_pad(&ctx->pad_config);
-                update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+                if (ctx->pad_config.selected_process)
+                {
+                    wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                    mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
+                    wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                    refresh_pad(&ctx->pad_config);
+                    update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+                }
+                else
+                {
+                    ctx->pad_config.y += 1;
+                }
             }
             break;
         case KEY_DOWN:
@@ -99,27 +106,41 @@ void *interactivity_routine(void *data)
                     remove_highlight(&ctx->pad_config);
                 ctx->pad_config.y += 1;
                 get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
+                if (ctx->pad_config.selected_process)
+                {
+                    wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                    mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
+                    wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                    refresh_pad(&ctx->pad_config);
+                    update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+                }
+                else
+                {
+                    ctx->pad_config.y -= 1;
+                }
                 // highlight new process
-                wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-                wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                refresh_pad(&ctx->pad_config);
-                update_interactivity_status(&ctx->pad_config, ctx->processes_count);
             };
             break;
         case KEY_HOME:
             // remove highlighting
             if (ctx->pad_config.selected_process != NULL)
                 remove_highlight(&ctx->pad_config);
+            int previous_y = ctx->pad_config.y;
             ctx->pad_config.y = 0;
             get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
             // highlight new process
-            wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-            wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            refresh_pad(&ctx->pad_config);
-            update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-
+            if (ctx->pad_config.selected_process)
+            {
+                wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
+                wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                refresh_pad(&ctx->pad_config);
+                update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+            }
+            else
+            {
+                ctx->pad_config.y = previous_y;
+            }
             break;
         case KEY_END:
             // remove highlighting
@@ -128,11 +149,18 @@ void *interactivity_routine(void *data)
             ctx->pad_config.y = ctx->processes_count - 1;
             get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
             // highlight new process
-            wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-            wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            refresh_pad(&ctx->pad_config);
-            update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+            if (ctx->pad_config.selected_process)
+            {
+                wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
+                wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                refresh_pad(&ctx->pad_config);
+                update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+            }
+            else
+            {
+                ctx->pad_config.y = ctx->processes_count + 1;
+            }
             break;
         }
 

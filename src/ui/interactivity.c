@@ -10,8 +10,8 @@
     1-Use a switch case to decide the case
     2-When moving in the pad, check the boundries if you're going up or down
     3-remove highlighting if there's a selected process
-    4-update the selected_process id (drived from the main padconfig's y)
-    5-if success, update the padconfig's y and do the highlighting routine
+    4-update the selected_process id (drived from the main pad_config's y)
+    5-on success, update the pad_config's y and do the highlighting routine
 */
 void update_interactivity_status(PadConfig *pad_config, int processes_count)
 {
@@ -72,7 +72,6 @@ void *interactivity_routine(void *data)
             {
                 perror("Kill faild!\n");
             }
-            goto cleanup;
             break;
         case KEY_F(2):
             goto cleanup;

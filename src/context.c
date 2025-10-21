@@ -2,13 +2,13 @@
 void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
-    if (ctx->processes)
+    if (ctx->processes != NULL)
     {
         cleanup_processes(&ctx->processes);
     }
-    if (ctx->y_to_pid)
+    if (ctx->y_to_pid != NULL)
     {
-        cleanup_y_to_pid(&cleanup_y_to_pid);
+        cleanup_y_to_pid(&ctx->y_to_pid);
     }
     // memory
     if (ctx->memory_info != NULL)

@@ -44,7 +44,6 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     }
     *get_process_faild = false;
 }
-
 void cleanup_processes(Process **processes)
 {
     Process *current_process, *tmp;
@@ -54,7 +53,7 @@ void cleanup_processes(Process **processes)
         free(current_process->exe_path);
         free(current_process);
     }
-    free(processes);
+    *processes = NULL;
 }
 void mark_y_to_pid_unseen(YToPid **y_to_pid)
 {
@@ -78,14 +77,13 @@ void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
 }
 void cleanup_y_to_pid(YToPid **y_to_pid)
 {
-    Process *current_entry, *tmp;
+    YToPid *current_entry, *tmp;
     HASH_ITER(hh, *y_to_pid, current_entry, tmp)
     {
         HASH_DEL(*y_to_pid, current_entry);
-        free(current_entry->exe_path);
         free(current_entry);
     }
-    free(y_to_pid);
+    *y_to_pid = NULL;
 }
 void read_uptime(double *uptime, double *idle_time)
 {
@@ -176,7 +174,6 @@ void read_process_location(char *ep_name, char **destination)
     }
     free(exe_file_name);
 }
-
 void read_processes(Process **processes, unsigned *count)
 {
     DIR *directory = opendir("/proc/");

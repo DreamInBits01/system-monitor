@@ -8,7 +8,7 @@ void mark_processes_unseen(Process **processes)
         process->seen = false;
     }
 };
-void remove_unseen_processes(Process **processes, unsigned *processes_count)
+void remove_unseen_processes(Process **processes)
 {
     Process *current, *tmp;
     HASH_ITER(hh, *processes, current, tmp)
@@ -17,12 +17,7 @@ void remove_unseen_processes(Process **processes, unsigned *processes_count)
         {
             HASH_DEL(*processes, current);
             free(current->exe_path);
-            // free(current->name);
             free(current);
-        }
-        else if (current->seen == true)
-        {
-            *processes_count += 1;
         }
     }
 };
@@ -181,7 +176,6 @@ void read_processes(Process **processes, unsigned *count)
         return;
 
     struct dirent *ep;
-    unsigned processes_count = 0;
     // mark all processes unseen
     mark_processes_unseen(processes);
     while ((ep = readdir(directory)) != NULL)
@@ -205,11 +199,10 @@ void read_processes(Process **processes, unsigned *count)
                 found_process->type = ep->d_type;
                 read_process_cpu_usage(ep->d_name, found_process);
                 read_process_location(ep->d_name, &found_process->exe_path);
-                // if (found_process->exe_path != NULL)
-                // {
-                //     HASH_ADD_INT(*processes, pid, found_process);
-                // }
-                HASH_ADD_INT(*processes, pid, found_process);
+                if (strncmp(found_process->exe_path, "unknown", 7) != 0)
+                {
+                    HASH_ADD_INT(*processes, pid, found_process);
+                }
             }
             else
             {
@@ -218,9 +211,9 @@ void read_processes(Process **processes, unsigned *count)
             }
         }
     };
-    remove_unseen_processes(processes, &processes_count);
+    remove_unseen_processes(processes);
+    *count = HASH_COUNT(*processes);
     closedir(directory);
-    *count = processes_count;
 }
 void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigned pad_height, unsigned pad_y)
 {

@@ -28,6 +28,8 @@ void update_interactivity_status(PadConfig *pad_config, int processes_count)
 }
 void remove_highlight(PadConfig *pad_config)
 {
+    if (pad_config->selected_process == NULL)
+        return NULL;
     mvwprintw(pad_config->itself, pad_config->selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
               pad_config->selected_process->pid,
               pad_config->selected_process->exe_path,
@@ -96,8 +98,7 @@ void *interactivity_routine(void *data)
             if (ctx->pad_config.y > 0 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
-                if (ctx->pad_config.selected_process != NULL)
-                    remove_highlight(&ctx->pad_config);
+                remove_highlight(&ctx->pad_config);
                 // next process's y
 
                 ctx->pad_config.selected_process_y = ctx->pad_config.y - 1;
@@ -122,8 +123,7 @@ void *interactivity_routine(void *data)
             if (ctx->pad_config.y < ctx->processes_count - 1 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
-                if (ctx->pad_config.selected_process != NULL)
-                    remove_highlight(&ctx->pad_config);
+                remove_highlight(&ctx->pad_config);
                 // next process's y
                 ctx->pad_config.selected_process_y = ctx->pad_config.y + 1;
                 // get new process
@@ -145,8 +145,7 @@ void *interactivity_routine(void *data)
             break;
         case KEY_HOME:
             // remove highlighting
-            if (ctx->pad_config.selected_process != NULL)
-                remove_highlight(&ctx->pad_config);
+            remove_highlight(&ctx->pad_config);
             // next process's y
             ctx->pad_config.selected_process_y = 0;
             // get new process
@@ -167,8 +166,7 @@ void *interactivity_routine(void *data)
             break;
         case KEY_END:
             // remove highlighting
-            if (ctx->pad_config.selected_process != NULL)
-                remove_highlight(&ctx->pad_config);
+            remove_highlight(&ctx->pad_config);
             // next process's y
             ctx->pad_config.selected_process_y = ctx->processes_count - 1;
             // get new process

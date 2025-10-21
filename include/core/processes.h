@@ -39,7 +39,7 @@ typedef struct
   UT_hash_handle hh;
 } YToPid;
 void mark_processes_unseen(Process **processes);
-void remove_unseen_processes(Process **processes, unsigned *processes_count);
+void remove_unseen_processes(Process **processes);
 void cleanup_processes(Process **processes);
 void mark_y_to_pid_unseen(YToPid **y_to_pid);
 void remove_y_to_pid_unseen_entries(YToPid **y_to_pid);

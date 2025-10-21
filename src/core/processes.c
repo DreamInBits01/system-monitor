@@ -229,7 +229,7 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
     mark_y_to_pid_unseen(y_to_pid);
     while (line_height < pad_height && process != NULL)
     {
-        // add to the table
+        // map y to process's pid in the y_to_pid
         YToPid *found_y_to_pid_entry;
         HASH_FIND_INT(*y_to_pid, &line_height, found_y_to_pid_entry);
         if (found_y_to_pid_entry == NULL)
@@ -262,6 +262,7 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
     }
     remove_y_to_pid_unseen_entries(y_to_pid);
 }
+
 /*
 
 -if it doesn't exist, you can add it

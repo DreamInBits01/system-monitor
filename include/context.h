@@ -23,7 +23,8 @@ typedef struct
     WINDOW *itself;
     Process *selected_process;
     PadView pad_view;
-
+    int selected_process_y;
+    bool get_process_faild;
     unsigned height, width, x, y;
 } PadConfig;
 typedef struct

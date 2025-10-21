@@ -26,22 +26,25 @@ void remove_unseen_processes(Process **processes, unsigned *processes_count)
         }
     }
 };
-void get_selected_process(Process **processes, YToPid **y_to_pid, Process **output, unsigned target_y)
+void get_selected_process(Process **processes, YToPid **y_to_pid, Process **output, bool *get_process_faild, unsigned target_y)
 {
     // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
     YToPid *found_y_to_pid_entry;
     Process *previous_process = *output;
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
     if (found_y_to_pid_entry == NULL)
-        return NULL;
+        *get_process_faild = true;
+    ;
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
     if (*output == NULL)
     {
         // to not go out of boundry;
         *output = previous_process;
-        return NULL;
+        *get_process_faild = true;
     }
+    *get_process_faild = false;
 }
+
 void cleanup_processes(Process **processes)
 {
     Process *current_process, *tmp;

@@ -6,6 +6,12 @@
         it doesn't find anything
 
     Selected process is only null initially
+
+    1-Use a switch case to decide the case
+    2-When moving in the pad, check the boundries if you're going up or down
+    3-remove highlighting if there's a selected process
+    4-update the selected_process id (drived from the main padconfig's y)
+    5-if success, update the padconfig's y and do the highlighting routine
 */
 void update_interactivity_status(PadConfig *pad_config, int processes_count)
 {
@@ -26,6 +32,12 @@ void remove_highlight(PadConfig *pad_config)
               pad_config->selected_process->pid,
               pad_config->selected_process->exe_path,
               pad_config->selected_process->cpu_usage);
+}
+void highlight_process(PadConfig *pad_config)
+{
+    wattron(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+    mvwprintw(pad_config->itself, pad_config->y, 0, "Process: %d, %s, cpu_usage:%.2f%%", pad_config->selected_process->pid, pad_config->selected_process->exe_path, pad_config->selected_process->cpu_usage);
+    wattroff(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
 }
 void refresh_pad(PadConfig *pad_config)
 {
@@ -87,21 +99,23 @@ void *interactivity_routine(void *data)
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)
                     remove_highlight(&ctx->pad_config);
+                // next process's y
 
-                ctx->pad_config.y -= 1;
-                get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
-                // highlight new process
-                if (ctx->pad_config.selected_process)
+                ctx->pad_config.selected_process_y = ctx->pad_config.y - 1;
+                // get new process
+                get_selected_process(
+                    &ctx->processes,
+                    &ctx->y_to_pid,
+                    &ctx->pad_config.selected_process,
+                    &ctx->pad_config.get_process_faild,
+                    ctx->pad_config.selected_process_y);
+                // add highlighting if successful
+                if (!ctx->pad_config.get_process_faild)
                 {
-                    wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                    mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-                    wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                    ctx->pad_config.y = ctx->pad_config.selected_process_y;
+                    highlight_process(&ctx->pad_config);
                     refresh_pad(&ctx->pad_config);
                     update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-                }
-                else
-                {
-                    ctx->pad_config.y += 1;
                 }
             }
             break;
@@ -111,62 +125,68 @@ void *interactivity_routine(void *data)
                 // remove highlighting
                 if (ctx->pad_config.selected_process != NULL)
                     remove_highlight(&ctx->pad_config);
-                ctx->pad_config.y += 1;
-                get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
-                if (ctx->pad_config.selected_process)
+                // next process's y
+                ctx->pad_config.selected_process_y = ctx->pad_config.y + 1;
+                // get new process
+                get_selected_process(
+                    &ctx->processes,
+                    &ctx->y_to_pid,
+                    &ctx->pad_config.selected_process,
+                    &ctx->pad_config.get_process_faild,
+                    ctx->pad_config.selected_process_y);
+                // add highlighting if successful
+                if (!ctx->pad_config.get_process_faild)
                 {
-                    wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                    mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-                    wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                    ctx->pad_config.y = ctx->pad_config.selected_process_y;
+                    highlight_process(&ctx->pad_config);
                     refresh_pad(&ctx->pad_config);
                     update_interactivity_status(&ctx->pad_config, ctx->processes_count);
                 }
-                else
-                {
-                    ctx->pad_config.y -= 1;
-                }
-                // highlight new process
             };
             break;
         case KEY_HOME:
             // remove highlighting
             if (ctx->pad_config.selected_process != NULL)
                 remove_highlight(&ctx->pad_config);
-            int previous_y = ctx->pad_config.y;
-            ctx->pad_config.y = 0;
-            get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
-            // highlight new process
-            if (ctx->pad_config.selected_process)
+            // next process's y
+            ctx->pad_config.selected_process_y = 0;
+            // get new process
+            get_selected_process(
+                &ctx->processes,
+                &ctx->y_to_pid,
+                &ctx->pad_config.selected_process,
+                &ctx->pad_config.get_process_faild,
+                ctx->pad_config.selected_process_y);
+            // add highlighting if successful
+            if (!ctx->pad_config.get_process_faild)
             {
-                wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-                wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                ctx->pad_config.y = ctx->pad_config.selected_process_y;
+                highlight_process(&ctx->pad_config);
                 refresh_pad(&ctx->pad_config);
                 update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-            }
-            else
-            {
-                ctx->pad_config.y = previous_y;
             }
             break;
         case KEY_END:
             // remove highlighting
             if (ctx->pad_config.selected_process != NULL)
                 remove_highlight(&ctx->pad_config);
-            ctx->pad_config.y = ctx->processes_count - 1;
-            get_selected_process(&ctx->processes, &ctx->y_to_pid, &ctx->pad_config.selected_process, ctx->pad_config.y);
+            // next process's y
+            ctx->pad_config.selected_process_y = ctx->processes_count - 1;
+            // get new process
+            get_selected_process(
+                &ctx->processes,
+                &ctx->y_to_pid,
+                &ctx->pad_config.selected_process,
+                &ctx->pad_config.get_process_faild,
+                ctx->pad_config.selected_process_y);
             // highlight new process
-            if (ctx->pad_config.selected_process)
+            if (!ctx->pad_config.get_process_faild)
             {
-                wattron(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-                mvwprintw(ctx->pad_config.itself, ctx->pad_config.y, 0, "Process: %d, %s, cpu_usage:%.2f%%", ctx->pad_config.selected_process->pid, ctx->pad_config.selected_process->exe_path, ctx->pad_config.selected_process->cpu_usage);
-                wattroff(ctx->pad_config.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+                // only update padconfig's y on success
+                ctx->pad_config.y = ctx->pad_config.selected_process_y;
+                highlight_process(&ctx->pad_config);
                 refresh_pad(&ctx->pad_config);
                 update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-            }
-            else
-            {
-                ctx->pad_config.y = ctx->processes_count + 1;
             }
             break;
         }

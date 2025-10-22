@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utils.h"
+#include <ncurses.h>
+// #include "utils.h"
 typedef struct
 {
     unsigned buffers; // kb
@@ -25,4 +26,5 @@ typedef struct
 // } StaticMemoryInfo;
 void read_memory_info(MemoryInfo *memory_info);
 void show_memory_info(MemoryInfo *memory_info, int bar_width);
+void build_loadbar(int fill, int bar_width, int y, int x);
 #endif

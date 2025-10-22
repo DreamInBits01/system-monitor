@@ -33,14 +33,18 @@ void *render_routine(void *data)
         // make sure that there are no gaps between processes in the y
         if (ctx->pad_config.y >= ctx->processes_count)
         {
-            ctx->pad_config.y = ctx->processes_count - 1;
+            ctx->pad_config.selected_process_y = ctx->processes_count - 1;
+            handle_manual_process_selection(ctx);
         }
-        prefresh(ctx->pad_config.itself,
-                 ctx->pad_config.y, ctx->pad_config.x,
-                 ctx->pad_config.pad_view.y,
-                 ctx->pad_config.pad_view.x,
-                 ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-                 ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+        else
+        {
+            prefresh(ctx->pad_config.itself,
+                     ctx->pad_config.y, ctx->pad_config.x,
+                     ctx->pad_config.pad_view.y,
+                     ctx->pad_config.pad_view.x,
+                     ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+                     ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+        }
 
         if (ctx->sort_menu.visible)
         {
@@ -96,6 +100,10 @@ void redraw_screen(AppContext *ctx)
     refresh();
     werase(ctx->pad_config.itself);
     show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
+    if (ctx->pad_config.y >= ctx->processes_count)
+    {
+        ctx->pad_config.y = ctx->processes_count - 1;
+    }
     prefresh(ctx->pad_config.itself,
              ctx->pad_config.y, ctx->pad_config.x,
              ctx->pad_config.pad_view.y,

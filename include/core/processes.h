@@ -38,6 +38,7 @@ typedef struct
   bool seen;
   UT_hash_handle hh;
 } YToPid;
+int is_numeric(char *name);
 void mark_processes_unseen(Process **processes);
 void remove_unseen_processes(Process **processes);
 void cleanup_processes(Process **processes);

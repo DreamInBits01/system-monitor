@@ -1,4 +1,3 @@
-#include "context.h"
 #include "ui/render.h"
 void *render_routine(void *data)
 {

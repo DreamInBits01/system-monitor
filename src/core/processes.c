@@ -1,5 +1,14 @@
 #include "core/processes.h"
-#include "utils.h"
+int is_numeric(char *name)
+{
+    while (*name)
+    {
+        if (!isdigit(*name))
+            return 0;
+        name++;
+    };
+    return 1;
+}
 void mark_processes_unseen(Process **processes)
 {
     Process *process;

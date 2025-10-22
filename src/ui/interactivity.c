@@ -1,4 +1,3 @@
-#include "context.h"
 #include "ui/interactivity.h"
 /*
     TOOODOODOO
@@ -41,14 +40,36 @@ void highlight_process(PadConfig *pad_config)
     mvwprintw(pad_config->itself, pad_config->y, 0, "Process: %d, %s, cpu_usage:%.2f%%", pad_config->selected_process->pid, pad_config->selected_process->exe_path, pad_config->selected_process->cpu_usage);
     wattroff(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
 }
-void refresh_pad(PadConfig *pad_config)
+void refresh_pad(PadConfig *pad_config, unsigned processes_count)
 {
+    if (pad_config->y >= processes_count)
+    {
+        pad_config->y = processes_count - 1;
+    }
     prefresh(pad_config->itself,
              pad_config->y, pad_config->x,
              pad_config->pad_view.y,
              pad_config->pad_view.x,
              pad_config->pad_view.y + pad_config->pad_view.height - 1,
              pad_config->pad_view.x + pad_config->pad_view.width - 1);
+}
+void handle_process_selection(AppContext *ctx)
+{
+    // get new process
+    get_selected_process(
+        &ctx->processes,
+        &ctx->y_to_pid,
+        &ctx->pad_config.selected_process,
+        &ctx->pad_config.get_process_faild,
+        ctx->pad_config.selected_process_y);
+    // add highlighting if successful
+    if (!ctx->pad_config.get_process_faild)
+    {
+        ctx->pad_config.y = ctx->pad_config.selected_process_y;
+        highlight_process(&ctx->pad_config);
+        refresh_pad(&ctx->pad_config, ctx->processes_count);
+        update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+    }
 }
 void *interactivity_routine(void *data)
 {
@@ -107,21 +128,7 @@ void *interactivity_routine(void *data)
                 // next process's y
 
                 ctx->pad_config.selected_process_y = ctx->pad_config.y - 1;
-                // get new process
-                get_selected_process(
-                    &ctx->processes,
-                    &ctx->y_to_pid,
-                    &ctx->pad_config.selected_process,
-                    &ctx->pad_config.get_process_faild,
-                    ctx->pad_config.selected_process_y);
-                // add highlighting if successful
-                if (!ctx->pad_config.get_process_faild)
-                {
-                    ctx->pad_config.y = ctx->pad_config.selected_process_y;
-                    highlight_process(&ctx->pad_config);
-                    refresh_pad(&ctx->pad_config);
-                    update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-                }
+                handle_process_selection(ctx);
             }
             break;
         case KEY_DOWN:
@@ -131,21 +138,7 @@ void *interactivity_routine(void *data)
                 remove_highlight(&ctx->pad_config);
                 // next process's y
                 ctx->pad_config.selected_process_y = ctx->pad_config.y + 1;
-                // get new process
-                get_selected_process(
-                    &ctx->processes,
-                    &ctx->y_to_pid,
-                    &ctx->pad_config.selected_process,
-                    &ctx->pad_config.get_process_faild,
-                    ctx->pad_config.selected_process_y);
-                // add highlighting if successful
-                if (!ctx->pad_config.get_process_faild)
-                {
-                    ctx->pad_config.y = ctx->pad_config.selected_process_y;
-                    highlight_process(&ctx->pad_config);
-                    refresh_pad(&ctx->pad_config);
-                    update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-                }
+                handle_process_selection(ctx);
             };
             break;
         case KEY_HOME:
@@ -153,43 +146,15 @@ void *interactivity_routine(void *data)
             remove_highlight(&ctx->pad_config);
             // next process's y
             ctx->pad_config.selected_process_y = 0;
-            // get new process
-            get_selected_process(
-                &ctx->processes,
-                &ctx->y_to_pid,
-                &ctx->pad_config.selected_process,
-                &ctx->pad_config.get_process_faild,
-                ctx->pad_config.selected_process_y);
-            // add highlighting if successful
-            if (!ctx->pad_config.get_process_faild)
-            {
-                ctx->pad_config.y = ctx->pad_config.selected_process_y;
-                highlight_process(&ctx->pad_config);
-                refresh_pad(&ctx->pad_config);
-                update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-            }
+            handle_process_selection(ctx);
+
             break;
         case KEY_END:
             // remove highlighting
             remove_highlight(&ctx->pad_config);
             // next process's y
             ctx->pad_config.selected_process_y = ctx->processes_count - 1;
-            // get new process
-            get_selected_process(
-                &ctx->processes,
-                &ctx->y_to_pid,
-                &ctx->pad_config.selected_process,
-                &ctx->pad_config.get_process_faild,
-                ctx->pad_config.selected_process_y);
-            // highlight new process
-            if (!ctx->pad_config.get_process_faild)
-            {
-                // only update padconfig's y on success
-                ctx->pad_config.y = ctx->pad_config.selected_process_y;
-                highlight_process(&ctx->pad_config);
-                refresh_pad(&ctx->pad_config);
-                update_interactivity_status(&ctx->pad_config, ctx->processes_count);
-            }
+            handle_process_selection(ctx);
             break;
         }
 

@@ -65,6 +65,9 @@ void *interactivity_routine(void *data)
             redraw_screen(ctx);
             break;
         case KEY_F(1):
+            goto cleanup;
+            break;
+        case KEY_F(2):
             if (ctx->pad_config.selected_process == NULL)
                 return NULL;
             if (ctx->pad_config.selected_process->pid == 0)
@@ -74,10 +77,12 @@ void *interactivity_routine(void *data)
             {
                 perror("Kill faild!\n");
             }
+            if (ctx->pad_config.selected_process->pid == getpid())
+            {
+                goto cleanup;
+            }
             break;
-        case KEY_F(2):
-            goto cleanup;
-            break;
+
         case KEY_F(3):
             if (ctx->sort_menu.visible)
             {

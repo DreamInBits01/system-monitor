@@ -77,7 +77,20 @@ void *interactivity_routine(void *data)
             }
             ctx->sort_menu.visible = !ctx->sort_menu.visible;
             break;
-
+        case KEY_RIGHT:
+            if (ctx->pad_config.x < ctx->pad_config.width)
+            {
+                ctx->pad_config.x += 1;
+                refresh_pad(&ctx->pad_config, ctx->processes_count);
+            }
+            break;
+        case KEY_LEFT:
+            if (ctx->pad_config.x > 0)
+            {
+                ctx->pad_config.x -= 1;
+                refresh_pad(&ctx->pad_config, ctx->processes_count);
+            }
+            break;
         case KEY_UP:
             if (ctx->pad_config.y > 0 && ctx->sort_menu.visible == false)
             {

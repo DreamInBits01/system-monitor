@@ -67,6 +67,7 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.height = 500;
     ctx->pad_config.width = 200;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
+    ctx->pad_config.y = 0;
     // Pad view config
     ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
     ctx->pad_config.pad_view.width = ctx->max_cols;
@@ -74,7 +75,7 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.pad_view.itself = newwin(
         ctx->pad_config.pad_view.height,
         ctx->pad_config.pad_view.width,
-        ctx->pad_config.y,
+        ctx->pad_config.pad_view.y,
         ctx->pad_config.pad_view.x);
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);

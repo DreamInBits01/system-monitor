@@ -2,10 +2,10 @@
 #define CONTEXT_H
 #include <ncurses.h>
 #include <pthread.h>
+#include <panel.h>
 #include "core/cpu.h"
 #include "core/processes.h"
 #include "core/memory.h"
-#include <panel.h>
 typedef struct
 {
     WINDOW *window;

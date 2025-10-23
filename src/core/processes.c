@@ -114,6 +114,7 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
         // the total time that the process has spent in the cpu, measured in seconds / the time the system has been running in seconds
         // on multi-core systems, this calculation gives the number of cores used, so it can be 1 core or 1.5 cores etc...
         // CPU Usage % = (CPU time delta / Wall time delta) × 100
+        // to get the overall usage, you must divide the number of cores used by the system's total cores
         unsigned long utime, stime;
         char state;
         sscanf(line, "%*d %*s %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);
@@ -133,6 +134,7 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
                 // divide by the total cores to get the overall percentage
+                // if the process is using 1 core and the system has 10 cores, then the usage is 10%
                 found_process->cpu_usage = cpu_delta / uptime_delta * 100 / num_cores;
             }
         }

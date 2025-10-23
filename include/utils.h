@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include "context.h"
-// void build_loadbar(int fill, int bar_width, int y, int x);
 void remove_process_highlight(PadConfig *pad_config);
 void refresh_pad(PadConfig *pad_config, unsigned processes_count);
 void update_interactivity_metadata(PadConfig *pad_config, int processes_count);

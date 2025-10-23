@@ -14,7 +14,7 @@ void update_interactivity_metadata(PadConfig *pad_config, int processes_count)
 }
 void remove_process_highlight(PadConfig *pad_config)
 {
-    if (pad_config->selected_process == NULL)
+    if (pad_config->selected_process == NULL || pad_config->get_process_faild)
         return NULL;
     mvwprintw(pad_config->itself, pad_config->selected_process->y, 0, "Process: %d, %s, cpu_usage:%.2f%%",
               pad_config->selected_process->pid,

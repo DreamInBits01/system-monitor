@@ -6,7 +6,7 @@
 // void build_loadbar(int fill, int bar_width, int y, int x);
 void remove_process_highlight(PadConfig *pad_config);
 void refresh_pad(PadConfig *pad_config, unsigned processes_count);
-void update_interactivity_status(PadConfig *pad_config, int processes_count);
+void update_interactivity_metadata(PadConfig *pad_config, int processes_count);
 void highlight_process(PadConfig *pad_config);
 void handle_manual_process_selection(AppContext *ctx);
 #endif

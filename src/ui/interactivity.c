@@ -1,8 +1,8 @@
 #include "ui/interactivity.h"
 /*
     TOOODOODOO
-        Undoes what happens when get_selected_process keeps the same process even when
-        it doesn't find anything
+       - reflect the changes when a process gets killed,
+        -to redraw the pad efficiently, just shift every y after the deleted process by -1
 
     Selected process is only null initially
 
@@ -39,6 +39,23 @@ void *interactivity_routine(void *data)
             {
                 perror("Kill faild!\n");
             }
+            else
+            {
+                // YToPid *found_y_to_pid_entry;
+                // HASH_FIND_INT(ctx->y_to_pid, ctx->pad_config.selected_process_y, found_y_to_pid_entry);
+                // if (found_y_to_pid_entry != NULL)
+                // {
+                //     HASH_DEL(ctx->y_to_pid, found_y_to_pid_entry);
+                //     free(found_y_to_pid_entry);
+                // }
+                // HASH_DEL(ctx->processes, ctx->pad_config.selected_process);
+                // free(ctx->pad_config.selected_process);
+                // read_processes(&ctx->processes, ctx->processes_count);
+                // werase(ctx->pad_config.itself);
+                // show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
+                // refresh_pad(&ctx->pad_config, ctx->processes_count);
+            }
+
             if (ctx->pad_config.selected_process->pid == getpid())
             {
                 goto cleanup;

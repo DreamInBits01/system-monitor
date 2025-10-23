@@ -1,2 +1,2 @@
--create an index table to map the y position to the corresponding pid
--add better error handling for malloc
+- remove deleted process from processes list when killed
+- to redraw the pad efficiently, just shift every y after the deleted process by -1

@@ -35,14 +35,7 @@ void redraw_screen(AppContext *ctx)
         handle_manual_process_selection(ctx);
     }
     else
-    {
-        prefresh(ctx->pad_config.itself,
-                 ctx->pad_config.y, ctx->pad_config.x,
-                 ctx->pad_config.pad_view.y,
-                 ctx->pad_config.pad_view.x,
-                 ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
-                 ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
-    }
+        refresh_pad(&ctx->pad_config, ctx->processes_count);
 
     if (ctx->sort_menu.visible)
     {

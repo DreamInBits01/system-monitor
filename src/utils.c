@@ -1,5 +1,5 @@
 #include "utils.h"
-void update_interactivity_status(PadConfig *pad_config, int processes_count)
+void update_interactivity_metadata(PadConfig *pad_config, int processes_count)
 {
     move(6, 25);
     clrtoeol();
@@ -55,6 +55,6 @@ void handle_manual_process_selection(AppContext *ctx)
         ctx->pad_config.y = ctx->pad_config.selected_process_y;
         highlight_process(&ctx->pad_config);
         refresh_pad(&ctx->pad_config, ctx->processes_count);
-        update_interactivity_status(&ctx->pad_config, ctx->processes_count);
+        update_interactivity_metadata(&ctx->pad_config, ctx->processes_count);
     }
 }

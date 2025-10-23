@@ -1,2 +1,4 @@
 - remove deleted process from processes list when killed
 - to redraw the pad efficiently, just shift every y after the deleted process by -1
+- open used files once at the beginning
+- clean up opened files after

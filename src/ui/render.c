@@ -35,7 +35,9 @@ void redraw_screen(AppContext *ctx)
         handle_manual_process_selection(ctx);
     }
     else
+    {
         refresh_pad(&ctx->pad_config, ctx->processes_count);
+    }
 
     if (ctx->sort_menu.visible)
     {
@@ -54,7 +56,7 @@ void *render_routine(void *data)
     while (ctx->running)
     {
         redraw_screen(ctx);
-        sleep(3.2);
+        sleep(4);
     }
     return NULL;
 }

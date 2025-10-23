@@ -80,14 +80,14 @@ void *interactivity_routine(void *data)
         case KEY_RIGHT:
             if (ctx->pad_config.x < ctx->pad_config.width)
             {
-                ctx->pad_config.x += 1;
+                ctx->pad_config.x += 2;
                 refresh_pad(&ctx->pad_config, ctx->processes_count);
             }
             break;
         case KEY_LEFT:
             if (ctx->pad_config.x > 0)
             {
-                ctx->pad_config.x -= 1;
+                ctx->pad_config.x -= 2;
                 refresh_pad(&ctx->pad_config, ctx->processes_count);
             }
             break;
@@ -97,7 +97,6 @@ void *interactivity_routine(void *data)
                 // remove highlighting
                 remove_process_highlight(&ctx->pad_config);
                 // next process's y
-
                 ctx->pad_config.selected_process_y = ctx->pad_config.y - 1;
                 handle_manual_process_selection(ctx);
             }
@@ -130,7 +129,7 @@ void *interactivity_routine(void *data)
         }
 
         pthread_mutex_unlock(&ctx->mutex);
-        sleep(.4);
+        sleep(.5);
     }
 cleanup:
     cleanup_context(ctx);

@@ -202,7 +202,7 @@ void read_processes(Process **processes, unsigned *count)
                 {
                     printf("Error while allocating memory\n");
                 }
-                memset(found_process, 0, sizeof(*found_process));
+                memset(found_process, 0, sizeof(Process));
                 found_process->pid = pid;
                 found_process->seen = true;
                 found_process->type = ep->d_type;
@@ -237,6 +237,7 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
         if (found_y_to_pid_entry == NULL)
         {
             found_y_to_pid_entry = malloc(sizeof(YToPid));
+            memset(found_y_to_pid_entry, 0, sizeof(YToPid));
             found_y_to_pid_entry->pid = process->pid;
             found_y_to_pid_entry->y = line_height;
             found_y_to_pid_entry->seen = true;

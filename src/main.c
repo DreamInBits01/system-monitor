@@ -3,6 +3,13 @@
 -Render thread
 -Interactivity thread
 */
+void cleanup_ncurses()
+{
+    clear();
+    refresh();
+    endwin();
+    delwin(stdscr); // Add this
+}
 
 int main()
 {
@@ -20,5 +27,9 @@ int main()
     // join thread
     pthread_join(interactivity_thread_id, NULL);
     pthread_join(render_thread_id, NULL);
+
+    // cleanup
+    cleanup_context(ctx);
+    cleanup_ncurses();
     return 0;
 }

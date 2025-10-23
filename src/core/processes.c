@@ -38,7 +38,7 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
     if (found_y_to_pid_entry == NULL)
         *get_process_faild = true;
-    ;
+
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
     if (*output == NULL)
     {
@@ -202,7 +202,8 @@ void read_processes(Process **processes, unsigned *count)
                 found_process = malloc(sizeof(Process));
                 if (found_process == NULL)
                 {
-                    printf("Error while allocating memory\n");
+                    closedir(directory);
+                    return;
                 }
                 memset(found_process, 0, sizeof(Process));
                 found_process->pid = pid;
@@ -213,6 +214,11 @@ void read_processes(Process **processes, unsigned *count)
                 if (strncmp(found_process->exe_path, "unknown", 7) != 0)
                 {
                     HASH_ADD_INT(*processes, pid, found_process);
+                }
+                else
+                {
+                    free(found_process->exe_path);
+                    free(found_process);
                 }
             }
             else

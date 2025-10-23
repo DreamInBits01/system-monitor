@@ -5,10 +5,12 @@ void cleanup_context(AppContext *ctx)
     if (ctx->processes != NULL)
     {
         cleanup_processes(&ctx->processes);
+        free(ctx->processes);
     }
     if (ctx->y_to_pid != NULL)
     {
         cleanup_y_to_pid(&ctx->y_to_pid);
+        free(ctx->y_to_pid);
     }
     // memory
     if (ctx->memory_info != NULL)
@@ -27,6 +29,10 @@ void cleanup_context(AppContext *ctx)
     // pad view
     delwin(ctx->pad_config.itself);
     delwin(ctx->pad_config.pad_view.itself);
+    // sort
+    delwin(ctx->sort_menu.window);
+    del_panel(ctx->sort_menu.panel);
+    // ctx
     pthread_mutex_destroy(&ctx->mutex);
     free(ctx);
     endwin();

@@ -63,6 +63,7 @@ void read_memory_info(MemoryInfo *memory_info)
             memory_info->buffers = kb;
         }
     };
+    fclose(memory_info_file);
 }
 void show_memory_info(MemoryInfo *memory_info, int bar_width)
 {

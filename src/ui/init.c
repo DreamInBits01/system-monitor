@@ -18,3 +18,10 @@ void initialize_ncurses()
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
 }
+void cleanup_ncurses()
+{
+    clear();
+    refresh();
+    endwin();
+    delwin(stdscr);
+}

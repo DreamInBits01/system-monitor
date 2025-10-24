@@ -46,5 +46,4 @@ typedef struct
 } AppContext;
 void cleanup_ncurses();
 void initialize_context(AppContext *ctx);
-void cleanup_context(AppContext *ctx);
 #endif

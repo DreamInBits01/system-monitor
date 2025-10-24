@@ -1,11 +1,4 @@
 #include "context.h"
-void cleanup_ncurses()
-{
-    clear();
-    refresh();
-    endwin();
-    delwin(stdscr);
-}
 void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;

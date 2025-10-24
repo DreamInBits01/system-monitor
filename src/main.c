@@ -3,13 +3,6 @@
 -Render thread
 -Interactivity thread
 */
-void cleanup_ncurses()
-{
-    clear();
-    refresh();
-    endwin();
-    delwin(stdscr); // Add this
-}
 
 int main()
 {

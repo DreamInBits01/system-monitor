@@ -44,6 +44,7 @@ typedef struct
     volatile int running;
     unsigned processes_count;
 } AppContext;
+void cleanup_ncurses();
 void initialize_context(AppContext *ctx);
 void cleanup_context(AppContext *ctx);
 #endif

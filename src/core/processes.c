@@ -217,6 +217,7 @@ void read_processes(Process **processes, unsigned *count)
                 }
                 else
                 {
+                    // cleanup allocated memory
                     free(found_process->exe_path);
                     free(found_process);
                 }

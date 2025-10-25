@@ -3,9 +3,9 @@
 #include <ncurses.h>
 #include <pthread.h>
 #include <panel.h>
-#include "core/cpu.h"
-#include "core/processes.h"
-#include "core/memory.h"
+#include "core/cpu/index.h"
+#include "core/processes/index.h"
+#include "core/memory/index.h"
 typedef struct
 {
     WINDOW *window;
@@ -32,6 +32,7 @@ typedef struct
     MemoryInfo *memory_info;
     DynamicCpuInfo *dynamic_cpu_info;
     StaticCpuInfo *static_cpu_info;
+    char **files;
     Process *processes;
     YToPid *y_to_pid;
 

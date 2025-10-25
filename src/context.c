@@ -41,6 +41,8 @@ void initialize_context(AppContext *ctx)
 {
     // screen
     getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
+    // char files[5] = {"/proc/cpuinfo"};
+    // ctx->files = files;
     // Processes config
     ctx->y_to_pid = NULL;
     ctx->processes = NULL;
@@ -78,11 +80,13 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
     ctx->pad_config.pad_view.width = ctx->max_cols;
     ctx->pad_config.pad_view.y = 8;
+    ctx->pad_config.pad_view.x = 0;
     ctx->pad_config.pad_view.itself = newwin(
         ctx->pad_config.pad_view.height,
         ctx->pad_config.pad_view.width,
         ctx->pad_config.pad_view.y,
         ctx->pad_config.pad_view.x);
+    box(ctx->pad_config.pad_view.itself, 0, 0);
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
     box(ctx->sort_menu.window, 0, 0);
@@ -94,6 +98,6 @@ void initialize_context(AppContext *ctx)
     ctx->running = 1;
     pthread_mutex_init(&ctx->mutex, NULL);
     // Rendering the pad
-    box(ctx->pad_config.pad_view.itself, 0, 0);
+    // box(ctx->pad_config.pad_view.itself, 0, 0);
     wrefresh(ctx->pad_config.pad_view.itself);
 }

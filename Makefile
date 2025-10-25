@@ -52,9 +52,11 @@ UI_SRC = $(SRC_DIR)/ui/init.c \
          $(SRC_DIR)/ui/render.c \
          $(SRC_DIR)/ui/interactivity.c
 
-CORE_SRC = $(SRC_DIR)/core/cpu.c \
-           $(SRC_DIR)/core/memory.c \
-           $(SRC_DIR)/core/processes.c
+CORE_SRC = $(SRC_DIR)/core/cpu/index.c \
+           $(SRC_DIR)/core/memory/index.c \
+           $(SRC_DIR)/core/memory/helpers.c \
+           $(SRC_DIR)/core/processes/index.c \
+           $(SRC_DIR)/core/processes/helpers.c
 
 # All source files
 SOURCES = $(MAIN_SRC) $(CONTEXT_SRC) $(UTILS_SRC) $(UI_SRC) $(CORE_SRC)

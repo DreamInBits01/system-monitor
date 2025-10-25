@@ -2,7 +2,6 @@
 void redraw_screen(AppContext *ctx)
 {
     pthread_mutex_lock(&ctx->mutex);
-    // flicker
     clear();
 
     // memory info

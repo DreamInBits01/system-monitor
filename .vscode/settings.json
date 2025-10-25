@@ -17,6 +17,10 @@
     "routines.h": "c",
     "interactivity.h": "c",
     "render.h": "c",
-    "cpu.h": "c"
+    "cpu.h": "c",
+    "index.h": "c",
+    "structs.h": "c",
+    "uthash.h": "c",
+    "helpers.h": "c"
   }
 }

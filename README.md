@@ -136,6 +136,7 @@ This design provides clear module boundaries and prevents tight coupling between
 - [ ] Search/filter processes
 - [ ] Configuration file support
 - [ ] Color themes
+- [ ] Run Options
 
 ## Contributing
 
@@ -160,8 +161,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Your Name**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- GitHub: [@dreamInBits01](https://github.com/DreamInBits01)
+- Email: mohammed.abdulaziz.business@gmail.com
 
 ## FAQ
 

@@ -3,5 +3,5 @@
 #include <ncurses.h>
 #include "context.h"
 void initialize_ncurses();
-void cleanup_context(AppContext *ctx);
+void cleanup_ncurses();
 #endif

@@ -72,14 +72,11 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             show_process_information(process, pad, line_height);
-            // mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {
             show_process_information(process, pad, line_height);
-
-            // mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
         }
         process->y = line_height;
         process = process->hh.next;

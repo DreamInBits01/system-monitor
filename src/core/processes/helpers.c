@@ -81,16 +81,7 @@ void read_uptime(double *uptime, double *idle_time)
 
 void read_process_cpu_usage(FILE *fd, Process *found_process)
 {
-
-    // int pid_len = strlen(ep_name);
-    // char *stat_path = malloc(7 + 6 + pid_len + 1);
-    // if (stat_path == NULL)
-    //     return;
-    // sprintf(stat_path, "/proc/%s/stat", ep_name);
-    // FILE *process_stat = fopen(stat_path, "r");
-    // if (process_stat == NULL)
-    //     return;
-
+    rewind(fd);
     char line[256];
     if (fgets(line, sizeof(line), fd))
     {
@@ -132,7 +123,7 @@ void read_process_cpu_usage(FILE *fd, Process *found_process)
 }
 void read_process_location(char *ep_name, char **destination)
 {
-    char *exe_path = malloc(11 + strlen(ep_name) + 1); // "/proc/" + pid + "/exe" + '\0'
+    char *exe_path = malloc(12 + strlen(ep_name)); // "/proc/" + pid + "/exe" + '\0'
     if (exe_path == NULL)
         return;
     sprintf(exe_path, "/proc/%s/exe", ep_name);
@@ -151,6 +142,7 @@ void read_process_location(char *ep_name, char **destination)
 }
 void read_process_name(FILE *fd, char **destination)
 {
+    rewind(fd);
     char line[256];
     char process_name[17];
     fgets(line, sizeof(line), fd);
@@ -180,7 +172,7 @@ void read_process_stat(char *ep_name, Process *process)
         return;
     read_process_location(ep_name, &process->exe_path);
     read_process_name(process_stat_file, &process->name);
-    // read_process_cpu_usage(process_stat_file, process);
+    read_process_cpu_usage(process_stat_file, process);
     // reset
     free(stat_path);
     fclose(process_stat_file);

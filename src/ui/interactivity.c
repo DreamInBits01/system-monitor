@@ -17,14 +17,17 @@ void *interactivity_routine(void *data)
     AppContext *ctx = (AppContext *)data;
     while (ctx->running)
     {
-        pthread_mutex_lock(&ctx->mutex);
         int ch = getch();
+        pthread_mutex_lock(&ctx->mutex);
 
         switch (ch)
         {
         case KEY_RESIZE:
             resize_screen(ctx);
+            // unlock first to prevent a deadlock, because i'm already locking the mutex inside redraw_render
+            pthread_mutex_unlock(&ctx->mutex);
             redraw_screen(ctx);
+            pthread_mutex_lock(&ctx->mutex);
             break;
         case KEY_F(1):
             goto cleanup;
@@ -68,6 +71,10 @@ void *interactivity_routine(void *data)
                 hide_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
+                // unlock first to prevent a deadlock, because i'm already locking the mutex inside redraw_render
+                pthread_mutex_unlock(&ctx->mutex);
+                redraw_screen(ctx);
+                pthread_mutex_lock(&ctx->mutex);
             }
             else
             {

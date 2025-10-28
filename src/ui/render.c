@@ -38,15 +38,6 @@ void redraw_screen(AppContext *ctx)
         refresh_pad(&ctx->pad_config, ctx->processes_count);
     }
 
-    if (ctx->sort_menu.visible)
-    {
-        top_panel(ctx->sort_menu.panel);
-        // Force panel redraw
-        touchwin(ctx->sort_menu.window);
-        update_panels();
-        doupdate();
-    }
-
     pthread_mutex_unlock(&ctx->mutex);
 }
 void *render_routine(void *data)

@@ -51,7 +51,7 @@ void refresh_pad(PadConfig *pad_config, unsigned processes_count)
 }
 void handle_manual_process_selection(AppContext *ctx)
 {
-    // get new process
+    // get new selected process
     get_selected_process(
         &ctx->processes,
         &ctx->y_to_pid,

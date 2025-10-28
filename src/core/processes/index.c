@@ -30,16 +30,7 @@ void read_processes(Process **processes, unsigned *count)
                 found_process->type = ep->d_type;
 
                 read_process_stat(ep->d_name, found_process);
-                if (found_process->exe_path && strncmp(found_process->exe_path, "unknown", 7) != 0)
-                {
-                    HASH_ADD_INT(*processes, pid, found_process);
-                }
-                else
-                {
-                    // cleanup allocated memory
-                    free(found_process->exe_path);
-                    free(found_process);
-                }
+                HASH_ADD_INT(*processes, pid, found_process);
             }
             else
             {
@@ -102,8 +93,7 @@ void cleanup_processes(Process **processes)
     HASH_ITER(hh, *processes, current_process, tmp)
     {
         HASH_DEL(*processes, current_process);
-        free(current_process->exe_path);
-        free(current_process);
+        cleanup_process(current_process);
     }
     *processes = NULL;
 }

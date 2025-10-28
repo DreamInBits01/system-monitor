@@ -7,6 +7,7 @@
 #define PROCESS_EXE_PATH_SIZE 1024
 
 int is_numeric(char *name);
+void cleanup_process(Process *process);
 void mark_processes_unseen(Process **processes);
 void remove_unseen_processes(Process **processes);
 void mark_y_to_pid_unseen(YToPid **y_to_pid);

@@ -9,6 +9,12 @@ int is_numeric(char *name)
     };
     return 1;
 }
+void cleanup_process(Process *process)
+{
+    free(process->exe_path);
+    free(process->name);
+    free(process);
+}
 void mark_processes_unseen(Process **processes)
 {
     Process *process;
@@ -25,8 +31,7 @@ void remove_unseen_processes(Process **processes)
         if (current->seen == false)
         {
             HASH_DEL(*processes, current);
-            free(current->exe_path);
-            free(current);
+            cleanup_process(current);
         }
     }
 };

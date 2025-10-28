@@ -4,7 +4,7 @@
 -Interactivity thread
 */
 
-int main()
+int main(int argc, char **argv)
 {
     initialize_ncurses();
     AppContext *ctx = malloc(sizeof(AppContext));

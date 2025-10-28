@@ -78,19 +78,21 @@ void read_uptime(double *uptime, double *idle_time)
     fscanf(proc_uptime, "%lf %lf", uptime, idle_time);
     fclose(proc_uptime);
 }
-void read_process_cpu_usage(char *ep_name, Process *found_process)
-{
-    int pid_len = strlen(ep_name);
-    char line[256];
-    char *stat_path = malloc(7 + 6 + pid_len + 1);
-    if (stat_path == NULL)
-        return;
-    sprintf(stat_path, "/proc/%s/stat", ep_name);
-    FILE *process_stat = fopen(stat_path, "r");
-    if (process_stat == NULL)
-        return;
 
-    if (fgets(line, sizeof(line), process_stat))
+void read_process_cpu_usage(FILE *fd, Process *found_process)
+{
+
+    // int pid_len = strlen(ep_name);
+    // char *stat_path = malloc(7 + 6 + pid_len + 1);
+    // if (stat_path == NULL)
+    //     return;
+    // sprintf(stat_path, "/proc/%s/stat", ep_name);
+    // FILE *process_stat = fopen(stat_path, "r");
+    // if (process_stat == NULL)
+    //     return;
+
+    char line[256];
+    if (fgets(line, sizeof(line), fd))
     {
         // the total time that the process has spent in the cpu, measured in seconds / the time the system has been running in seconds
         // on multi-core systems, this calculation gives the number of cores used, so it can be 1 core or 1.5 cores etc...
@@ -127,37 +129,59 @@ void read_process_cpu_usage(char *ep_name, Process *found_process)
         found_process->cpu_time = current_cpu_time;
         found_process->last_uptime = uptime;
     }
-
-    // char comm[17];
-    // sscanf(line, "%*d %16s %c", comm, destination);
-    // size_t len = strlen(comm);
-    // if (len >= 2 && comm[0] == '(' && comm[len - 1] == ')')
-    // {
-    // memmove(comm, comm + 1, len - 2);
-    //     comm[len - 2] = '\0';
-    // }
-    // if (strncmp(comm, "index", 16) == 1)
-    // {
-    //     printf("Comm:%s\n", comm);
-    // }
-    fclose(process_stat);
-    free(stat_path);
 }
 void read_process_location(char *ep_name, char **destination)
 {
-    int pid_len = strlen(ep_name);
-    char exe_path[PROCESS_EXE_PATH_SIZE];
-    char *exe_file_name = malloc(7 + pid_len + 5 + 1);
-    sprintf(exe_file_name, "/proc/%s/exe", ep_name);
-    int len = readlink(exe_file_name, exe_path, sizeof(exe_path) - 1);
+    char *exe_path = malloc(11 + strlen(ep_name) + 1); // "/proc/" + pid + "/exe" + '\0'
+    if (exe_path == NULL)
+        return;
+    sprintf(exe_path, "/proc/%s/exe", ep_name);
+    char buffer[PROCESS_EXE_PATH_SIZE];
+    ssize_t len = readlink(exe_path, buffer, sizeof(buffer) - 1);
     if (len != -1)
     {
-        exe_path[len] = '\0';
-        *destination = strdup(exe_path);
+        buffer[len] = '\0';
+        *destination = strdup(buffer);
     }
     else
     {
         *destination = strdup("unknown");
     }
-    free(exe_file_name);
+    free(exe_path);
+}
+void read_process_name(FILE *fd, char **destination)
+{
+    char line[256];
+    char process_name[17];
+    fgets(line, sizeof(line), fd);
+    sscanf(line, "%*d %16s", process_name);
+    int process_name_len = strlen(process_name);
+    if (process_name_len >= 2 && process_name[0] == '(' && process_name[process_name_len - 1] == ')')
+    {
+        memmove(process_name, process_name + 1, process_name_len - 2);
+        process_name[process_name_len - 2] = '\0';
+    }
+    else if (process_name_len >= 2 && process_name[0] == '(')
+    {
+        memmove(process_name, process_name + 1, process_name_len - 2);
+        process_name[process_name_len - 2] = '\0';
+    }
+    *destination = strdup(process_name);
+}
+void read_process_stat(char *ep_name, Process *process)
+{
+    int ep_name_len = strlen(ep_name);
+    char *stat_path = malloc(14 + ep_name_len);
+    if (stat_path == NULL)
+        return;
+    sprintf(stat_path, "/proc/%s/stat", ep_name);
+    FILE *process_stat_file = fopen(stat_path, "r");
+    if (process_stat_file == NULL)
+        return;
+    read_process_location(ep_name, &process->exe_path);
+    read_process_name(process_stat_file, &process->name);
+    // read_process_cpu_usage(process_stat_file, process);
+    // reset
+    free(stat_path);
+    fclose(process_stat_file);
 }

@@ -28,9 +28,9 @@ void read_processes(Process **processes, unsigned *count)
                 found_process->pid = pid;
                 found_process->seen = true;
                 found_process->type = ep->d_type;
-                read_process_cpu_usage(ep->d_name, found_process);
-                read_process_location(ep->d_name, &found_process->exe_path);
-                if (strncmp(found_process->exe_path, "unknown", 7) != 0)
+
+                read_process_stat(ep->d_name, found_process);
+                if (found_process->exe_path && strncmp(found_process->exe_path, "unknown", 7) != 0)
                 {
                     HASH_ADD_INT(*processes, pid, found_process);
                 }
@@ -44,7 +44,7 @@ void read_processes(Process **processes, unsigned *count)
             else
             {
                 found_process->seen = true;
-                read_process_cpu_usage(ep->d_name, found_process);
+                read_process_stat(ep->d_name, found_process);
             }
         }
     };
@@ -80,12 +80,15 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
         if (line_height == pad_y)
         {
             wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
+            show_process_information(process, pad, line_height);
+            // mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
             wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {
-            mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
+            show_process_information(process, pad, line_height);
+
+            // mvwprintw(pad, line_height, 0, "Process: %d, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->cpu_usage);
         }
         process->y = line_height;
         process = process->hh.next;

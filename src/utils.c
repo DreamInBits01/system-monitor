@@ -23,9 +23,18 @@ void remove_process_highlight(PadConfig *pad_config)
 }
 void highlight_process(PadConfig *pad_config)
 {
-    wattron(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-    mvwprintw(pad_config->itself, pad_config->y, 0, "Process: %d, %s, cpu_usage:%.2f%%", pad_config->selected_process->pid, pad_config->selected_process->exe_path, pad_config->selected_process->cpu_usage);
-    wattroff(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+    if (pad_config->selected_process != NULL && !pad_config->get_process_faild)
+    {
+        wattron(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+        mvwprintw(pad_config->itself, pad_config->y, 0, "Process: %d, %s, cpu_usage:%.2f%%", pad_config->selected_process->pid, pad_config->selected_process->exe_path, pad_config->selected_process->cpu_usage);
+        wattroff(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+    }
+}
+void show_process_information(Process *process, WINDOW *pad, int y)
+{
+    if (process->exe_path == NULL || process->name == NULL)
+        return;
+    mvwprintw(pad, y, 0, "%d, %s, %s, cpu_usage:%.2f%%", process->pid, process->exe_path, process->name, process->cpu_usage);
 }
 void refresh_pad(PadConfig *pad_config, unsigned processes_count)
 {

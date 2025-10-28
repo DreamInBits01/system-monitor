@@ -8,4 +8,5 @@ void refresh_pad(PadConfig *pad_config, unsigned processes_count);
 void update_interactivity_metadata(PadConfig *pad_config, int processes_count);
 void highlight_process(PadConfig *pad_config);
 void handle_manual_process_selection(AppContext *ctx);
+void show_process_information(Process *process, WINDOW *pad, int y);
 #endif

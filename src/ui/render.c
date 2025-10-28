@@ -1,7 +1,8 @@
 #include "ui/render.h"
+
 void redraw_screen(AppContext *ctx)
 {
-    pthread_mutex_lock(&ctx->mutex);
+    // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     clear();
 
     // memory info
@@ -37,15 +38,15 @@ void redraw_screen(AppContext *ctx)
     {
         refresh_pad(&ctx->pad_config, ctx->processes_count);
     }
-
-    pthread_mutex_unlock(&ctx->mutex);
 }
 void *render_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
     while (ctx->running)
     {
+        pthread_mutex_lock(&ctx->mutex);
         redraw_screen(ctx);
+        pthread_mutex_unlock(&ctx->mutex);
         sleep(4);
     }
     return NULL;

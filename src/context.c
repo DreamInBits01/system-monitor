@@ -87,6 +87,8 @@ void initialize_context(AppContext *ctx)
         ctx->pad_config.pad_view.y,
         ctx->pad_config.pad_view.x);
     box(ctx->pad_config.pad_view.itself, 0, 0);
+    wrefresh(ctx->pad_config.pad_view.itself);
+
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
     box(ctx->sort_menu.window, 0, 0);
@@ -99,5 +101,5 @@ void initialize_context(AppContext *ctx)
     pthread_mutex_init(&ctx->mutex, NULL);
     // Rendering the pad
     // box(ctx->pad_config.pad_view.itself, 0, 0);
-    wrefresh(ctx->pad_config.pad_view.itself);
+    // wrefresh(ctx->pad_config.pad_view.itself);
 }

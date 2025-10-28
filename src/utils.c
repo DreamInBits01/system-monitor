@@ -28,7 +28,6 @@ void remove_process_highlight(PadConfig *pad_config)
         return;
     show_process_information(pad_config->selected_process, pad_config->itself, pad_config->y);
 }
-
 void highlight_process(PadConfig *pad_config)
 {
     if (pad_config->selected_process != NULL && !pad_config->get_process_faild)
@@ -38,7 +37,6 @@ void highlight_process(PadConfig *pad_config)
         wattroff(pad_config->itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
     }
 }
-
 void refresh_pad(PadConfig *pad_config, unsigned processes_count)
 {
     if (pad_config->y >= processes_count)

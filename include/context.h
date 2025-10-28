@@ -6,6 +6,14 @@
 #include "core/cpu/index.h"
 #include "core/processes/index.h"
 #include "core/memory/index.h"
+
+// Screen Block
+typedef struct
+{
+    unsigned height, width, x, y;
+    WINDOW *itself;
+} Window;
+// Sort menu
 typedef struct
 {
     WINDOW *window;
@@ -13,6 +21,7 @@ typedef struct
     bool visible;
 
 } SortMenu;
+// Processes Pad
 typedef struct
 {
     WINDOW *itself;
@@ -27,6 +36,20 @@ typedef struct
     bool get_process_faild;
     unsigned height, width, x, y;
 } PadConfig;
+
+// Memory block
+typedef struct
+{
+    MemoryInfo *memory_info;
+    Window *window
+} MemoryBlock;
+// Cpu block
+typedef struct
+{
+    StaticCpuInfo *static_cpu_info;
+    DynamicCpuInfo *dynamic_cpu_info;
+    Window *window
+} CpuBlock;
 typedef struct
 {
     MemoryInfo *memory_info;

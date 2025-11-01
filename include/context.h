@@ -10,16 +10,26 @@
 // Screen Block
 typedef struct
 {
-    unsigned height, width, x, y;
     WINDOW *itself;
+    unsigned height, width, x, y;
+    bool hidden;
 } Window;
+typedef struct
+{
+    /*
+        -This is where large content is put
+        -It must have a regular window that acts as a viewing frame
+    */
+    WINDOW *itself;
+    unsigned height, width, y, x;
+} VirtualPad;
+
 // Sort menu
 typedef struct
 {
     WINDOW *window;
     PANEL *panel;
     bool visible;
-
 } SortMenu;
 // Processes Pad
 typedef struct
@@ -37,24 +47,39 @@ typedef struct
     unsigned height, width, x, y;
 } PadConfig;
 
-// Memory block
+// UI BLOCKS
+//  Memory
 typedef struct
 {
-    MemoryInfo *memory_info;
-    Window *window
+    MemoryData *data;
+    Window *window;
 } MemoryBlock;
-// Cpu block
+// Cpu
 typedef struct
 {
-    StaticCpuInfo *static_cpu_info;
-    DynamicCpuInfo *dynamic_cpu_info;
-    Window *window
+    StaticCpuData *static_data;
+    DynamicCpuData *dynamic_data;
+    Window *window;
 } CpuBlock;
+
+// Processes
 typedef struct
 {
-    MemoryInfo *memory_info;
-    DynamicCpuInfo *dynamic_cpu_info;
-    StaticCpuInfo *static_cpu_info;
+    Process *processes;
+    YToPid *y_to_pid;
+    Window *window;
+    VirtualPad *virtual_pad;
+
+    // selected process data
+    Process *selected_process;
+    int selected_process_y;
+    bool get_process_faild;
+} ProcessesBlock;
+typedef struct
+{
+    MemoryBlock *memory_block;
+    DynamicCpuData *dynamic_cpu_data;
+    StaticCpuData *static_cpu_data;
     char **files;
     Process *processes;
     YToPid *y_to_pid;

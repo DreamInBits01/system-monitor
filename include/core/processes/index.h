@@ -10,6 +10,7 @@
 #include "ncurses.h"
 #include "structs.h"
 #include "helpers.h"
+// #include "utils.h"
 #define INITIAL_PROCESSES_CAPACITY 20
 void read_processes(Process **processes, unsigned *count);
 void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigned pad_height, unsigned pad_y);

@@ -31,7 +31,7 @@
 
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
+CFLAGS = -g -Wall -Wextra -Iinclude
 LIBS = -lncurses -lpanel -pthread
 
 # Directories

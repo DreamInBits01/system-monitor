@@ -13,18 +13,22 @@ void cleanup_context(AppContext *ctx)
         free(ctx->y_to_pid);
     }
     // memory
-    if (ctx->memory_info != NULL)
+    if (ctx->memory_block != NULL)
     {
-        free(ctx->memory_info);
+        if (ctx->memory_block->data != NULL)
+        {
+            free(ctx->memory_block->data);
+        };
+        free(ctx->memory_block);
     }
     // cpu
-    if (ctx->dynamic_cpu_info != NULL)
+    if (ctx->dynamic_cpu_data != NULL)
     {
-        free(ctx->dynamic_cpu_info);
+        free(ctx->dynamic_cpu_data);
     };
-    if (ctx->static_cpu_info != NULL)
+    if (ctx->static_cpu_data != NULL)
     {
-        free(ctx->static_cpu_info);
+        free(ctx->static_cpu_data);
     }
     // pad view
     delwin(ctx->pad_config.itself);
@@ -41,36 +45,45 @@ void initialize_context(AppContext *ctx)
 {
     // screen
     getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
-    // char files[5] = {"/proc/cpuinfo"};
+    // char files[5] = {"/proc/cpuData"};
     // ctx->files = files;
     // Processes config
     ctx->y_to_pid = NULL;
     ctx->processes = NULL;
     ctx->processes_count = 0;
     // Memory config
-    ctx->memory_info = malloc(sizeof(MemoryInfo));
-    if (ctx->memory_info == NULL)
+    ctx->memory_block = malloc(sizeof(MemoryBlock));
+    if (ctx->memory_block == NULL)
     {
         cleanup_context(ctx);
         exit(1);
     }
-    memset(ctx->memory_info, 0, sizeof(MemoryInfo));
+    memset(ctx->memory_block, 0, sizeof(MemoryBlock));
+    ctx->memory_block->window = NULL;
+    ctx->memory_block->data = malloc(sizeof(MemoryData));
+    if (ctx->memory_block->data == NULL)
+    {
+        cleanup_context(ctx);
+        exit(1);
+    }
+    memset(ctx->memory_block->data, 0, sizeof(MemoryData));
     ctx->bar_width = ctx->max_cols / 4;
     // Cpu config
-    ctx->dynamic_cpu_info = malloc(sizeof(DynamicCpuInfo));
-    if (ctx->dynamic_cpu_info == NULL)
+    ctx->dynamic_cpu_data = malloc(sizeof(DynamicCpuData));
+    if (ctx->dynamic_cpu_data == NULL)
     {
         cleanup_context(ctx);
         exit(1);
     }
-    memset(ctx->dynamic_cpu_info, 0, sizeof(DynamicCpuInfo));
-    ctx->static_cpu_info = malloc(sizeof(StaticCpuInfo));
-    if (ctx->static_cpu_info == NULL)
+    memset(ctx->dynamic_cpu_data, 0, sizeof(DynamicCpuData));
+    ctx->static_cpu_data = malloc(sizeof(StaticCpuData));
+    if (ctx->static_cpu_data == NULL)
     {
         cleanup_context(ctx);
         exit(1);
     }
-    memset(ctx->static_cpu_info, 0, sizeof(StaticCpuInfo));
+    memset(ctx->static_cpu_data, 0, sizeof(StaticCpuData));
+
     // Pad config
     ctx->pad_config.height = 500;
     ctx->pad_config.width = 200;

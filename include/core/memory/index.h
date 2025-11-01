@@ -8,7 +8,7 @@
 #include "structs.h"
 #include "helpers.h"
 
-void read_memory_info(MemoryInfo *memory_info);
-void show_memory_info(MemoryInfo *memory_info, int bar_width);
+void read_memory_data(MemoryData *memory_data);
+void show_memory_data(MemoryData *memory_data, int bar_width);
 void build_loadbar(int fill, int bar_width, int y, int x);
 #endif

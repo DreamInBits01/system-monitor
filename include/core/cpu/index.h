@@ -7,15 +7,15 @@
 typedef struct
 {
     float avg_mhz;
-} DynamicCpuInfo;
+} DynamicCpuData;
 typedef struct
 {
     int logical_cpus;
     int physical_cores;
     char model_name[128];
-} StaticCpuInfo;
-void read_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info);
-void show_dynamic_cpu_info(DynamicCpuInfo *dynamic_cpu_info, int max_cols);
-void read_static_cpu_info(StaticCpuInfo *static_cpu_info);
-void show_static_cpu_info(StaticCpuInfo *static_cpu_info, int max_cols);
+} StaticCpuData;
+void read_dynamic_cpu_data(DynamicCpuData *dynamic_cpu_data);
+void show_dynamic_cpu_data(DynamicCpuData *dynamic_cpu_data, int max_cols);
+void read_static_cpu_data(StaticCpuData *static_cpu_data);
+void show_static_cpu_data(StaticCpuData *static_cpu_data, int max_cols);
 #endif

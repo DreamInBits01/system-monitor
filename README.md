@@ -1,6 +1,6 @@
 # System Monitor
 
-A lightweight, real-time system monitoring tool written in pure C for Linux systems. Displays CPU usage, memory statistics, and process information in an interactive terminal interface.
+A lightweight, real-time system monitoring tool written in pure C for Linux systems. Displays CPU usage, memory statistics, and process Datarmation in an interactive terminal interface.
 
 ![System Monitor Screenshot](screenshot.png)
 
@@ -18,9 +18,9 @@ A lightweight, real-time system monitoring tool written in pure C for Linux syst
 - **System Metrics**
 
   - Total and available memory
-  - Buffer and cache information
+  - Buffer and cache Datarmation
   - Memory usage percentage with visual indicator
-  - CPU information (model, cores, frequency)
+  - CPU Datarmation (model, cores, frequency)
   - Process count
 
 - **Performance Optimized**
@@ -66,7 +66,7 @@ make
 Options:
   -r, --refresh <ms>    Set refresh rate in milliseconds (default: 1000)
   -h, --help           Display this help message
-  -v, --version        Display version information
+  -v, --version        Display version Datarmation
 ```
 
 ## Project Structure
@@ -111,13 +111,13 @@ This design provides clear module boundaries and prevents tight coupling between
 
 ### Data Sources
 
-- **Process Information**: `/proc/[pid]/stat`, `/proc/[pid]/status`
-- **Memory Statistics**: `/proc/meminfo`
-- **CPU Information**: `/proc/cpuinfo`, `/proc/stat`
+- **Process Datarmation**: `/proc/[pid]/stat`, `/proc/[pid]/status`
+- **Memory Statistics**: `/proc/memData`
+- **CPU Datarmation**: `/proc/cpuData`, `/proc/stat`
 
 ### Performance Optimizations
 
-1. **File Descriptor Caching**: System-wide files like `/proc/meminfo` are opened once and reused
+1. **File Descriptor Caching**: System-wide files like `/proc/memData` are opened once and reused
 2. **Efficient Parsing**: Custom parsers optimized for `/proc` filesystem format
 3. **Minimal Allocations**: Pre-allocated buffers where possible
 
@@ -125,7 +125,7 @@ This design provides clear module boundaries and prevents tight coupling between
 
 - [x] Basic process listing
 - [x] Memory statistics
-- [x] CPU information
+- [x] CPU Datarmation
 - [x] Process killing
 - [x] Sorting functionality
 - [x] Scrolling interface

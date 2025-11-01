@@ -5,16 +5,16 @@ void redraw_screen(AppContext *ctx)
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     clear();
 
-    // memory info
-    read_memory_info(ctx->memory_info);
-    show_memory_info(ctx->memory_info, ctx->bar_width);
-    // cpu info
-    read_static_cpu_info(ctx->static_cpu_info);
-    show_static_cpu_info(ctx->static_cpu_info, ctx->max_cols);
+    // memory Data
+    read_memory_data(ctx->memory_block->data);
+    show_memory_data(ctx->memory_block->data, ctx->bar_width);
+    // cpu Data
+    read_static_cpu_data(ctx->static_cpu_data);
+    show_static_cpu_data(ctx->static_cpu_data, ctx->max_cols);
 
-    read_dynamic_cpu_info(ctx->dynamic_cpu_info);
-    show_dynamic_cpu_info(ctx->dynamic_cpu_info, ctx->max_cols);
-    // processes info
+    read_dynamic_cpu_data(ctx->dynamic_cpu_data);
+    show_dynamic_cpu_data(ctx->dynamic_cpu_data, ctx->max_cols);
+    // processes Data
     read_processes(&ctx->processes, &ctx->processes_count);
     attron(A_BOLD);
     mvprintw(6, 0, "Processes count:%d", ctx->processes_count);

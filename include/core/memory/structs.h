@@ -6,16 +6,16 @@ typedef struct
     unsigned cached;  // kb
     float free;       // gb
     float total;      // gb
-} MemoryInfo;
+} MemoryData;
 // typedef struct
 // {
 //     unsigned buffers; // kb
 //     unsigned cached;  // kb
 //     float free;       // gb
-// } DynamicMemoryInfo;
+// } DynamicMemoryData;
 // typedef struct
 // {
 //     float total; // gb
 
-// } StaticMemoryInfo;
+// } StaticMemoryData;
 #endif

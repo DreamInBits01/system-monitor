@@ -1,5 +1,5 @@
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef CONTEXT_STRUCTS
+#define CONTEXT_STRUCTS
 #include <ncurses.h>
 #include <pthread.h>
 #include <panel.h>
@@ -7,7 +7,7 @@
 #include "core/processes/index.h"
 #include "core/memory/index.h"
 
-// Screen Block
+// UI Block
 typedef struct
 {
     WINDOW *itself;
@@ -65,12 +65,12 @@ typedef struct
 // Processes
 typedef struct
 {
-    Process *processes;
-    YToPid *y_to_pid;
     Window *window;
     VirtualPad *virtual_pad;
 
-    // selected process data
+    // data
+    YToPid *y_to_pid;
+    Process *processes;
     Process *selected_process;
     int selected_process_y;
     bool get_process_faild;
@@ -93,6 +93,5 @@ typedef struct
     volatile int running;
     unsigned processes_count;
 } AppContext;
-void initialize_context(AppContext *ctx);
-void cleanup_context(AppContext *ctx);
+
 #endif

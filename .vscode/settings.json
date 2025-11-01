@@ -21,6 +21,7 @@
     "index.h": "c",
     "structs.h": "c",
     "uthash.h": "c",
-    "helpers.h": "c"
+    "helpers.h": "c",
+    "init.h": "c"
   }
 }

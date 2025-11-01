@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 #include "utils.h"
-#include "context.h"
+#include "context/index.h"
 #include "ui/init.h"
 #include "ui/interactivity.h"
 #include "ui/render.h"

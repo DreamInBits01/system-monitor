@@ -1,6 +1,6 @@
 #ifndef RENDER_H
 #define RENDER_H
-#include "context.h"
+#include "context/index.h"
 #include "utils.h"
 void *render_routine(void *data);
 /**

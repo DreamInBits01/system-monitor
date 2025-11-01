@@ -1,4 +1,4 @@
-#include "context.h"
+#include "context/index.h"
 void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
@@ -41,6 +41,7 @@ void cleanup_context(AppContext *ctx)
     free(ctx);
     endwin();
 }
+
 void initialize_context(AppContext *ctx)
 {
     // screen

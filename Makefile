@@ -45,7 +45,8 @@ TARGET = $(BIN_DIR)/index
 
 # Source files
 MAIN_SRC = $(SRC_DIR)/main.c
-CONTEXT_SRC = $(SRC_DIR)/context.c
+CONTEXT_SRC = $(SRC_DIR)/context/index.c \
+			  $(SRC_DIR)/context/helpers.c 
 UTILS_SRC = $(SRC_DIR)/utils.c
 
 UI_SRC = $(SRC_DIR)/ui/init.c \

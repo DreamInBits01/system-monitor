@@ -18,7 +18,8 @@ void *interactivity_routine(void *data)
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
-        int ch = wgetch(ctx->pad_config.pad_view.itself);
+        // int ch = wgetch(ctx->pad_config.pad_view.itself);
+        int ch = getch();
         switch (ch)
         {
         case KEY_RESIZE:
@@ -128,7 +129,8 @@ void *interactivity_routine(void *data)
             break;
         }
         pthread_mutex_unlock(&ctx->mutex);
-        usleep(50000);
+        // usleep(50000);
+        sleep(.4);
     }
 cleanup:
     cleanup_context(ctx);

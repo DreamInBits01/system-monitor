@@ -101,8 +101,8 @@ void initialize_context(AppContext *ctx)
         ctx->pad_config.pad_view.width,
         ctx->pad_config.pad_view.y,
         ctx->pad_config.pad_view.x);
-    keypad(ctx->pad_config.pad_view.itself, TRUE);
-    nodelay(ctx->pad_config.pad_view.itself, TRUE);
+    // keypad(ctx->pad_config.pad_view.itself, TRUE);
+    // nodelay(ctx->pad_config.pad_view.itself, TRUE);
     box(ctx->pad_config.pad_view.itself, 0, 0);
     wrefresh(ctx->pad_config.pad_view.itself);
     // Sort menu

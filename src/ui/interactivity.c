@@ -19,7 +19,6 @@ void *interactivity_routine(void *data)
     {
         pthread_mutex_lock(&ctx->mutex);
         int ch = wgetch(ctx->pad_config.pad_view.itself);
-        mvprintw(ch, 7, 0);
         switch (ch)
         {
         case KEY_RESIZE:

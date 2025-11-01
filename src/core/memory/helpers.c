@@ -1,34 +1,38 @@
 #include "core/memory/helpers.h"
-void build_loadbar(int fill, int bar_width, int y, int x)
+void build_loadbar(WINDOW *window, int fill, int bar_width, int y, int x)
 {
-    mvaddch(y, x, '[');
+    mvwaddch(window, y, x, '[');
+    int x_position = x;
     for (int i = 0; i < bar_width; i++)
     {
+        x_position = x + i + 1;
         if (i < fill)
         {
             if (i >= bar_width * .6)
             {
-                attr_on(COLOR_PAIR(3), NULL); // red
-                addch('|');
-                attr_off(COLOR_PAIR(3), NULL);
+                wattr_on(window, COLOR_PAIR(3), NULL); // red
+                mvwaddch(window, y, x_position, '|');
+                wattr_off(window, COLOR_PAIR(3), NULL);
             }
             else if (i >= bar_width * .3)
             {
-                attr_on(COLOR_PAIR(2), NULL); // yellow
-                addch('|');
-                attr_off(COLOR_PAIR(2), NULL);
+                wattr_on(window, COLOR_PAIR(2), NULL); // yellow
+                mvwaddch(window, y, x_position, '|');
+
+                wattr_off(window, COLOR_PAIR(2), NULL);
             }
             else
             {
-                attr_on(COLOR_PAIR(1), NULL); // green
-                addch('|');
-                attr_off(COLOR_PAIR(1), NULL);
+                wattr_on(window, COLOR_PAIR(1), NULL); // green
+                mvwaddch(window, y, x_position, '|');
+                wattr_off(window, COLOR_PAIR(1), NULL);
             }
         }
         else
         {
-            addch(' ');
+            // empty
+            mvwaddch(window, y, x_position, ' ');
         };
     }
-    addch(']');
+    mvwaddch(window, y, x_position, ']');
 }

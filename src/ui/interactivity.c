@@ -17,9 +17,9 @@ void *interactivity_routine(void *data)
     AppContext *ctx = (AppContext *)data;
     while (ctx->running)
     {
-        int ch = getch();
         pthread_mutex_lock(&ctx->mutex);
-
+        int ch = wgetch(ctx->pad_config.pad_view.itself);
+        mvprintw(ch, 7, 0);
         switch (ch)
         {
         case KEY_RESIZE:
@@ -128,9 +128,8 @@ void *interactivity_routine(void *data)
             handle_manual_process_selection(ctx);
             break;
         }
-
         pthread_mutex_unlock(&ctx->mutex);
-        sleep(.5);
+        usleep(50000);
     }
 cleanup:
     cleanup_context(ctx);

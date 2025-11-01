@@ -1,28 +1,11 @@
 #ifndef CONTEXT_STRUCTS
 #define CONTEXT_STRUCTS
-#include <ncurses.h>
 #include <pthread.h>
 #include <panel.h>
+#include "ui_structs.h"
 #include "core/cpu/index.h"
-#include "core/processes/index.h"
-#include "core/memory/index.h"
-
-// UI Block
-typedef struct
-{
-    WINDOW *itself;
-    unsigned height, width, x, y;
-    bool hidden;
-} Window;
-typedef struct
-{
-    /*
-        -This is where large content is put
-        -It must have a regular window that acts as a viewing frame
-    */
-    WINDOW *itself;
-    unsigned height, width, y, x;
-} VirtualPad;
+#include "core/processes/structs.h"
+#include "core/memory/structs.h"
 
 // Sort menu
 typedef struct
@@ -49,18 +32,7 @@ typedef struct
 
 // UI BLOCKS
 //  Memory
-typedef struct
-{
-    MemoryData *data;
-    Window *window;
-} MemoryBlock;
 // Cpu
-typedef struct
-{
-    StaticCpuData *static_data;
-    DynamicCpuData *dynamic_data;
-    Window *window;
-} CpuBlock;
 
 // Processes
 typedef struct

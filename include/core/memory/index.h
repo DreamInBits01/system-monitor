@@ -7,8 +7,7 @@
 #include <ncurses.h>
 #include "structs.h"
 #include "helpers.h"
-
+#include "context/structs.h"
 void read_memory_data(MemoryData *memory_data);
-void show_memory_data(MemoryData *memory_data, int bar_width);
-void build_loadbar(int fill, int bar_width, int y, int x);
+void show_memory_data(MemoryBlock *memory_block);
 #endif

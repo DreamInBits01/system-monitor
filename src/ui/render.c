@@ -5,9 +5,6 @@ void redraw_screen(AppContext *ctx)
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     clear();
 
-    // memory Data
-    read_memory_data(ctx->memory_block->data);
-    show_memory_data(ctx->memory_block->data, ctx->bar_width);
     // cpu Data
     read_static_cpu_data(ctx->static_cpu_data);
     show_static_cpu_data(ctx->static_cpu_data, ctx->max_cols);
@@ -17,14 +14,15 @@ void redraw_screen(AppContext *ctx)
     // processes Data
     read_processes(&ctx->processes, &ctx->processes_count);
     attron(A_BOLD);
-    mvprintw(6, 0, "Processes count:%d", ctx->processes_count);
-    mvprintw(6, 25, "Scrolled:%.0f%%", (float)ctx->pad_config.y / (ctx->processes_count - 1) * 100);
+    mvprintw(8, 0, "Processes count:%d", ctx->processes_count);
+    mvprintw(8, 25, "Scrolled:%.0f%%", (float)ctx->pad_config.y / (ctx->processes_count - 1) * 100);
     if (ctx->pad_config.selected_process != NULL)
     {
-        mvprintw(6, 45, "Selected process:%d, y:%d", ctx->pad_config.selected_process->pid, ctx->pad_config.y);
+        mvprintw(8, 45, "Selected process:%d, y:%d", ctx->pad_config.selected_process->pid, ctx->pad_config.y);
     }
     attroff(A_BOLD);
     refresh();
+
     werase(ctx->pad_config.itself);
     show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
     // make sure that there are no gaps between processes in the y
@@ -38,6 +36,10 @@ void redraw_screen(AppContext *ctx)
     {
         refresh_pad(&ctx->pad_config, ctx->processes_count);
     }
+    // memory Data
+    // showing it here temporarily because it has its own window and refreshing the stdscr deletes that
+    read_memory_data(ctx->memory_block->data);
+    show_memory_data(ctx->memory_block);
 }
 void *render_routine(void *data)
 {

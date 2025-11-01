@@ -1,5 +1,6 @@
 #ifndef MEMORY_STRUCTS
 #define MEMORY_STRUCTS
+#include "ui_structs.h"
 typedef struct
 {
     unsigned buffers; // kb
@@ -7,6 +8,13 @@ typedef struct
     float free;       // gb
     float total;      // gb
 } MemoryData;
+typedef struct
+{
+    MemoryData *data;
+    Window *window;
+    int bar_width;
+} MemoryBlock;
+
 // typedef struct
 // {
 //     unsigned buffers; // kb

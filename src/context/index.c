@@ -60,7 +60,7 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     memset(ctx->memory_block, 0, sizeof(MemoryBlock));
-    ctx->memory_block->window = NULL;
+    ctx->memory_block->window = newwin(ctx->max_rows * .2, ctx->max_cols * .45, 0, 0);
     ctx->memory_block->data = malloc(sizeof(MemoryData));
     if (ctx->memory_block->data == NULL)
     {
@@ -68,7 +68,7 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     memset(ctx->memory_block->data, 0, sizeof(MemoryData));
-    ctx->bar_width = ctx->max_cols / 4;
+    ctx->memory_block->bar_width = ctx->max_cols / 4;
     // Cpu config
     ctx->dynamic_cpu_data = malloc(sizeof(DynamicCpuData));
     if (ctx->dynamic_cpu_data == NULL)
@@ -90,19 +90,21 @@ void initialize_context(AppContext *ctx)
     ctx->pad_config.width = 200;
     ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
     ctx->pad_config.y = 0;
+    ctx->pad_config.x = 0;
     // Pad view config
     ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
     ctx->pad_config.pad_view.width = ctx->max_cols;
-    ctx->pad_config.pad_view.y = 8;
+    ctx->pad_config.pad_view.y = 10;
     ctx->pad_config.pad_view.x = 0;
     ctx->pad_config.pad_view.itself = newwin(
         ctx->pad_config.pad_view.height,
         ctx->pad_config.pad_view.width,
         ctx->pad_config.pad_view.y,
         ctx->pad_config.pad_view.x);
+    keypad(ctx->pad_config.pad_view.itself, TRUE);
+    nodelay(ctx->pad_config.pad_view.itself, TRUE);
     box(ctx->pad_config.pad_view.itself, 0, 0);
     wrefresh(ctx->pad_config.pad_view.itself);
-
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
     box(ctx->sort_menu.window, 0, 0);
@@ -113,7 +115,4 @@ void initialize_context(AppContext *ctx)
     // ctx mutex
     ctx->running = 1;
     pthread_mutex_init(&ctx->mutex, NULL);
-    // Rendering the pad
-    // box(ctx->pad_config.pad_view.itself, 0, 0);
-    // wrefresh(ctx->pad_config.pad_view.itself);
 }

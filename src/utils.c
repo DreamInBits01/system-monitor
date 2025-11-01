@@ -14,10 +14,10 @@ void update_interactivity_metadata(PadConfig *pad_config, int processes_count)
     move(6, 25);
     clrtoeol();
     attron(A_BOLD);
-    mvprintw(6, 25, "Scrolled:%.0f%%", (float)pad_config->y / (processes_count - 1) * 100);
+    mvprintw(8, 25, "Scrolled:%.0f%%", (float)pad_config->y / (processes_count - 1) * 100);
     if (pad_config->selected_process != NULL)
     {
-        mvprintw(6, 45, "Selected process:%d, y:%d", pad_config->selected_process->pid, pad_config->y);
+        mvprintw(8, 45, "Selected process:%d, y:%d", pad_config->selected_process->pid, pad_config->y);
     }
     attroff(A_BOLD);
     refresh();
@@ -49,6 +49,8 @@ void refresh_pad(PadConfig *pad_config, unsigned processes_count)
              pad_config->pad_view.x,
              pad_config->pad_view.y + pad_config->pad_view.height - 1,
              pad_config->pad_view.x + pad_config->pad_view.width - 1);
+    // box(pad_config->pad_view.itself, 0, 0);
+    // wrefresh(pad_config->pad_view.itself);
 }
 void handle_manual_process_selection(AppContext *ctx)
 {
@@ -64,7 +66,9 @@ void handle_manual_process_selection(AppContext *ctx)
     {
         ctx->pad_config.y = ctx->pad_config.selected_process_y;
         highlight_process(&ctx->pad_config);
-        refresh_pad(&ctx->pad_config, ctx->processes_count);
         update_interactivity_metadata(&ctx->pad_config, ctx->processes_count);
+
+        // refresh
+        refresh_pad(&ctx->pad_config, ctx->processes_count);
     }
 }

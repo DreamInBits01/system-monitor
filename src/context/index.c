@@ -19,6 +19,7 @@ void cleanup_context(AppContext *ctx)
         {
             free(ctx->memory_block->data);
         };
+        delwin(ctx->memory_block->window);
         free(ctx->memory_block);
     }
     // cpu

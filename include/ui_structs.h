@@ -12,7 +12,7 @@ typedef struct
 {
     /*
         -This is where large content is put
-        -It must have a regular window that acts as a viewing frame
+        -It must be grouped with a regular window that acts as a viewing frame
     */
     WINDOW *itself;
     unsigned height, width, y, x;

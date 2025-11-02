@@ -30,26 +30,18 @@ typedef struct
     unsigned height, width, x, y;
 } PadConfig;
 
-// UI BLOCKS
-//  Memory
-// Cpu
-
-// Processes
-typedef struct
-{
-    Window *window;
-    VirtualPad *virtual_pad;
-
-    // data
-    YToPid *y_to_pid;
-    Process *processes;
-    Process *selected_process;
-    int selected_process_y;
-    bool get_process_faild;
-} ProcessesBlock;
+/*
+UI BLOCKS
+-there's a block for each part of the task manager
+-each block has a window and data
+-data could be static or dynamic or just data
+-each block can have a selected item in the window to perform any desired action upon
+*/
 typedef struct
 {
     MemoryBlock *memory_block;
+    // CPUBlock *cpu_block;
+    // ProcessesBlock *processes_block;
     DynamicCpuData *dynamic_cpu_data;
     StaticCpuData *static_cpu_data;
     char **files;

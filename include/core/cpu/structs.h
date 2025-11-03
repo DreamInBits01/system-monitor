@@ -15,6 +15,6 @@ typedef struct
 {
     StaticCpuData *static_data;
     DynamicCpuData *dynamic_data;
-    Window *window;
+    Window window;
 } CPUBlock;
 #endif

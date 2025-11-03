@@ -176,9 +176,14 @@ void read_process_stat(char *ep_name, Process *process)
     if (process_stat_file == NULL)
         return;
 
-    read_process_location(ep_name, &process->exe_path);
-
-    read_process_name(process_stat_file, &process->name);
+    if (process->exe_path == NULL)
+    {
+        read_process_location(ep_name, &process->exe_path);
+    }
+    if (process->name == NULL)
+    {
+        read_process_name(process_stat_file, &process->name);
+    }
 
     read_process_cpu_usage(process_stat_file, process);
     // reset

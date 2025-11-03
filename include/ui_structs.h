@@ -15,6 +15,6 @@ typedef struct
         -It must be grouped with a regular window that acts as a viewing frame
     */
     WINDOW *itself;
-    unsigned height, width, y, x;
+    unsigned height, width, y, x, viewport_top, viewport_bottom;
 } VirtualPad;
 #endif

@@ -50,7 +50,7 @@ void refresh_pad(PadConfig *pad_config, unsigned processes_count)
              pad_config->pad_view.y + pad_config->pad_view.height - 1,
              pad_config->pad_view.x + pad_config->pad_view.width - 1);
     // box(pad_config->pad_view.itself, 0, 0);
-    // wrefresh(pad_config->pad_view.itself);
+    wrefresh(pad_config->pad_view.itself);
 }
 void handle_manual_process_selection(AppContext *ctx)
 {
@@ -70,5 +70,24 @@ void handle_manual_process_selection(AppContext *ctx)
 
         // refresh
         refresh_pad(&ctx->pad_config, ctx->processes_count);
+
+        // visible elements are in the range of pad view height
+        // create a viewport_top (cursor position, starts at 0), viewport_bottom (viewtop+pad_view.height)
+        // if y is outside of the boundary, refresh update viewport to show the new y and refresh
+
+        // if (ctx->pad_config.y % ctx->pad_config.pad_view.height + 1 == 0)
+        // {
+        //     refresh_pad(&ctx->pad_config, ctx->processes_count);
+        // }
+        // else
+        // {
+        //     prefresh(ctx->pad_config.itself,
+        //              ctx->pad_config.y - (ctx->pad_config.y % ctx->pad_config.pad_view.height), // Keep current viewport start
+        //              ctx->pad_config.x,
+        //              ctx->pad_config.pad_view.y,
+        //              ctx->pad_config.pad_view.x,
+        //              ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1,
+        //              ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1);
+        // }
     }
 }

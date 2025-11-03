@@ -175,8 +175,11 @@ void read_process_stat(char *ep_name, Process *process)
     FILE *process_stat_file = fopen(stat_path, "r");
     if (process_stat_file == NULL)
         return;
+
     read_process_location(ep_name, &process->exe_path);
+
     read_process_name(process_stat_file, &process->name);
+
     read_process_cpu_usage(process_stat_file, process);
     // reset
     free(stat_path);

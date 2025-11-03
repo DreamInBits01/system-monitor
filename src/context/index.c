@@ -19,7 +19,7 @@ void cleanup_context(AppContext *ctx)
         {
             free(ctx->memory_block->data);
         };
-        delwin(ctx->memory_block->window);
+        delwin(ctx->memory_block->window.itself);
         free(ctx->memory_block);
     }
     // cpu
@@ -61,7 +61,9 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     memset(ctx->memory_block, 0, sizeof(MemoryBlock));
-    ctx->memory_block->window = newwin(ctx->max_rows * .2, ctx->max_cols * .45, 0, 0);
+    ctx->memory_block->window.height = ctx->max_rows * .2;
+    ctx->memory_block->window.width = ctx->max_cols * .45;
+    ctx->memory_block->window.itself = newwin(ctx->memory_block->window.height, ctx->memory_block->window.width, 0, 0);
     ctx->memory_block->data = malloc(sizeof(MemoryData));
     if (ctx->memory_block->data == NULL)
     {

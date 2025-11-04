@@ -6,10 +6,10 @@ void redraw_screen(AppContext *ctx)
     clear();
     // read data
     // memory
-    read_memory_data(ctx->memory_block->data);
+    read_memory_data(&ctx->memory_block->data);
     //  cpu
-    read_static_cpu_data(ctx->static_cpu_data);
-    read_dynamic_cpu_data(ctx->dynamic_cpu_data);
+    read_static_cpu_data(&ctx->cpu_block->static_data);
+    read_dynamic_cpu_data(&ctx->cpu_block->dynamic_data);
     // processes
     read_processes(&ctx->processes, &ctx->processes_count);
     // show interactivity metadata
@@ -39,8 +39,8 @@ void redraw_screen(AppContext *ctx)
     // show data
     // showing it here temporarily because it has its own window and refreshing the stdscr deletes that
     show_memory_data(ctx->memory_block);
-    show_static_cpu_data(ctx->static_cpu_data, ctx->max_cols);
-    show_dynamic_cpu_data(ctx->dynamic_cpu_data, ctx->max_cols);
+    show_static_cpu_data(ctx->cpu_block, ctx->max_cols);
+    show_dynamic_cpu_data(ctx->cpu_block, ctx->max_cols);
 }
 void *render_routine(void *data)
 {

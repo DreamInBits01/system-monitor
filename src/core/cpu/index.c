@@ -1,6 +1,6 @@
 #include "core/cpu/index.h"
 
-void read_dynamic_cpu_data(DynamicCpuData *dynamic_cpu_data)
+void read_dynamic_cpu_data(DynamicCpuData *data)
 {
     FILE *cpu_data_file = fopen("/proc/cpuinfo", "r");
     if (cpu_data_file == NULL)
@@ -26,16 +26,17 @@ void read_dynamic_cpu_data(DynamicCpuData *dynamic_cpu_data)
     if (mhz_occurrence > 0)
     {
         float avg_mhz = (float)total_mhz / mhz_occurrence;
-        dynamic_cpu_data->avg_mhz = avg_mhz;
+        data->avg_mhz = avg_mhz;
     }
     fclose(cpu_data_file);
 }
-void show_dynamic_cpu_data(DynamicCpuData *dynamic_cpu_data, int max_cols)
+void show_dynamic_cpu_data(CPUBlock *data, int max_cols)
 {
-    int x = max_cols / 2;
-    mvprintw(3, x, "Avg Mhz:%.2f", dynamic_cpu_data->avg_mhz);
+    mvwprintw(data->window.itself, 4, 1, "Avg Mhz:%.2f", data->dynamic_data.avg_mhz);
+    box(data->window.itself, 0, 0);
+    wrefresh(data->window.itself);
 }
-void read_static_cpu_data(StaticCpuData *static_cpu_data)
+void read_static_cpu_data(StaticCpuData *data)
 {
     FILE *cpu_data_file = fopen("/proc/cpuinfo", "r");
     if (cpu_data_file == NULL)
@@ -44,31 +45,32 @@ void read_static_cpu_data(StaticCpuData *static_cpu_data)
         exit(1);
     }
     char line[256];
-    static_cpu_data->logical_cpus = 0;
+    data->logical_cpus = 0;
     while (fgets(line, sizeof(line), cpu_data_file))
     {
         // logical CPUs
         if (strncmp("processor", line, 9) == 0)
         {
-            static_cpu_data->logical_cpus++;
+            data->logical_cpus++;
         }
         // model name
-        if (strncmp("model name", line, 10) == 0 && strlen(static_cpu_data->model_name) == 0)
+        if (strncmp("model name", line, 10) == 0 && strlen(data->model_name) == 0)
         {
-            strncpy(static_cpu_data->model_name, line + 13, 128);
+            strncpy(data->model_name, line + 13, 128);
         }
         // pyhsical cores
-        if (strncmp("cpu cores", line, 9) == 0 && static_cpu_data->physical_cores == 0)
+        if (strncmp("cpu cores", line, 9) == 0 && data->physical_cores == 0)
         {
-            static_cpu_data->physical_cores = atoi(line + 12);
+            data->physical_cores = atoi(line + 12);
         }
     };
     fclose(cpu_data_file);
 }
-void show_static_cpu_data(StaticCpuData *static_cpu_data, int max_cols)
+void show_static_cpu_data(CPUBlock *data, int max_cols)
 {
-    int x = max_cols / 2;
-    mvprintw(0, x, "Model name: %s", static_cpu_data->model_name);
-    mvprintw(1, x, "Logical CPUs: %d", static_cpu_data->logical_cpus);
-    mvprintw(2, x, "Pyhiscal cores: %d", static_cpu_data->physical_cores);
+    mvwprintw(data->window.itself, 1, 1, "Model name: %s", data->static_data.model_name);
+    mvwprintw(data->window.itself, 2, 1, "Logical CPUs: %d", data->static_data.logical_cpus);
+    mvwprintw(data->window.itself, 3, 1, "Pyhiscal cores: %d", data->static_data.physical_cores);
+    box(data->window.itself, 0, 0);
+    wrefresh(data->window.itself);
 }

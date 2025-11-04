@@ -8,6 +8,6 @@
 #include "structs.h"
 #include "helpers.h"
 #include "context/structs.h"
-void read_memory_data(MemoryData *memory_data);
-void show_memory_data(MemoryBlock *memory_block);
+void read_memory_data(MemoryData *data);
+void show_memory_data(MemoryBlock *data);
 #endif

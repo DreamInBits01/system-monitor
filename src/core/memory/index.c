@@ -35,12 +35,12 @@ void read_memory_data(MemoryData *data)
 }
 void show_memory_data(MemoryBlock *memory_block)
 {
-    double used_percent = (memory_block->data->total - memory_block->data->free) / memory_block->data->total * 100;
+    double used_percent = (memory_block->data.total - memory_block->data.free) / memory_block->data.total * 100;
     // get a fraction and multiply it by the width
     int memory_bar_fill = used_percent / 100 * memory_block->bar_width;
-    mvwprintw(memory_block->window.itself, 1, 1, "Memory total: %.2fgb", memory_block->data->total);
-    mvwprintw(memory_block->window.itself, 2, 1, "Memory free: %.2fgb", memory_block->data->free);
-    mvwprintw(memory_block->window.itself, 3, 1, "Buffers: %dkb", memory_block->data->buffers);
+    mvwprintw(memory_block->window.itself, 1, 1, "Memory total: %.2fgb", memory_block->data.total);
+    mvwprintw(memory_block->window.itself, 2, 1, "Memory free: %.2fgb", memory_block->data.free);
+    mvwprintw(memory_block->window.itself, 3, 1, "Buffers: %dkb", memory_block->data.buffers);
     mvwprintw(memory_block->window.itself, 4, 1, "Used memory:%.2f%%", used_percent);
     build_loadbar(memory_block->window.itself, memory_bar_fill, memory_block->bar_width, 5, 1);
     box(memory_block->window.itself, 0, 0);

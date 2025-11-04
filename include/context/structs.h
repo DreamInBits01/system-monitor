@@ -40,10 +40,10 @@ UI BLOCKS
 typedef struct
 {
     MemoryBlock *memory_block;
-    // CPUBlock *cpu_block;
+    CPUBlock *cpu_block;
     // ProcessesBlock *processes_block;
-    DynamicCpuData *dynamic_cpu_data;
-    StaticCpuData *static_cpu_data;
+    // DynamicCpuData *dynamic_cpu_data;
+    // StaticCpuData *static_cpu_data;
     char **files;
     Process *processes;
     YToPid *y_to_pid;

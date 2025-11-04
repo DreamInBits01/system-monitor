@@ -10,7 +10,7 @@ typedef struct
 } MemoryData;
 typedef struct
 {
-    MemoryData *data;
+    MemoryData data;
     Window window;
     int bar_width;
 } MemoryBlock;

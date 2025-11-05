@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include "structs.h"
 void read_dynamic_cpu_data(DynamicCpuData *data);
-void show_dynamic_cpu_data(CPUBlock *data, int max_cols);
+void show_dynamic_cpu_data(CPUBlock *data);
 void read_static_cpu_data(StaticCpuData *data);
-void show_static_cpu_data(CPUBlock *data, int max_cols);
+void show_static_cpu_data(CPUBlock *data);
+void update_cpu_block(CPUBlock *data);
 #endif

@@ -33,16 +33,21 @@ void read_memory_data(MemoryData *data)
     };
     fclose(memory_data_file);
 }
-void show_memory_data(MemoryBlock *memory_block)
+void show_memory_data(MemoryBlock *data)
 {
-    double used_percent = (memory_block->data.total - memory_block->data.free) / memory_block->data.total * 100;
+    double used_percent = (data->data.total - data->data.free) / data->data.total * 100;
     // get a fraction and multiply it by the width
-    int memory_bar_fill = used_percent / 100 * memory_block->bar_width;
-    mvwprintw(memory_block->window.itself, 1, 1, "Memory total: %.2fgb", memory_block->data.total);
-    mvwprintw(memory_block->window.itself, 2, 1, "Memory free: %.2fgb", memory_block->data.free);
-    mvwprintw(memory_block->window.itself, 3, 1, "Buffers: %dkb", memory_block->data.buffers);
-    mvwprintw(memory_block->window.itself, 4, 1, "Used memory:%.2f%%", used_percent);
-    build_loadbar(memory_block->window.itself, memory_bar_fill, memory_block->bar_width, 5, 1);
-    box(memory_block->window.itself, 0, 0);
-    wrefresh(memory_block->window.itself);
+    int memory_bar_fill = used_percent / 100 * data->bar_width;
+    mvwprintw(data->window.itself, 1, 1, "Memory total: %.2fgb", data->data.total);
+    mvwprintw(data->window.itself, 2, 1, "Memory free: %.2fgb", data->data.free);
+    mvwprintw(data->window.itself, 3, 1, "Buffers: %dkb", data->data.buffers);
+    mvwprintw(data->window.itself, 4, 1, "Used memory:%.2f%%", used_percent);
+    build_loadbar(data->window.itself, memory_bar_fill, data->bar_width, 5, 1);
+    wattron(data->window.itself, COLOR_PAIR(4));
+    box(data->window.itself, 0, 0);
+    wattroff(data->window.itself, COLOR_PAIR(4));
+    wattron(data->window.itself, A_BOLD);
+    mvwaddstr(data->window.itself, 0, 2, "Memory");
+    wattroff(data->window.itself, A_BOLD);
+    wrefresh(data->window.itself);
 }

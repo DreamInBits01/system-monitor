@@ -1,5 +1,4 @@
 #include "ui/render.h"
-
 void redraw_screen(AppContext *ctx)
 {
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
@@ -14,10 +13,7 @@ void redraw_screen(AppContext *ctx)
     read_dynamic_cpu_data(&ctx->cpu_block->dynamic_data);
     // processes
     read_processes(&ctx->processes_block->processes, &ctx->processes_count);
-    wattron(ctx->processes_block->window.itself, A_BOLD);
-    mvwprintw(ctx->processes_block->window.itself, 1, 2, "Processes count:%d", ctx->processes_count);
-    mvwprintw(ctx->processes_block->window.itself, 1, 25, "Scrolled:%.0f%%", (float)ctx->processes_block->virtual_pad.y / (ctx->processes_count - 1) * 100);
-    wattron(ctx->processes_block->window.itself, A_BOLD);
+    mvwprintw(ctx->processes_block->window.itself, 1, 2, "Count:%d", ctx->processes_count);
     werase(ctx->processes_block->virtual_pad.itself);
     show_processes(
         &ctx->processes_block->processes,
@@ -42,8 +38,9 @@ void redraw_screen(AppContext *ctx)
     // show data
     // showing it here temporarily because it has its own window and refreshing the stdscr deletes that
     show_memory_data(ctx->memory_block);
-    show_static_cpu_data(ctx->cpu_block, ctx->max_cols);
-    show_dynamic_cpu_data(ctx->cpu_block, ctx->max_cols);
+    // show_static_cpu_data(ctx->cpu_block);
+    // show_dynamic_cpu_data(ctx->cpu_block);
+    update_cpu_block(ctx->cpu_block);
 }
 void *render_routine(void *data)
 {

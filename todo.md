@@ -7,5 +7,7 @@
   create sub functions to read different stats,
   feed sub functions the fd of the opened process to reduce overhead
 
-- Create a block for each part of the ui (memory, cpu, processes)
+- Create a block for each part of the ui (memory, cpu, processes): DONE
 - Create an initialization function for each ui block
+- Create a function to handle render when having static and dynamic data
+  -cpu

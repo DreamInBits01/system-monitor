@@ -11,16 +11,8 @@ void show_process_information(Process *process, WINDOW *virtual_pad, int y)
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {
-    move(6, 25);
-    clrtoeol();
-    attron(A_BOLD);
-    mvprintw(8, 25, "Scrolled:%.0f%%", (float)data->virtual_pad.y / (processes_count - 1) * 100);
-    if (data->selected_process != NULL)
-    {
-        mvprintw(8, 45, "Selected process:%d, y:%d", data->selected_process->pid, data->virtual_pad.y);
-    }
-    attroff(A_BOLD);
-    refresh();
+    mvwprintw(data->window.itself, 1, 2, "Count:%d", processes_count);
+    mvwprintw(data->window.itself, 1, 25, "Scrolled:%.0f%%", (float)data->virtual_pad.y / (processes_count - 1) * 100);
 }
 void remove_process_highlight(ProcessesBlock *data)
 {
@@ -46,7 +38,13 @@ void refresh_pad(ProcessesBlock *data, unsigned processes_count)
     {
         data->virtual_pad.y = processes_count - 1;
     }
-    box(data->window.itself, '|', '-');
+    wattron(data->window.itself, COLOR_PAIR(4));
+    box(data->window.itself, 0, 0);
+    wattroff(data->window.itself, COLOR_PAIR(4));
+    // add it after boxing
+    wattron(data->window.itself, A_BOLD);
+    mvwaddstr(data->window.itself, 0, 2, "Processes");
+    wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
     prefresh(data->virtual_pad.itself,
              data->virtual_pad.y, data->virtual_pad.x,
@@ -70,7 +68,7 @@ void handle_manual_process_selection(AppContext *ctx)
     {
         ctx->processes_block->virtual_pad.y = ctx->processes_block->selected_process_y;
         highlight_process(ctx->processes_block);
-        // update_interactivity_metadata(ctx->processes_block, ctx->processes_count);
+        mvwprintw(ctx->processes_block->window.itself, 1, 15, "Scrolled:%.0f%%", (float)ctx->processes_block->virtual_pad.y / (ctx->processes_count - 1) * 100);
 
         // refresh
         refresh_pad(ctx->processes_block, ctx->processes_count);

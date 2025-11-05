@@ -30,11 +30,9 @@ void read_dynamic_cpu_data(DynamicCpuData *data)
     }
     fclose(cpu_data_file);
 }
-void show_dynamic_cpu_data(CPUBlock *data, int max_cols)
+void show_dynamic_cpu_data(CPUBlock *data)
 {
     mvwprintw(data->window.itself, 4, 1, "Avg Mhz:%.2f", data->dynamic_data.avg_mhz);
-    box(data->window.itself, 0, 0);
-    wrefresh(data->window.itself);
 }
 void read_static_cpu_data(StaticCpuData *data)
 {
@@ -66,11 +64,21 @@ void read_static_cpu_data(StaticCpuData *data)
     };
     fclose(cpu_data_file);
 }
-void show_static_cpu_data(CPUBlock *data, int max_cols)
+void show_static_cpu_data(CPUBlock *data)
 {
     mvwprintw(data->window.itself, 1, 1, "Model name: %s", data->static_data.model_name);
     mvwprintw(data->window.itself, 2, 1, "Logical CPUs: %d", data->static_data.logical_cpus);
     mvwprintw(data->window.itself, 3, 1, "Pyhiscal cores: %d", data->static_data.physical_cores);
+}
+void update_cpu_block(CPUBlock *data)
+{
+    show_static_cpu_data(data);
+    show_dynamic_cpu_data(data);
+    wattron(data->window.itself, COLOR_PAIR(4));
     box(data->window.itself, 0, 0);
+    wattroff(data->window.itself, COLOR_PAIR(4));
+    wattron(data->window.itself, A_BOLD);
+    mvwaddstr(data->window.itself, 0, 2, "CPU");
+    wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
 }

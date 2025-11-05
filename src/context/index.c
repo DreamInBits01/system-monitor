@@ -84,6 +84,7 @@ void initialize_context(AppContext *ctx)
         ctx->cpu_block->window.width,
         ctx->cpu_block->window.y,
         ctx->cpu_block->window.x);
+
     // Processes block
     ctx->processes_block = malloc(sizeof(ProcessesBlock));
     if (ctx->processes_block == NULL)

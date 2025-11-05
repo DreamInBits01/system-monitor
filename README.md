@@ -1,6 +1,6 @@
 # System Monitor
 
-A lightweight, real-time system monitoring tool written in pure C for Linux systems. Displays CPU usage, memory statistics, and process Datarmation in an interactive terminal interface.
+A terminal-based system monitoring tool written in C that provides real-time insights into system resources and processes.
 
 ![System Monitor Screenshot](screenshot.png)
 
@@ -8,173 +8,123 @@ A lightweight, real-time system monitoring tool written in pure C for Linux syst
 
 ## Features
 
-- **Real-time Process Monitoring**
+### 🖥️ Resource Monitoring
 
-  - View all running processes with PID, command, and CPU usage
+- **Memory Usage**
+
+  - Total and free memory display
+  - Memory usage percentage
+  - Visual memory usage bar
+  - Buffer information
+
+- **CPU Statistics**
+
+  - Real-time CPU usage
+  - Model information
+  - Core details
+  - Dynamic updates
+
+- **Process Management**
+  - Live process list
+  - Process navigation
+  - Process details (PID, name, status)
+  - Interactive process selection
+
+### 🎨 User Interface
+
+- **Multi-window Layout**
+
+  - Separate windows for different metrics
+  - Clean border separation
+  - Organized information display
+
+- **Interactive Features**
+  - Keyboard navigation
   - Scrollable process list
-  - Kill processes directly from the interface
-  - Sort processes by various metrics
+  - Window focus management
+  - Color-coded information
 
-- **System Metrics**
+### 🔧 Technical Features
 
-  - Total and available memory
-  - Buffer and cache Datarmation
-  - Memory usage percentage with visual indicator
-  - CPU Datarmation (model, cores, frequency)
-  - Process count
+- Multi-threaded architecture
+- Real-time updates
+- Thread-safe operations
+- ncurses-based UI
+- Efficient process monitoring
+- Linux system integration
 
-- **Performance Optimized**
-  - Efficient file descriptor management
-  - Minimal memory footprint
-  - Low CPU overhead
+## Architecture
 
-## Prerequisites
+### Components
 
-- Linux operating system
-- GCC compiler
-- Make build system
-- Access to `/proc` filesystem
+- **Core Modules**
+  - Memory monitoring
+  - CPU statistics
+  - Process management
+- **UI Components**
+
+  - Window management
+  - User input handling
+  - Display rendering
+
+- **Context Management**
+  - Thread synchronization
+  - State management
+  - Resource cleanup
 
 ## Building
 
+### Prerequisites
+
+- GCC compiler
+- ncurses library
+- Linux-based system
+- Make utility
+
+### Compilation
+
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/system-monitor.git
-cd system-monitor
-
-# Build the project
+make clean
 make
+```
 
-# Run
-./bin/system-monitor
+### Running
+
+```bash
+./bin/index
 ```
 
 ## Usage
 
-### Basic Controls
+### Navigation
 
-- **↑/↓ Arrow Keys**: Scroll through process list
-- **k**: Kill selected process
-- **s**: Sort processes (cycles through: CPU, Memory, PID, Name)
-- **q**: Quit application
+- Arrow keys: Navigate process list
+- Tab: Switch between windows
+- Q: Quit application
 
-### Command Line Options
+### Windows
 
-```bash
-./system-monitor [OPTIONS]
+- Memory information (top-left)
+- CPU statistics (top-right)
+- Process list (bottom)
 
-Options:
-  -r, --refresh <ms>    Set refresh rate in milliseconds (default: 1000)
-  -h, --help           Display this help message
-  -v, --version        Display version Datarmation
-```
+## Implementation Details
 
-## Project Structure
+The project uses:
 
-```
-system-monitor/
-├── include/
-│   ├── third_party/      # External dependencies
-│   ├── core/             # Core functionality
-│   │   └── processes/    # Process management module
-│   │       ├── structs.h
-│   │       ├── helpers.h
-│   │       └── index.h   # Public API
-│   ├── ui/               # User interface modules
-│   ├── context.h         # Application context
-│   └── utils.h           # Utility functions
-├── src/
-│   ├── core/
-│   │   └── processes/
-│   │       ├── helpers.c # Internal implementation
-│   │       └── index.c   # Public interface
-│   ├── ui/               # UI implementation
-│   ├── main.c            # Entry point
-│   ├── context.c         # Context management
-│   └── utils.c           # Utility implementations
-├── Makefile
-└── README.md
-```
+- ncurses for terminal UI
+- POSIX threads for concurrency
+- Linux proc filesystem for system data
+- uthash for hash table operations
 
-### Architecture
+## Acknowledgment
 
-This project follows a **feature-based modular architecture**:
-
-- Each feature (e.g., `processes/`) is self-contained in its own directory
-- **`index.h/c`**: Public API that other modules interact with
-- **`helpers.h/c`**: Internal implementation details
-- **`structs.h`**: Data structures (private to the module)
-
-This design provides clear module boundaries and prevents tight coupling between components.
-
-## Technical Details
-
-### Data Sources
-
-- **Process Datarmation**: `/proc/[pid]/stat`, `/proc/[pid]/status`
-- **Memory Statistics**: `/proc/memData`
-- **CPU Datarmation**: `/proc/cpuData`, `/proc/stat`
-
-### Performance Optimizations
-
-1. **File Descriptor Caching**: System-wide files like `/proc/memData` are opened once and reused
-2. **Efficient Parsing**: Custom parsers optimized for `/proc` filesystem format
-3. **Minimal Allocations**: Pre-allocated buffers where possible
-
-## Roadmap
-
-- [x] Basic process listing
-- [x] Memory statistics
-- [x] CPU Datarmation
-- [x] Process killing
-- [x] Sorting functionality
-- [x] Scrolling interface
-- [ ] Per-core CPU usage
-- [ ] CPU temperature monitoring
-- [ ] Additional memory metrics (swap, cached, shared)
-- [ ] Process tree view
-- [ ] Search/filter processes
-- [ ] Configuration file support
-- [ ] Color themes
-- [ ] Run Options
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+This project is for learning purposes, it is inspired by htop & btop
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Inspired by tools like `htop`, `top`, and `btop`
-- Built as a learning project to understand Linux systems programming
+[Your chosen license]
 
 ## Author
 
-**Your Name**
-
-- GitHub: [@dreamInBits01](https://github.com/DreamInBits01)
-- Email: mohammed.abdulaziz.business@gmail.com
-
-## FAQ
-
-**Q: Why C instead of a higher-level language?**  
-A: C provides direct access to system calls and `/proc` filesystem with minimal overhead, making it ideal for system monitoring tools.
-
-**Q: Does this work on macOS or Windows?**  
-A: No, this tool is Linux-specific as it relies on the `/proc` filesystem. However, similar implementations could be created for other platforms using their respective APIs.
-
-**Q: How does this compare to htop?**  
-A: This is a learning project and much simpler than htop. It focuses on core functionality and clean architecture rather than feature completeness.
-
----
-
-**Star ⭐ this repository if you find it helpful!**
+[Mohammed Abdulaziz]

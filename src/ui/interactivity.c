@@ -82,14 +82,14 @@ void *interactivity_routine(void *data)
             if (ctx->processes_block->virtual_pad.x < ctx->processes_block->virtual_pad.width)
             {
                 ctx->processes_block->virtual_pad.x += 2;
-                refresh_pad(&ctx->processes_block, ctx->processes_count);
+                refresh_pad(ctx->processes_block, ctx->processes_count);
             }
             break;
         case KEY_LEFT:
             if (ctx->processes_block->virtual_pad.x > 0)
             {
                 ctx->processes_block->virtual_pad.x -= 2;
-                refresh_pad(&ctx->processes_block, ctx->processes_count);
+                refresh_pad(ctx->processes_block, ctx->processes_count);
             }
             break;
         case KEY_UP:

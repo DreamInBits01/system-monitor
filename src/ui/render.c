@@ -4,6 +4,8 @@ void redraw_screen(AppContext *ctx)
 {
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     clear();
+    refresh();
+
     // read data
     // memory
     read_memory_data(&ctx->memory_block->data);
@@ -11,31 +13,32 @@ void redraw_screen(AppContext *ctx)
     read_static_cpu_data(&ctx->cpu_block->static_data);
     read_dynamic_cpu_data(&ctx->cpu_block->dynamic_data);
     // processes
-    read_processes(&ctx->processes, &ctx->processes_count);
-    // show interactivity metadata
-    attron(A_BOLD);
-    mvprintw(8, 0, "Processes count:%d", ctx->processes_count);
-    mvprintw(8, 25, "Scrolled:%.0f%%", (float)ctx->pad_config.y / (ctx->processes_count - 1) * 100);
-    if (ctx->pad_config.selected_process != NULL)
-    {
-        mvprintw(8, 45, "Selected process:%d, y:%d", ctx->pad_config.selected_process->pid, ctx->pad_config.y);
-    }
-    attroff(A_BOLD);
-    refresh();
-
-    werase(ctx->pad_config.itself);
-    show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
+    read_processes(&ctx->processes_block->processes, &ctx->processes_count);
+    wattron(ctx->processes_block->window.itself, A_BOLD);
+    mvwprintw(ctx->processes_block->window.itself, 1, 2, "Processes count:%d", ctx->processes_count);
+    mvwprintw(ctx->processes_block->window.itself, 1, 25, "Scrolled:%.0f%%", (float)ctx->processes_block->virtual_pad.y / (ctx->processes_count - 1) * 100);
+    wattron(ctx->processes_block->window.itself, A_BOLD);
+    werase(ctx->processes_block->virtual_pad.itself);
+    show_processes(
+        &ctx->processes_block->processes,
+        &ctx->processes_block->y_to_pid,
+        ctx->processes_block->virtual_pad.itself,
+        ctx->processes_block->virtual_pad.height,
+        ctx->processes_block->virtual_pad.y);
     // make sure that there are no gaps between processes in the y
-    if (ctx->pad_config.y >= ctx->processes_count)
+    if (ctx->processes_block->virtual_pad.y >= ctx->processes_count)
     {
         // only update real y if selection succeeded
-        ctx->pad_config.selected_process_y = ctx->processes_count - 1;
+        ctx->processes_block->selected_process_y = ctx->processes_count - 1;
         handle_manual_process_selection(ctx);
     }
     else
     {
-        refresh_pad(&ctx->pad_config, ctx->processes_count);
+        refresh_pad(ctx->processes_block, ctx->processes_count);
+        // box(ctx->processes_block->window.itself, 0, 0);
+        // wrefresh(ctx->processes_block->window.itself);
     }
+
     // show data
     // showing it here temporarily because it has its own window and refreshing the stdscr deletes that
     show_memory_data(ctx->memory_block);
@@ -59,13 +62,13 @@ void resize_screen(AppContext *ctx)
     // Pad view config
     getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
     clear();
-    ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
-    ctx->pad_config.pad_view.width = ctx->max_cols;
-    prefresh(ctx->pad_config.itself,
-             ctx->pad_config.y, ctx->pad_config.x,                             // Top-left corner of pad content to display (scroll position)
-             ctx->pad_config.pad_view.y,                                       // Top edge of screen area where pad appears
-             ctx->pad_config.pad_view.x,                                       // Left edge of screen area where pad appears
-             ctx->pad_config.pad_view.y + ctx->pad_config.pad_view.height - 1, // Bottom edge of screen area where pad appears
-             ctx->pad_config.pad_view.x + ctx->pad_config.pad_view.width - 1); // Right edge of screen area where pad appears
+    ctx->processes_block->virtual_pad.height = (int)(.7 * ctx->max_rows);
+    ctx->processes_block->virtual_pad.width = ctx->max_cols;
+    prefresh(ctx->processes_block->virtual_pad.itself,
+             ctx->processes_block->virtual_pad.y, ctx->processes_block->virtual_pad.x, // Top-left corner of pad content to display (scroll position)
+             ctx->processes_block->window.y + 3,                                       // Top edge of screen area where pad appears
+             ctx->processes_block->window.x + 2,                                       // Left edge of screen area where pad appears
+             ctx->processes_block->window.y + ctx->processes_block->window.height - 2, // Bottom edge of screen area where pad appears
+             ctx->processes_block->window.x + ctx->processes_block->window.width - 2); // Right edge of screen area where pad appears
     mvwin(ctx->sort_menu.window, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
 }

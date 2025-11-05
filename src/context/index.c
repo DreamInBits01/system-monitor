@@ -2,16 +2,22 @@
 void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
-    if (ctx->processes != NULL)
+    if (ctx->processes_block != NULL)
     {
-        cleanup_processes(&ctx->processes);
-        free(ctx->processes);
+        if (ctx->processes_block->processes != NULL)
+        {
+            cleanup_processes(&ctx->processes_block->processes);
+        }
+        if (ctx->processes_block->y_to_pid != NULL)
+        {
+            cleanup_y_to_pid(&ctx->processes_block->y_to_pid);
+            free(ctx->processes_block->y_to_pid);
+        }
+        delwin(ctx->processes_block->window.itself);
+        delwin(ctx->processes_block->virtual_pad.itself);
+        free(ctx->processes_block);
     }
-    if (ctx->y_to_pid != NULL)
-    {
-        cleanup_y_to_pid(&ctx->y_to_pid);
-        free(ctx->y_to_pid);
-    }
+
     // memory
     if (ctx->memory_block != NULL)
     {
@@ -25,8 +31,6 @@ void cleanup_context(AppContext *ctx)
         delwin(ctx->cpu_block->window.itself);
     };
     // pad view
-    delwin(ctx->pad_config.itself);
-    delwin(ctx->pad_config.pad_view.itself);
     // sort
     delwin(ctx->sort_menu.window);
     del_panel(ctx->sort_menu.panel);
@@ -43,8 +47,9 @@ void initialize_context(AppContext *ctx)
     // char files[5] = {"/proc/cpuData"};
     // ctx->files = files;
     // Processes config
-    ctx->y_to_pid = NULL;
-    ctx->processes = NULL;
+    // ctx->y_to_pid = NULL;
+    // ctx->processes = NULL;
+
     ctx->processes_count = 0;
     // Memory config
     ctx->memory_block = malloc(sizeof(MemoryBlock));
@@ -54,7 +59,7 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     memset(ctx->memory_block, 0, sizeof(MemoryBlock));
-    ctx->memory_block->window.height = ctx->max_rows * .2;
+    ctx->memory_block->window.height = ctx->max_rows * .25;
     ctx->memory_block->window.width = ctx->max_cols * .48;
     ctx->memory_block->window.itself = newwin(
         ctx->memory_block->window.height,
@@ -70,7 +75,7 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     memset(ctx->cpu_block, 0, sizeof(CPUBlock));
-    ctx->cpu_block->window.height = ctx->max_rows * .2;
+    ctx->cpu_block->window.height = ctx->max_rows * .25;
     ctx->cpu_block->window.width = ctx->max_cols * .48;
     ctx->cpu_block->window.x = (ctx->max_cols) / 2;
     ctx->cpu_block->window.y = 0;
@@ -79,41 +84,53 @@ void initialize_context(AppContext *ctx)
         ctx->cpu_block->window.width,
         ctx->cpu_block->window.y,
         ctx->cpu_block->window.x);
-    // ctx->dynamic_cpu_data = malloc(sizeof(DynamicCpuData));
-    // if (ctx->dynamic_cpu_data == NULL)
-    // {
-    //     cleanup_context(ctx);
-    //     exit(1);
-    // }
-    // memset(ctx->dynamic_cpu_data, 0, sizeof(DynamicCpuData));
-    // ctx->static_cpu_data = malloc(sizeof(StaticCpuData));
-    // if (ctx->static_cpu_data == NULL)
-    // {
-    //     cleanup_context(ctx);
-    //     exit(1);
-    // }
-    // memset(ctx->static_cpu_data, 0, sizeof(StaticCpuData));
+    // Processes block
+    ctx->processes_block = malloc(sizeof(ProcessesBlock));
+    if (ctx->processes_block == NULL)
+    {
+        cleanup_context(ctx);
+        exit(1);
+    }
+    ctx->processes_block->y_to_pid = NULL;
+    ctx->processes_block->processes = NULL;
+    // window
+    ctx->processes_block->window.height = (int)(.7 * ctx->max_rows);
+    ctx->processes_block->window.width = (int)(.55 * ctx->max_cols);
+    ctx->processes_block->window.y = (int)(ctx->max_rows * .28);
+    ctx->processes_block->window.x = 0;
+    ctx->processes_block->window.itself = newwin(
+        ctx->processes_block->window.height,
+        ctx->processes_block->window.width,
+        ctx->processes_block->window.y,
+        ctx->processes_block->window.x);
+    // virtual pad
+    ctx->processes_block->virtual_pad.height = 500;
+    ctx->processes_block->virtual_pad.width = 200;
+    ctx->processes_block->virtual_pad.itself = newpad(
+        ctx->processes_block->virtual_pad.height,
+        ctx->processes_block->virtual_pad.width);
 
     // Pad config
-    ctx->pad_config.height = 500;
-    ctx->pad_config.width = 200;
-    ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
-    ctx->pad_config.y = 0;
-    ctx->pad_config.x = 0;
+
+    // ctx->pad_config.height = 500;
+    // ctx->pad_config.width = 200;
+    // ctx->pad_config.itself = newpad(ctx->pad_config.height, ctx->pad_config.width);
+    // ctx->pad_config.y = 0;
+    // ctx->pad_config.x = 0;
     // Pad view config
-    ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
-    ctx->pad_config.pad_view.width = ctx->max_cols;
-    ctx->pad_config.pad_view.y = 10;
-    ctx->pad_config.pad_view.x = 0;
-    ctx->pad_config.pad_view.itself = newwin(
-        ctx->pad_config.pad_view.height,
-        ctx->pad_config.pad_view.width,
-        ctx->pad_config.pad_view.y,
-        ctx->pad_config.pad_view.x);
+    // ctx->pad_config.pad_view.height = (int)(.7 * ctx->max_rows);
+    // ctx->pad_config.pad_view.width = ctx->max_cols;
+    // ctx->pad_config.pad_view.y = 10;
+    // ctx->pad_config.pad_view.x = 0;
+    // ctx->pad_config.pad_view.itself = newwin(
+    //     ctx->pad_config.pad_view.height,
+    //     ctx->pad_config.pad_view.width,
+    //     ctx->pad_config.pad_view.y,
+    //     ctx->pad_config.pad_view.x);
     // keypad(ctx->pad_config.pad_view.itself, TRUE);
     // nodelay(ctx->pad_config.pad_view.itself, TRUE);
-    box(ctx->pad_config.pad_view.itself, 0, 0);
-    wrefresh(ctx->pad_config.pad_view.itself);
+    // box(ctx->pad_config.pad_view.itself, 0, 0);
+    // wrefresh(ctx->pad_config.pad_view.itself);
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
     box(ctx->sort_menu.window, 0, 0);

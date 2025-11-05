@@ -41,15 +41,15 @@ typedef struct
 {
     MemoryBlock *memory_block;
     CPUBlock *cpu_block;
-    // ProcessesBlock *processes_block;
+    ProcessesBlock *processes_block;
     // DynamicCpuData *dynamic_cpu_data;
     // StaticCpuData *static_cpu_data;
     char **files;
-    Process *processes;
-    YToPid *y_to_pid;
+    // Process *processes;
+    // YToPid *y_to_pid;
 
     pthread_mutex_t mutex;
-    PadConfig pad_config;
+    // PadConfig pad_config;
     SortMenu sort_menu;
     int max_rows;
     int max_cols;

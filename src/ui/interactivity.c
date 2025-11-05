@@ -30,11 +30,11 @@ void *interactivity_routine(void *data)
             goto cleanup;
             break;
         case KEY_F(2):
-            if (ctx->pad_config.selected_process == NULL)
+            if (ctx->processes_block->selected_process == NULL)
                 return NULL;
-            if (ctx->pad_config.selected_process->pid == 0)
+            if (ctx->processes_block->selected_process->pid == 0)
                 return NULL;
-            int kill_result = kill(ctx->pad_config.selected_process->pid, SIGKILL);
+            int kill_result = kill(ctx->processes_block->selected_process->pid, SIGKILL);
             if (kill_result == -1)
             {
                 perror("Kill faild!\n");
@@ -56,7 +56,7 @@ void *interactivity_routine(void *data)
                 // refresh_pad(&ctx->pad_config, ctx->processes_count);
             }
 
-            if (ctx->pad_config.selected_process->pid == getpid())
+            if (ctx->processes_block->selected_process->pid == getpid())
             {
                 goto cleanup;
             }
@@ -79,52 +79,52 @@ void *interactivity_routine(void *data)
             ctx->sort_menu.visible = !ctx->sort_menu.visible;
             break;
         case KEY_RIGHT:
-            if (ctx->pad_config.x < ctx->pad_config.width)
+            if (ctx->processes_block->virtual_pad.x < ctx->processes_block->virtual_pad.width)
             {
-                ctx->pad_config.x += 2;
-                refresh_pad(&ctx->pad_config, ctx->processes_count);
+                ctx->processes_block->virtual_pad.x += 2;
+                refresh_pad(&ctx->processes_block, ctx->processes_count);
             }
             break;
         case KEY_LEFT:
-            if (ctx->pad_config.x > 0)
+            if (ctx->processes_block->virtual_pad.x > 0)
             {
-                ctx->pad_config.x -= 2;
-                refresh_pad(&ctx->pad_config, ctx->processes_count);
+                ctx->processes_block->virtual_pad.x -= 2;
+                refresh_pad(&ctx->processes_block, ctx->processes_count);
             }
             break;
         case KEY_UP:
-            if (ctx->pad_config.y > 0 && ctx->sort_menu.visible == false)
+            if (ctx->processes_block->virtual_pad.y > 0 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
-                remove_process_highlight(&ctx->pad_config);
+                remove_process_highlight(ctx->processes_block);
                 // next process's y
-                ctx->pad_config.selected_process_y = ctx->pad_config.y - 1;
+                ctx->processes_block->selected_process_y = ctx->processes_block->virtual_pad.y - 1;
                 handle_manual_process_selection(ctx);
             }
             break;
         case KEY_DOWN:
-            if (ctx->pad_config.y < ctx->processes_count - 1 && ctx->sort_menu.visible == false)
+            if (ctx->processes_block->virtual_pad.y < ctx->processes_count - 1 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
-                remove_process_highlight(&ctx->pad_config);
+                remove_process_highlight(ctx->processes_block);
                 // next process's y
-                ctx->pad_config.selected_process_y = ctx->pad_config.y + 1;
+                ctx->processes_block->selected_process_y = ctx->processes_block->virtual_pad.y + 1;
                 handle_manual_process_selection(ctx);
             };
             break;
         case KEY_HOME:
             // remove highlighting
-            remove_process_highlight(&ctx->pad_config);
+            remove_process_highlight(ctx->processes_block);
             // next process's y
-            ctx->pad_config.selected_process_y = 0;
+            ctx->processes_block->selected_process_y = 0;
             handle_manual_process_selection(ctx);
 
             break;
         case KEY_END:
             // remove highlighting
-            remove_process_highlight(&ctx->pad_config);
+            remove_process_highlight(ctx->processes_block);
             // next process's y
-            ctx->pad_config.selected_process_y = ctx->processes_count - 1;
+            ctx->processes_block->selected_process_y = ctx->processes_count - 1;
             handle_manual_process_selection(ctx);
             break;
         }

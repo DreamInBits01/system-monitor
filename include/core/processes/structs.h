@@ -32,8 +32,8 @@ typedef struct
 } YToPid;
 typedef struct
 {
-    Window *window;
-    VirtualPad *virtual_pad;
+    Window window;
+    VirtualPad virtual_pad;
 
     // data
     YToPid *y_to_pid;

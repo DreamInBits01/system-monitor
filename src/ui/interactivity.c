@@ -129,7 +129,7 @@ void *interactivity_routine(void *data)
             break;
         }
         pthread_mutex_unlock(&ctx->mutex);
-        sleep(.4);
+        sleep(.6);
     }
 cleanup:
     cleanup_context(ctx);

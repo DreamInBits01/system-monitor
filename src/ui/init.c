@@ -29,6 +29,7 @@ void initialize_ncurses()
     slk_set(2, "Kill", 1);
     slk_set(3, "Sort", 1);
     slk_refresh();
+    refresh();
 }
 void cleanup_ncurses()
 {

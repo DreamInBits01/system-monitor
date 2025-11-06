@@ -1,7 +1,6 @@
 #ifndef CONTEXT_STRUCTS
 #define CONTEXT_STRUCTS
 #include <pthread.h>
-#include <panel.h>
 #include "ui_structs.h"
 #include "core/cpu/index.h"
 #include "core/processes/structs.h"

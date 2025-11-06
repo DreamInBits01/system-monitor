@@ -1,6 +1,8 @@
 #ifndef UI_STRUCTS
 #define UI_STRUCTS
 #include <ncurses.h>
+#include <panel.h>
+
 // UI Block
 typedef struct
 {

@@ -109,7 +109,7 @@ void read_process_cpu_usage(FILE *fd, Process *found_process)
             // calc the delta
             double cpu_delta = current_cpu_time - found_process->cpu_time;
             double uptime_delta = uptime - found_process->last_uptime;
-            if (uptime_delta > .5)
+            if (uptime_delta > .9)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
                 // divide by the total cores to get the overall percentage

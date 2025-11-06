@@ -8,28 +8,6 @@
 #include "core/memory/structs.h"
 
 // Sort menu
-typedef struct
-{
-    WINDOW *window;
-    PANEL *panel;
-    bool visible;
-} SortMenu;
-// Processes Pad
-typedef struct
-{
-    WINDOW *itself;
-    unsigned height, width, y, x;
-} PadView;
-typedef struct
-{
-    WINDOW *itself;
-    Process *selected_process;
-    PadView pad_view;
-    int selected_process_y;
-    bool get_process_faild;
-    unsigned height, width, x, y;
-} PadConfig;
-
 /*
 UI BLOCKS
 -there's a block for each part of the task manager

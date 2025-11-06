@@ -15,12 +15,15 @@ void redraw_screen(AppContext *ctx)
     read_processes(&ctx->processes_block->processes, &ctx->processes_count);
     mvwprintw(ctx->processes_block->window.itself, 1, 2, "Count:%d", ctx->processes_count);
     werase(ctx->processes_block->virtual_pad.itself);
-    show_processes(
-        &ctx->processes_block->processes,
-        &ctx->processes_block->y_to_pid,
-        ctx->processes_block->virtual_pad.itself,
-        ctx->processes_block->virtual_pad.height,
-        ctx->processes_block->virtual_pad.y);
+    // show_processes(
+    //     &ctx->processes_block->processes,
+    //     &ctx->processes_block->y_to_pid,
+    //     ctx->processes_block->virtual_pad.itself,
+    //     ctx->processes_block->virtual_pad.height,
+    //     ctx->processes_block->virtual_pad.y);
+
+    show_processes(ctx->processes_block);
+
     // make sure that there are no gaps between processes in the y
     if (ctx->processes_block->virtual_pad.y >= ctx->processes_count)
     {
@@ -31,15 +34,11 @@ void redraw_screen(AppContext *ctx)
     else
     {
         refresh_pad(ctx->processes_block, ctx->processes_count);
-        // box(ctx->processes_block->window.itself, 0, 0);
-        // wrefresh(ctx->processes_block->window.itself);
     }
 
     // show data
     // showing it here temporarily because it has its own window and refreshing the stdscr deletes that
     show_memory_data(ctx->memory_block);
-    // show_static_cpu_data(ctx->cpu_block);
-    // show_dynamic_cpu_data(ctx->cpu_block);
     update_cpu_block(ctx->cpu_block);
 }
 void *render_routine(void *data)

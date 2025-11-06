@@ -43,16 +43,16 @@ void read_processes(Process **processes, unsigned *count)
     *count = HASH_COUNT(*processes);
     closedir(directory);
 }
-void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigned pad_height, unsigned pad_y)
+void show_processes(ProcessesBlock *data)
 {
     unsigned line_height = 0;
-    Process *process = *processes;
-    mark_y_to_pid_unseen(y_to_pid);
-    while (line_height < pad_height && process != NULL)
+    Process *process = data->processes;
+    mark_y_to_pid_unseen(&data->y_to_pid);
+    while (line_height < data->virtual_pad.height && process != NULL)
     {
         // map y to process's pid in the y_to_pid
         YToPid *found_y_to_pid_entry;
-        HASH_FIND_INT(*y_to_pid, &line_height, found_y_to_pid_entry);
+        HASH_FIND_INT(data->y_to_pid, &line_height, found_y_to_pid_entry);
         if (found_y_to_pid_entry == NULL)
         {
             found_y_to_pid_entry = malloc(sizeof(YToPid));
@@ -60,7 +60,7 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
             found_y_to_pid_entry->pid = process->pid;
             found_y_to_pid_entry->y = line_height;
             found_y_to_pid_entry->seen = true;
-            HASH_ADD_INT(*y_to_pid, y, found_y_to_pid_entry);
+            HASH_ADD_INT(data->y_to_pid, y, found_y_to_pid_entry);
         }
         else
         {
@@ -68,21 +68,31 @@ void show_processes(Process **processes, YToPid **y_to_pid, WINDOW *pad, unsigne
         }
 
         // render
-        if (line_height == pad_y)
+        if (line_height == data->virtual_pad.y)
         {
-            wattron(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            show_process_information(process, pad, line_height);
-            wattroff(pad, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+            wattron(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+            show_process_information(
+                process,
+                &data->window,
+                data->virtual_pad.itself,
+                line_height);
+            wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         }
         else
         {
-            show_process_information(process, pad, line_height);
+            show_process_information(
+                process,
+                &data->window,
+                data->virtual_pad.itself,
+                line_height);
         }
+        // used when mapping from y to pid
         process->y = line_height;
+        // get ready for the next operation
         process = process->hh.next;
         line_height++;
     }
-    remove_y_to_pid_unseen_entries(y_to_pid);
+    remove_y_to_pid_unseen_entries(&data->y_to_pid);
 }
 void cleanup_processes(Process **processes)
 {

@@ -1,13 +1,12 @@
 #include "utils.h"
-void show_process_information(Process *process, WINDOW *virtual_pad, int y)
+void show_process_information(Process *process, Window *window, WINDOW *virtual_pad, int y)
 {
     if (process->exe_path == NULL || process->name == NULL)
         return;
-    mvwprintw(virtual_pad, y, 0, "%d, %s, %s, cpu_usage:%.2f%%",
-              process->pid,
-              process->exe_path,
-              process->name,
-              process->cpu_usage);
+    mvwprintw(virtual_pad, y, 2, "%d", process->pid);
+    mvwprintw(virtual_pad, y, (window->width * .2), "%s", process->name);
+    mvwprintw(virtual_pad, y, (window->width * .4), "%.2f", process->cpu_usage);
+    mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->exe_path);
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {
@@ -20,6 +19,7 @@ void remove_process_highlight(ProcessesBlock *data)
         return;
     show_process_information(
         data->selected_process,
+        &data->window,
         data->virtual_pad.itself,
         data->virtual_pad.y);
 }
@@ -28,7 +28,10 @@ void highlight_process(ProcessesBlock *data)
     if (data->selected_process != NULL && !data->get_process_faild)
     {
         wattron(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-        show_process_information(data->selected_process, data->virtual_pad.itself, data->virtual_pad.y);
+        show_process_information(
+            data->selected_process,
+            &data->window, data->virtual_pad.itself, data->virtual_pad.y);
+        // show_process_information(data->selected_process, data->virtual_pad.itself, data->virtual_pad.y, data->window.width);
         wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
     }
 }
@@ -38,16 +41,21 @@ void refresh_pad(ProcessesBlock *data, unsigned processes_count)
     {
         data->virtual_pad.y = processes_count - 1;
     }
+    wclear(data->window.itself);
     wattron(data->window.itself, COLOR_PAIR(4));
     box(data->window.itself, 0, 0);
     wattroff(data->window.itself, COLOR_PAIR(4));
     // add it after boxing
     wattron(data->window.itself, A_BOLD);
     mvwaddstr(data->window.itself, 0, 2, "Processes");
+    mvwprintw(data->window.itself, 2, 2, "PID");
+    mvwprintw(data->window.itself, 2, (data->window.width * .2), "Name");
+    mvwprintw(data->window.itself, 2, data->window.width * .4, "CPU");
+    mvwprintw(data->window.itself, 2, data->window.width * .6, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
     prefresh(data->virtual_pad.itself,
-             data->virtual_pad.y, data->virtual_pad.x,
+             data->virtual_pad.y, data->virtual_pad.x + 2,
              data->window.y + 3,                       // move the pad 2 units down and show borders
              data->window.x + 2,                       // move the pad 2 units right and show borders
              data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,

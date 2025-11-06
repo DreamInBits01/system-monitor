@@ -7,6 +7,7 @@ void cleanup_context(AppContext *ctx)
         if (ctx->processes_block->processes != NULL)
         {
             cleanup_processes(&ctx->processes_block->processes);
+            free(ctx->processes_block->processes);
         }
         if (ctx->processes_block->y_to_pid != NULL)
         {

@@ -136,6 +136,13 @@ void read_process_location(char *ep_name, char **destination)
     ssize_t len = readlink(exe_path, buffer, sizeof(buffer) - 1);
     if (len != -1)
     {
+        // char terminated_buffer[33];
+        // strcpy(terminated_buffer, buffer);
+        // if (strlen(buffer) == 30)
+        // {
+        //     strcat(terminated_buffer, "...");
+        // }
+        // terminated_buffer[strlen(terminated_buffer)] = '\0';
         buffer[len] = '\0';
         *destination = strdup(buffer);
     }
@@ -143,6 +150,7 @@ void read_process_location(char *ep_name, char **destination)
     {
         *destination = strdup("unknown");
     }
+    // strcat()
     free(exe_path);
 }
 void read_process_name(FILE *fd, char **destination)

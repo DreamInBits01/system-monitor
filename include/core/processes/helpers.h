@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include "structs.h"
-#define PROCESS_EXE_PATH_SIZE 1024
+#define PROCESS_EXE_PATH_SIZE 30
 
 int is_numeric(char *name);
 void cleanup_process(Process *process);

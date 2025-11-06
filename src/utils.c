@@ -48,6 +48,12 @@ void refresh_pad(ProcessesBlock *data, unsigned processes_count)
     // add it after boxing
     wattron(data->window.itself, A_BOLD);
     mvwaddstr(data->window.itself, 0, 2, "Processes");
+    mvwprintw(
+        data->window.itself,
+        data->window.height - 1,
+        2,
+        "%d/%d", data->virtual_pad.y,
+        processes_count);
     mvwprintw(data->window.itself, 2, 2, "PID");
     mvwprintw(data->window.itself, 2, (data->window.width * .2), "Name");
     mvwprintw(data->window.itself, 2, data->window.width * .4, "CPU");

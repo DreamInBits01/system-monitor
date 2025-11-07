@@ -24,10 +24,16 @@ void read_memory_data(MemoryData *data)
             sscanf(line, "MemFree: %f", &kb);
             data->free = KB_TO_GB(kb);
         }
+        if (strncmp("MemAvailable:", line, 13) == 0)
+        {
+            unsigned long kb;
+            sscanf(line, "MemAvailable: %lu", &kb);
+            data->available = KB_TO_GB(kb);
+        }
         if (strncmp("Buffers:", line, 8) == 0)
         {
-            unsigned kb;
-            sscanf(line, "Buffers: %d", &kb);
+            unsigned long kb;
+            sscanf(line, "Buffers: %lu", &kb);
             data->buffers = kb;
         }
     };
@@ -40,8 +46,9 @@ void show_memory_data(MemoryBlock *data)
     int memory_bar_fill = used_percent / 100 * data->bar_width;
     mvwprintw(data->window.itself, 1, 1, "Memory total: %.2fgb", data->data.total);
     mvwprintw(data->window.itself, 2, 1, "Memory free: %.2fgb", data->data.free);
-    mvwprintw(data->window.itself, 3, 1, "Buffers: %dkb", data->data.buffers);
-    mvwprintw(data->window.itself, 4, 1, "Used memory:%.2f%%", used_percent);
+    mvwprintw(data->window.itself, 3, 1, "Memory Available: %ugb", data->data.available);
+    mvwprintw(data->window.itself, 4, 1, "Buffers: %lukb", data->data.buffers);
+    mvwprintw(data->window.itself, 5, 1, "Used memory:%.2f%%", used_percent);
     build_loadbar(data->window.itself, memory_bar_fill, data->bar_width, 5, 1);
     wattron(data->window.itself, COLOR_PAIR(4));
     box(data->window.itself, 0, 0);

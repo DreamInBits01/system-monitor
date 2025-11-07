@@ -3,10 +3,11 @@
 #include "ui_structs.h"
 typedef struct
 {
-    unsigned buffers; // kb
-    unsigned cached;  // kb
-    float free;       // gb
-    float total;      // gb
+    unsigned long buffers; // kb
+    unsigned long cached;  // kb
+    unsigned available;    // gb
+    float free;            // gb
+    float total;           // gb
 } MemoryData;
 typedef struct
 {

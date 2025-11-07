@@ -73,7 +73,6 @@ void highlight_process(ProcessesBlock *data)
         show_process_information(
             data->selected_process,
             &data->window, data->virtual_pad.itself, data->virtual_pad.y);
-        // show_process_information(data->selected_process, data->virtual_pad.itself, data->virtual_pad.y, data->window.width);
         wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
     }
 }

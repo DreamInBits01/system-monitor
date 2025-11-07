@@ -171,7 +171,9 @@ void read_process_name(FILE *fd, char **destination)
         memmove(process_name, process_name + 1, process_name_len - 2);
         process_name[process_name_len - 2] = '\0';
     }
-    *destination = strdup(process_name);
+    // neglect anything after /
+    char *tokenized_line = strtok(process_name, "/");
+    *destination = strdup(tokenized_line);
 }
 void read_process_stat(char *ep_name, Process *process)
 {

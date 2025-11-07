@@ -5,7 +5,7 @@ typedef struct
 {
     unsigned long buffers; // kb
     unsigned long cached;  // kb
-    unsigned available;    // gb
+    float available;       // gb
     float free;            // gb
     float total;           // gb
 } MemoryData;

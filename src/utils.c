@@ -1,4 +1,38 @@
 #include "utils.h"
+bool proc_read_and_parse(int fd, void (*callback)(char *line, void *output), void *output)
+{
+    if (fd < 0)
+    {
+        perror("Invalid file descriptor");
+        return false;
+    }
+    // start at the beginning of the file
+    if (lseek(fd, 0, SEEK_SET) < 0)
+    {
+        perror("Lseek error");
+        return false;
+    }
+    char buffer[8192];
+    ssize_t bytes = read(fd, buffer, sizeof(buffer) - 1);
+    if (bytes < 0)
+    {
+        perror("Error while parsing proc\n");
+    }
+    // empty file
+    if (bytes == 0)
+        return true;
+    // null-terminate buffer
+    buffer[bytes] = '\0';
+    char *line = strtok(buffer, "\n");
+    while (line != NULL)
+    {
+        if (*line == '\0')
+            continue;
+        callback(line, output);
+        line = strtok(NULL, "\n");
+    }
+    return true;
+}
 void show_process_information(Process *process, Window *window, WINDOW *virtual_pad, int y)
 {
     if (process->exe_path == NULL || process->name == NULL)

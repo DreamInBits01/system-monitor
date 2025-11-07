@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include "context/index.h"
+bool proc_read_and_parse(int fd, void (*callback)(char *line, void *output), void *output);
 void remove_process_highlight(ProcessesBlock *data);
 void refresh_pad(ProcessesBlock *data, unsigned processes_count);
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count);

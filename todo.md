@@ -23,3 +23,4 @@
 
 - open used files once and store their fds at the beginning
   - clean up opened files after
+- Use read & strtok instead of fopen and fgets for file reads

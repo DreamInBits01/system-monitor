@@ -48,8 +48,8 @@ void show_memory_data(MemoryBlock *data)
     mvwprintw(data->window.itself, 2, 1, "Memory free: %.2fgb", data->data.free);
     mvwprintw(data->window.itself, 3, 1, "Memory Available: %.2fgb", data->data.available);
     mvwprintw(data->window.itself, 4, 1, "Buffers: %lukb", data->data.buffers);
-    mvwprintw(data->window.itself, 5, 1, "Used memory:%.2f%%", used_percent);
-    build_loadbar(data->window.itself, memory_bar_fill, data->bar_width, 5, 1);
+    mvwprintw(data->window.itself, 6, 1, "Used memory:%.2f%%", used_percent);
+    build_loadbar(data->window.itself, memory_bar_fill, data->bar_width, 7, 1);
     wattron(data->window.itself, COLOR_PAIR(4));
     box(data->window.itself, 0, 0);
     wattroff(data->window.itself, COLOR_PAIR(4));

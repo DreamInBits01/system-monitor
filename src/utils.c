@@ -1,4 +1,10 @@
 #include "utils.h"
+// int proc_read_buffer_size()
+// {
+//     int cores = sysconf(_SC_NPROCESSORS_ONLN);
+//     int page_size = sysconf(_SC_PAGESIZE);
+
+// }
 bool proc_read_and_parse(int fd, void (*callback)(char *line, void *output), void *output)
 {
     if (fd < 0)
@@ -12,11 +18,13 @@ bool proc_read_and_parse(int fd, void (*callback)(char *line, void *output), voi
         perror("Lseek error");
         return false;
     }
-    char buffer[8192];
+    char buffer[sysconf(_SC_PAGESIZE) * 2];
+    //-1 is put to reserve a place for '\0'
     ssize_t bytes = read(fd, buffer, sizeof(buffer) - 1);
     if (bytes < 0)
     {
         perror("Error while parsing proc\n");
+        return false;
     }
     // empty file
     if (bytes == 0)

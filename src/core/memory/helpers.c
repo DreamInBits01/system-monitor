@@ -10,22 +10,22 @@ void build_loadbar(WINDOW *window, int fill, int bar_width, int y, int x)
         {
             if (i >= bar_width * .6)
             {
-                wattr_on(window, COLOR_PAIR(3), NULL); // red
+                wattron(window, COLOR_PAIR(3)); // red
                 mvwaddch(window, y, x_position, '|');
-                wattr_off(window, COLOR_PAIR(3), NULL);
+                wattroff(window, COLOR_PAIR(3));
             }
             else if (i >= bar_width * .3)
             {
-                wattr_on(window, COLOR_PAIR(2), NULL); // yellow
+                wattron(window, COLOR_PAIR(2)); // yellow
                 mvwaddch(window, y, x_position, '|');
 
-                wattr_off(window, COLOR_PAIR(2), NULL);
+                wattroff(window, COLOR_PAIR(2));
             }
             else
             {
-                wattr_on(window, COLOR_PAIR(1), NULL); // green
+                wattron(window, COLOR_PAIR(1)); // green
                 mvwaddch(window, y, x_position, '|');
-                wattr_off(window, COLOR_PAIR(1), NULL);
+                wattroff(window, COLOR_PAIR(1));
             }
         }
         else

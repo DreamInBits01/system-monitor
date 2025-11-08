@@ -26,6 +26,7 @@
   - clean up opened files after:DONE
 - write proc_file_read_and_parse && proc_dir_read_and_parse:DONE
   - refactor reading functions to use proc_file_read_and_parse && proc_dir_read_and_parse:DONE
+- Cache uptime file and refactor it
 
 ## Systems considerations
 

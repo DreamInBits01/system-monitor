@@ -46,7 +46,7 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
     if (process->exe_path == NULL || process->name == NULL)
         return;
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
-    mvwprintw(virtual_pad, y, (window->width * .2), "%s", process->name);
+    mvwprintw(virtual_pad, y, (window->width * .16), "%s", process->name);
     mvwprintw(virtual_pad, y, (window->width * .5), "%.2f", process->cpu_usage);
     mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->exe_path);
 }
@@ -96,7 +96,7 @@ void refresh_pad(ProcessesBlock *data, unsigned processes_count)
         "%d/%d", data->virtual_pad.y,
         processes_count);
     mvwprintw(data->window.itself, 2, 2, "PID");
-    mvwprintw(data->window.itself, 2, data->window.width * .2, "Name");
+    mvwprintw(data->window.itself, 2, data->window.width * .16, "Name");
     mvwprintw(data->window.itself, 2, data->window.width * .5, "CPU");
     mvwprintw(data->window.itself, 2, data->window.width * .6, "Path");
     wattroff(data->window.itself, A_BOLD);

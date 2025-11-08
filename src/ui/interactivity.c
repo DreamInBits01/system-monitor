@@ -75,6 +75,7 @@ void *interactivity_routine(void *data)
                 top_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
+                redraw_screen(ctx);
             }
             ctx->sort_menu.visible = !ctx->sort_menu.visible;
             break;

@@ -20,7 +20,7 @@ typedef struct
     char *path;
     char *key;
     int read_mode;
-    int fd;
+    FILE *fd;
     DIR *dir;
     bool is_directory;
 } ProcFile;

@@ -72,7 +72,8 @@ void initialize_fds(ProcFile *destination)
         if (files[i].is_directory)
         {
             destination[i].dir = opendir(files[i].path);
-            if (!files[i].is_directory && destination[i].fd < 0)
+
+            if (destination[i].dir == NULL)
             {
                 perror(destination[i].path);
                 cleanup_cached_fds(destination, i);
@@ -81,8 +82,8 @@ void initialize_fds(ProcFile *destination)
         }
         else
         {
-            destination[i].fd = open(files[i].path, files[i].read_mode);
-            if (files[i].is_directory && destination[i].dir == NULL)
+            destination[i].fd = fopen(files[i].path, "r");
+            if (destination[i].fd == NULL)
             {
                 perror(destination[i].path);
                 cleanup_cached_fds(destination, i);

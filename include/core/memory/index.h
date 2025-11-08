@@ -6,6 +6,6 @@
 #include "helpers.h"
 #include "context/structs.h"
 #include "utils.h"
-void read_memory_data(int fd, MemoryData *data);
+void read_memory_data(FILE *fd, MemoryData *data);
 void show_memory_data(MemoryBlock *data);
 #endif

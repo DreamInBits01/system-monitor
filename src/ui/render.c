@@ -4,6 +4,19 @@ void redraw_screen(AppContext *ctx)
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     // clear();
     // read data
+    // for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    // {
+    //     if (ctx->proc_files[i].is_directory)
+    //     {
+    //         mvprintw(i, 1, "%s:%x:", ctx->proc_files[i].path, find_proc_dir_fd(ctx->proc_files, ctx->proc_files[i].key));
+    //     }
+    //     else
+    //     {
+    //         mvprintw(i, 1, "%s:%x:", ctx->proc_files[i].path, find_proc_file_fd(ctx->proc_files, ctx->proc_files[i].key));
+    //     }
+    //     /* code */
+    // }
+    // refresh();
     read_memory_data(
         find_proc_file_fd(ctx->proc_files, "meminfo"),
         &ctx->memory_block->data);

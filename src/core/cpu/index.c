@@ -1,6 +1,6 @@
 #include "core/cpu/index.h"
 
-void read_dynamic_cpu_data(int fd, DynamicCpuData *data)
+void read_dynamic_cpu_data(FILE *fd, DynamicCpuData *data)
 {
     proc_file_read_and_parse(
         fd,
@@ -11,7 +11,7 @@ void show_dynamic_cpu_data(CPUBlock *data)
 {
     mvwprintw(data->window.itself, 4, 1, "Avg Mhz:%.2f", data->dynamic_data.avg_mhz);
 }
-void read_static_cpu_data(int fd, StaticCpuData *data)
+void read_static_cpu_data(FILE *fd, StaticCpuData *data)
 {
     data->logical_cpus = 0;
     proc_file_read_and_parse(

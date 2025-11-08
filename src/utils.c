@@ -5,16 +5,16 @@
 //     int page_size = sysconf(_SC_PAGESIZE);
 
 // }
-int find_proc_file_fd(ProcFile *files, char *key)
+FILE *find_proc_file_fd(ProcFile *files, char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
     {
-        if (strcmp(files[i].key, key) == 0)
+        if (!files[i].is_directory && strcmp(files[i].key, key) == 0)
         {
             return files[i].fd;
         }
     }
-    return -1;
+    return NULL;
 }
 DIR *find_proc_dir_fd(ProcFile *files, char *key)
 {
@@ -43,39 +43,40 @@ bool proc_dir_read_and_parse(DIR *fd, void (*callback)(struct dirent *ep, void *
     }
     return true;
 }
-bool proc_file_read_and_parse(int fd, void (*callback)(char *line, void *output), void *output)
+bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *output), void *output)
 {
-    if (fd < 0)
+    if (fd == NULL)
     {
         perror("Invalid file descriptor");
         return false;
     }
     // start at the beginning of the file
-    if (lseek(fd, 0, SEEK_SET) < 0)
+    if (fseek(fd, 0, SEEK_SET) < 0)
     {
-        perror("Lseek error");
+        perror("lseek");
         return false;
     }
-    char buffer[sysconf(_SC_PAGESIZE) * 2];
-    //-1 is put to reserve a place for '\0'
-    ssize_t bytes = read(fd, buffer, sizeof(buffer) - 1);
-    if (bytes < 0)
-    {
-        perror("Error while parsing proc\n");
-        return false;
-    }
-    // empty file
-    if (bytes == 0)
-        return true;
-    // null-terminate buffer
-    buffer[bytes] = '\0';
-    char *line = strtok(buffer, "\n");
-    while (line != NULL)
+    // char buffer[sysconf(_SC_PAGESIZE) * 2];
+    // //-1 is put to reserve a place for '\0'
+    // ssize_t bytes = read(fd, buffer, sizeof(buffer) - 1);
+    // if (bytes < 0)
+    // {
+    //     perror("Error while parsing proc\n");
+    //     return false;
+    // }
+    // // empty file
+    // if (bytes == 0)
+    //     return true;
+    // // null-terminate buffer
+    // buffer[bytes] = '\0';
+    // char *line = strtok(buffer, "\n");
+    char line[256];
+    while (fgets(line, sizeof(line), fd))
     {
         if (*line == '\0')
             continue;
         callback(line, output);
-        line = strtok(NULL, "\n");
+        // line = strtok(NULL, "\n");
     }
     return true;
 }

@@ -1,6 +1,6 @@
 #include "core/memory/index.h"
 
-void read_memory_data(int fd, MemoryData *data)
+void read_memory_data(FILE *fd, MemoryData *data)
 {
     proc_file_read_and_parse(
         fd,

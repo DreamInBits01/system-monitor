@@ -56,27 +56,12 @@ bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *outpu
         perror("lseek");
         return false;
     }
-    // char buffer[sysconf(_SC_PAGESIZE) * 2];
-    // //-1 is put to reserve a place for '\0'
-    // ssize_t bytes = read(fd, buffer, sizeof(buffer) - 1);
-    // if (bytes < 0)
-    // {
-    //     perror("Error while parsing proc\n");
-    //     return false;
-    // }
-    // // empty file
-    // if (bytes == 0)
-    //     return true;
-    // // null-terminate buffer
-    // buffer[bytes] = '\0';
-    // char *line = strtok(buffer, "\n");
     char line[256];
     while (fgets(line, sizeof(line), fd))
     {
         if (*line == '\0')
             continue;
         callback(line, output);
-        // line = strtok(NULL, "\n");
     }
     return true;
 }

@@ -130,8 +130,8 @@ void *interactivity_routine(void *data)
             handle_manual_process_selection(ctx);
             break;
         }
-        usleep(50000);
         pthread_mutex_unlock(&ctx->mutex);
+        usleep(50000);
     }
 cleanup:
     cleanup_context(ctx);

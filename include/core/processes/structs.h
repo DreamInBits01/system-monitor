@@ -2,6 +2,7 @@
 #define PROCESSES_STRUCT
 #include <sys/types.h>
 #include <stdbool.h>
+#include <dirent.h>
 #include "ui_structs.h"
 #include "../../third_party/uthash/src/uthash.h"
 
@@ -39,6 +40,7 @@ typedef struct
     YToPid *y_to_pid;
     Process *processes;
     Process *selected_process;
+    unsigned processes_count;
     int selected_process_y;
     bool get_process_faild;
 } ProcessesBlock;

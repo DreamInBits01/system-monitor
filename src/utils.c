@@ -5,7 +5,45 @@
 //     int page_size = sysconf(_SC_PAGESIZE);
 
 // }
-bool proc_read_and_parse(int fd, void (*callback)(char *line, void *output), void *output)
+int find_proc_file_fd(ProcFile *files, char *key)
+{
+    for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    {
+        if (strncmp(files[i].key, key, sizeof(files[i].key)) == 0)
+        {
+            return files[i].fd;
+        }
+    }
+    return -1;
+}
+DIR *find_proc_dir_fd(ProcFile *files, char *key)
+{
+    for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    {
+        if (files[i].is_directory && strncmp(files[i].key, key, sizeof(files[i].key)) == 0)
+        {
+            return files[i].dir;
+        }
+    }
+    return NULL;
+}
+bool proc_dir_read_and_parse(DIR *fd, void (*callback)(struct dirent *ep, void *output), void *output)
+{
+    if (fd == NULL)
+    {
+        perror("Invalid file descriptor");
+        return false;
+    }
+    // start at the beginning of the directory
+    rewinddir(fd);
+    struct dirent *ep;
+    while ((ep = readdir(fd)) != NULL)
+    {
+        callback(ep, output);
+    }
+    return true;
+}
+bool proc_file_read_and_parse(int fd, void (*callback)(char *line, void *output), void *output)
 {
     if (fd < 0)
     {
@@ -123,10 +161,10 @@ void handle_manual_process_selection(AppContext *ctx)
     {
         ctx->processes_block->virtual_pad.y = ctx->processes_block->selected_process_y;
         highlight_process(ctx->processes_block);
-        mvwprintw(ctx->processes_block->window.itself, 1, 15, "Scrolled:%.0f%%", (float)ctx->processes_block->virtual_pad.y / (ctx->processes_count - 1) * 100);
+        mvwprintw(ctx->processes_block->window.itself, 1, 15, "Scrolled:%.0f%%", (float)ctx->processes_block->virtual_pad.y / (ctx->processes_block->processes_count - 1) * 100);
 
         // refresh
-        refresh_pad(ctx->processes_block, ctx->processes_count);
+        refresh_pad(ctx->processes_block, ctx->processes_block->processes_count);
 
         // visible elements are in the range of pad view height
         // create a viewport_top (cursor position, starts at 0), viewport_bottom (viewtop+pad_view.height)

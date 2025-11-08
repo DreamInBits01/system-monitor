@@ -1,11 +1,12 @@
 #ifndef CONTEXT_STRUCTS
 #define CONTEXT_STRUCTS
 #include <pthread.h>
+#include <dirent.h>
 #include "ui_structs.h"
-#include "core/cpu/index.h"
+#include "core/cpu/structs.h"
 #include "core/processes/structs.h"
 #include "core/memory/structs.h"
-
+#define CACHED_PROC_FILES_NUMBER 3
 // Sort menu
 /*
 UI BLOCKS
@@ -16,17 +17,25 @@ UI BLOCKS
 */
 typedef struct
 {
+    char *path;
+    char *key;
+    int read_mode;
+    int fd;
+    DIR *dir;
+    bool is_directory;
+} ProcFile;
+typedef struct
+{
     MemoryBlock *memory_block;
     CPUBlock *cpu_block;
     ProcessesBlock *processes_block;
-    char **files;
+    ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
     pthread_mutex_t mutex;
     SortMenu sort_menu;
     int max_rows;
     int max_cols;
     unsigned bar_width;
     volatile int running;
-    unsigned processes_count;
 } AppContext;
 
 #endif

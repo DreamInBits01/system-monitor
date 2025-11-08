@@ -54,6 +54,7 @@ UI_SRC = $(SRC_DIR)/ui/init.c \
          $(SRC_DIR)/ui/interactivity.c
 
 CORE_SRC = $(SRC_DIR)/core/cpu/index.c \
+		   $(SRC_DIR)/core/cpu/helpers.c \
            $(SRC_DIR)/core/memory/index.c \
            $(SRC_DIR)/core/memory/helpers.c \
            $(SRC_DIR)/core/processes/index.c \

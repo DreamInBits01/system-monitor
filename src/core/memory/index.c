@@ -1,43 +1,11 @@
 #include "core/memory/index.h"
 
-void read_memory_data(MemoryData *data)
+void read_memory_data(int fd, MemoryData *data)
 {
-    FILE *memory_data_file = fopen("/proc/meminfo", "r");
-    if (memory_data_file == NULL)
-    {
-        printf("Error while reading memory_data_file\n");
-        endwin();
-        exit(1);
-    }
-    char line[256];
-    while (fgets(line, sizeof(line), memory_data_file))
-    {
-        if (data->total == 0 && strncmp("MemTotal:", line, 9) == 0)
-        {
-            float kb;
-            sscanf(line, "MemTotal: %f", &kb);
-            data->total = KB_TO_GB(kb);
-        }
-        if (strncmp("MemFree:", line, 8) == 0)
-        {
-            float kb;
-            sscanf(line, "MemFree: %f", &kb);
-            data->free = KB_TO_GB(kb);
-        }
-        if (strncmp("MemAvailable:", line, 13) == 0)
-        {
-            unsigned long kb;
-            sscanf(line, "MemAvailable: %lu", &kb);
-            data->available = KB_TO_GB(kb);
-        }
-        if (strncmp("Buffers:", line, 8) == 0)
-        {
-            unsigned long kb;
-            sscanf(line, "Buffers: %lu", &kb);
-            data->buffers = kb;
-        }
-    };
-    fclose(memory_data_file);
+    proc_file_read_and_parse(
+        fd,
+        parse_memory_line,
+        data);
 }
 void show_memory_data(MemoryBlock *data)
 {

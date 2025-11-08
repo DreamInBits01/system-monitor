@@ -4,35 +4,37 @@ void redraw_screen(AppContext *ctx)
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     // clear();
     // read data
-    read_memory_data(&ctx->memory_block->data);
-    read_static_cpu_data(&ctx->cpu_block->static_data);
-    read_dynamic_cpu_data(&ctx->cpu_block->dynamic_data);
-    read_processes(&ctx->processes_block->processes, &ctx->processes_count);
+    read_memory_data(
+        find_proc_file_fd(ctx->proc_files, "meminfo"),
+        &ctx->memory_block->data);
+    read_static_cpu_data(
+        find_proc_file_fd(ctx->proc_files, "cpuinfo"),
+        &ctx->cpu_block->static_data);
+    read_dynamic_cpu_data(
+        find_proc_file_fd(ctx->proc_files, "cpuinfo"),
+        &ctx->cpu_block->dynamic_data);
+    read_processes_data(
+        find_proc_dir_fd(ctx->proc_files, "processes"),
+        ctx->processes_block);
+
     // clean processes' pad
     werase(ctx->processes_block->virtual_pad.itself);
     show_processes(ctx->processes_block);
     // make sure that there are no gaps between processes in the y
-    if (ctx->processes_block->virtual_pad.y >= ctx->processes_count)
+    if (ctx->processes_block->virtual_pad.y >= ctx->processes_block->processes_count)
     {
         // only update real y if selection succeeded
-        ctx->processes_block->selected_process_y = ctx->processes_count - 1;
+        ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
         handle_manual_process_selection(ctx);
     }
     else
     {
-        refresh_pad(ctx->processes_block, ctx->processes_count);
+        refresh_pad(ctx->processes_block, ctx->processes_block->processes_count);
     }
     // show data
     // showing it here temporarily because it has its own window and refreshing the stdscr deletes that
     show_memory_data(ctx->memory_block);
     update_cpu_block(ctx->cpu_block);
-    if (ctx->sort_menu.visible)
-    {
-        // the main window needs to be refreshed to delete leftover borders
-        top_panel(ctx->sort_menu.panel);
-        update_panels();
-        doupdate();
-    }
 }
 void *render_routine(void *data)
 {

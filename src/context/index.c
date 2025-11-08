@@ -1,7 +1,24 @@
 #include "context/index.h"
+
+void clean_fds(ProcFile *files, int size)
+{
+    for (size_t i = 0; i < size; i++)
+    {
+        if (files[i].is_directory)
+        {
+            closedir(files[i].dir);
+        }
+        else
+        {
+            close(files[i].fd);
+        }
+    }
+}
 void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
+    // fds
+    clean_fds(ctx->proc_files, sizeof(ctx->proc_files) / sizeof(ctx->proc_files[0]));
     if (ctx->processes_block != NULL)
     {
         if (ctx->processes_block->processes != NULL)
@@ -31,7 +48,6 @@ void cleanup_context(AppContext *ctx)
         free(ctx->cpu_block);
         delwin(ctx->cpu_block->window.itself);
     };
-    // pad view
     // sort
     delwin(ctx->sort_menu.window);
     del_panel(ctx->sort_menu.panel);
@@ -40,18 +56,53 @@ void cleanup_context(AppContext *ctx)
     free(ctx);
     endwin();
 }
-
+void initialize_fds(ProcFile *destination)
+{
+    // define it first here to easily put them inside destination
+    //*destination = files wouldn't work as that would change just the first element of the context's array
+    // a double pointer would require dynamiclly allocated memory which increases complexity
+    ProcFile files[CACHED_PROC_FILES_NUMBER] = {
+        // PATH,KEY,READ MODE, FD,DIR* is_directory
+        {"/proc/meminfo", "meminfo", O_RDONLY, -1, 0, false},
+        {"/proc/cpuinfo", "cpuinfo", O_RDONLY, -1, 0, false},
+        {"/proc/", "processes", 0, -1, NULL, true},
+    };
+    for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    {
+        if (files[i].is_directory)
+        {
+            destination[i].dir = opendir(files[i].path);
+            if (!destination[i].is_directory && destination[i].fd < 0)
+            {
+                perror(destination[i].path);
+                // add cleanup
+                clean_fds(destination, i);
+                exit(1);
+            }
+        }
+        else
+        {
+            destination[i].fd = open(files[i].path, files[i].read_mode);
+            if (destination[i].is_directory && destination[i].dir == NULL)
+            {
+                perror(destination[i].path);
+                // add cleanup
+                clean_fds(destination, i);
+                exit(1);
+            }
+        }
+        // Copy metadata
+        destination[i].path = files[i].path;
+        destination[i].key = files[i].key;
+        destination[i].read_mode = files[i].read_mode;
+        destination[i].is_directory = files[i].is_directory;
+    }
+}
 void initialize_context(AppContext *ctx)
 {
     // screen
     getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
-    // char files[5] = {"/proc/cpuData"};
-    // ctx->files = files;
-    // Processes config
-    // ctx->y_to_pid = NULL;
-    // ctx->processes = NULL;
-
-    ctx->processes_count = 0;
+    initialize_fds(ctx->proc_files);
     // Memory config
     ctx->memory_block = malloc(sizeof(MemoryBlock));
     if (ctx->memory_block == NULL)
@@ -93,6 +144,7 @@ void initialize_context(AppContext *ctx)
         cleanup_context(ctx);
         exit(1);
     }
+    ctx->processes_block->processes_count = 0;
     ctx->processes_block->y_to_pid = NULL;
     ctx->processes_block->processes = NULL;
     // window

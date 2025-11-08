@@ -1,47 +1,14 @@
 #include "core/processes/index.h"
-void read_processes(Process **processes, unsigned *count)
+
+void read_processes_data(DIR *fd, ProcessesBlock *data)
 {
-    DIR *directory = opendir("/proc/");
-    if (directory == NULL)
-        return;
-
-    struct dirent *ep;
-    // mark all processes unseen
-    mark_processes_unseen(processes);
-    while ((ep = readdir(directory)) != NULL)
-    {
-        // check if the filename is numeric to determine if the file is a process
-        if (is_numeric(ep->d_name))
-        {
-            int pid = atoi(ep->d_name);
-            Process *found_process = NULL;
-            HASH_FIND_INT(*processes, &pid, found_process);
-            if (found_process == NULL)
-            {
-                found_process = malloc(sizeof(Process));
-                if (found_process == NULL)
-                {
-                    closedir(directory);
-                    return;
-                }
-                memset(found_process, 0, sizeof(Process));
-                found_process->pid = pid;
-                found_process->seen = true;
-                found_process->type = ep->d_type;
-
-                read_process_stat(ep->d_name, found_process);
-                HASH_ADD_INT(*processes, pid, found_process);
-            }
-            else
-            {
-                found_process->seen = true;
-                read_process_stat(ep->d_name, found_process);
-            }
-        }
-    };
-    remove_unseen_processes(processes);
-    *count = HASH_COUNT(*processes);
-    closedir(directory);
+    mark_processes_unseen(&data->processes);
+    proc_dir_read_and_parse(
+        fd,
+        parse_processes_dir,
+        data);
+    remove_unseen_processes(&data->processes);
+    data->processes_count = HASH_COUNT(data->processes);
 }
 void show_processes(ProcessesBlock *data)
 {

@@ -24,9 +24,9 @@
 - open used files once and store their fds at the beginning
   - clean up opened files after
 - Use read & strtok instead of fopen and fgets for file reads
-  - refactor reading functions to use proc_read_and_parse
+  - refactor reading functions to use proc_file_read_and_parse
 
 ## Systems considerations
 
-- proc_read_and_parse
+- proc_file_read_and_parse
   - Buffer size needs to be modfied base on each system cores when reading cpu data

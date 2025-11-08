@@ -65,6 +65,7 @@ void *interactivity_routine(void *data)
         case KEY_F(3):
             if (ctx->sort_menu.visible)
             {
+                clear();
                 hide_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
@@ -104,7 +105,7 @@ void *interactivity_routine(void *data)
             }
             break;
         case KEY_DOWN:
-            if (ctx->processes_block->virtual_pad.y < ctx->processes_count - 1 && ctx->sort_menu.visible == false)
+            if (ctx->processes_block->virtual_pad.y < ctx->processes_block->processes_count - 1 && ctx->sort_menu.visible == false)
             {
                 // remove highlighting
                 remove_process_highlight(ctx->processes_block);
@@ -125,7 +126,7 @@ void *interactivity_routine(void *data)
             // remove highlighting
             remove_process_highlight(ctx->processes_block);
             // next process's y
-            ctx->processes_block->selected_process_y = ctx->processes_count - 1;
+            ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
             handle_manual_process_selection(ctx);
             break;
         }

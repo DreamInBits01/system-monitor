@@ -2,6 +2,7 @@
 
 - remove deleted process from processes list when killed
 - to redraw the pad efficiently, just shift every y after the deleted process by -1
+- Add viewports to processes's virtual pad
 
 ## Run options
 
@@ -21,12 +22,14 @@
 
 ## OPTIMIZATIONS
 
-- open used files once and store their fds at the beginning
-  - clean up opened files after
-- Use read & strtok instead of fopen and fgets for file reads
-  - refactor reading functions to use proc_file_read_and_parse
+- cache proc files fds at the beginning:DONE
+  - clean up opened files after:DONE
+- write proc_file_read_and_parse && proc_dir_read_and_parse:DONE
+  - refactor reading functions to use proc_file_read_and_parse && proc_dir_read_and_parse:DONE
 
 ## Systems considerations
 
-- proc_file_read_and_parse
-  - Buffer size needs to be modfied base on each system cores when reading cpu data
+## Refactor
+
+- Refactor utils file
+  - Most of the functions belong to the processes feature

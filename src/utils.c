@@ -162,8 +162,6 @@ void handle_manual_process_selection(AppContext *ctx)
     {
         ctx->processes_block->virtual_pad.y = ctx->processes_block->selected_process_y;
         highlight_process(ctx->processes_block);
-        mvwprintw(ctx->processes_block->window.itself, 1, 15, "Scrolled:%.0f%%", (float)ctx->processes_block->virtual_pad.y / (ctx->processes_block->processes_count - 1) * 100);
-
         // refresh
         refresh_pad(ctx->processes_block, ctx->processes_block->processes_count);
 

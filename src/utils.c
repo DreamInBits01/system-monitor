@@ -9,7 +9,7 @@ int find_proc_file_fd(ProcFile *files, char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
     {
-        if (strncmp(files[i].key, key, sizeof(files[i].key)) == 0)
+        if (strcmp(files[i].key, key) == 0)
         {
             return files[i].fd;
         }
@@ -20,7 +20,7 @@ DIR *find_proc_dir_fd(ProcFile *files, char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
     {
-        if (files[i].is_directory && strncmp(files[i].key, key, sizeof(files[i].key)) == 0)
+        if (files[i].is_directory && strcmp(files[i].key, key) == 0)
         {
             return files[i].dir;
         }

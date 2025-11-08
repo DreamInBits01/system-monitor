@@ -1,6 +1,6 @@
 #include "context/index.h"
 
-void cleanup_fds(ProcFile *files, size_t size)
+void cleanup_cached_fds(ProcFile *files, size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -18,7 +18,7 @@ void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
     // fds
-    cleanup_fds(ctx->proc_files, CACHED_PROC_FILES_NUMBER);
+    cleanup_cached_fds(ctx->proc_files, CACHED_PROC_FILES_NUMBER);
     if (ctx->processes_block != NULL)
     {
         if (ctx->processes_block->processes != NULL)
@@ -75,7 +75,7 @@ void initialize_fds(ProcFile *destination)
             if (!files[i].is_directory && destination[i].fd < 0)
             {
                 perror(destination[i].path);
-                clean_fds(destination, i);
+                cleanup_cached_fds(destination, i);
                 exit(1);
             }
         }
@@ -85,7 +85,7 @@ void initialize_fds(ProcFile *destination)
             if (files[i].is_directory && destination[i].dir == NULL)
             {
                 perror(destination[i].path);
-                clean_fds(destination, i);
+                cleanup_cached_fds(destination, i);
                 exit(1);
             }
         }

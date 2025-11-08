@@ -1,6 +1,7 @@
 #ifndef PROCESSES_HELPERS
 #define PROCESSES_HELPERS
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
 #include "structs.h"

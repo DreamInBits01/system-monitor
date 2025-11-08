@@ -23,7 +23,7 @@ void show_static_cpu_data(CPUBlock *data)
 {
     mvwprintw(data->window.itself, 1, 1, "Model name: %s", data->static_data.model_name);
     mvwprintw(data->window.itself, 2, 1, "Logical CPUs: %d", data->static_data.logical_cpus);
-    mvwprintw(data->window.itself, 2, 1, "Pyhiscal cores: %d", data->static_data.physical_cores);
+    mvwprintw(data->window.itself, 3, 1, "Pyhiscal cores: %d", data->static_data.physical_cores);
 }
 void update_cpu_block(CPUBlock *data)
 {

@@ -62,7 +62,7 @@ void initialize_fds(ProcFile *destination)
     //*destination = files wouldn't work as that would change just the first element of the context's array
     // a double pointer would require dynamiclly allocated memory which increases complexity
     ProcFile files[CACHED_PROC_FILES_NUMBER] = {
-        // PATH,KEY,READ MODE, FD,DIR* is_directory
+        // PATH,KEY,READ MODE, FD,DIR*, is_directory
         {"/proc/meminfo", "meminfo", O_RDONLY, -1, 0, false},
         {"/proc/cpuinfo", "cpuinfo", O_RDONLY, -1, 0, false},
         {"/proc/", "processes", 0, -1, NULL, true},
@@ -72,10 +72,9 @@ void initialize_fds(ProcFile *destination)
         if (files[i].is_directory)
         {
             destination[i].dir = opendir(files[i].path);
-            if (!destination[i].is_directory && destination[i].fd < 0)
+            if (!files[i].is_directory && destination[i].fd < 0)
             {
                 perror(destination[i].path);
-                // add cleanup
                 clean_fds(destination, i);
                 exit(1);
             }
@@ -83,10 +82,9 @@ void initialize_fds(ProcFile *destination)
         else
         {
             destination[i].fd = open(files[i].path, files[i].read_mode);
-            if (destination[i].is_directory && destination[i].dir == NULL)
+            if (files[i].is_directory && destination[i].dir == NULL)
             {
                 perror(destination[i].path);
-                // add cleanup
                 clean_fds(destination, i);
                 exit(1);
             }

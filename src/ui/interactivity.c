@@ -15,6 +15,9 @@
 void *interactivity_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
+    struct timespec delay = {
+        .tv_sec = 0,
+        .tv_nsec = 90000000};
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
@@ -131,7 +134,8 @@ void *interactivity_routine(void *data)
             break;
         }
         pthread_mutex_unlock(&ctx->mutex);
-        usleep(50000);
+        // usleep(50000);
+        nanosleep(&delay, NULL);
     }
 cleanup:
     cleanup_context(ctx);

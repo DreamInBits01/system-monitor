@@ -52,12 +52,15 @@ void redraw_screen(AppContext *ctx)
 void *render_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
+    struct timespec delay = {
+        .tv_sec = 2,
+        .tv_nsec = 500000000};
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
         redraw_screen(ctx);
         pthread_mutex_unlock(&ctx->mutex);
-        usleep(2000000);
+        nanosleep(&delay, NULL);
     }
     return NULL;
 }

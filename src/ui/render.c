@@ -57,7 +57,7 @@ void *render_routine(void *data)
         pthread_mutex_lock(&ctx->mutex);
         redraw_screen(ctx);
         pthread_mutex_unlock(&ctx->mutex);
-        sleep(4);
+        usleep(4000000);
     }
     return NULL;
 }

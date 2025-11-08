@@ -1,6 +1,6 @@
 #include "context/index.h"
 
-void clean_fds(ProcFile *files, int size)
+void cleanup_fds(ProcFile *files, size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
@@ -18,7 +18,7 @@ void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
     // fds
-    clean_fds(ctx->proc_files, sizeof(ctx->proc_files) / sizeof(ctx->proc_files[0]));
+    cleanup_fds(ctx->proc_files, CACHED_PROC_FILES_NUMBER);
     if (ctx->processes_block != NULL)
     {
         if (ctx->processes_block->processes != NULL)

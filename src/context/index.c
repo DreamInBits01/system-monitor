@@ -163,7 +163,8 @@ void initialize_context(AppContext *ctx)
     ctx->processes_block->virtual_pad.itself = newpad(
         ctx->processes_block->virtual_pad.height,
         ctx->processes_block->virtual_pad.width);
-
+    ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->window.height - 5; // 3 is where the processes list show;
+    ctx->processes_block->virtual_pad.viewport_top = 0;
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
     box(ctx->sort_menu.window, 0, 0);

@@ -125,8 +125,25 @@ void refresh_pad(ProcessesBlock *data, unsigned processes_count)
     mvwprintw(data->window.itself, 2, data->window.width * .6, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
+    // prefresh(data->virtual_pad.itself,
+    //          data->virtual_pad.y, data->virtual_pad.x + 2,
+    //          data->window.y + 3,                       // move the pad 2 units down and show borders
+    //          data->window.x + 2,                       // move the pad 2 units right and show borders
+    //          data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
+    //          data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
+    // );
+    if (data->virtual_pad.y > data->virtual_pad.viewport_bottom)
+    {
+        data->virtual_pad.viewport_top += data->window.height - 4;
+        data->virtual_pad.viewport_bottom += data->window.height - 4;
+    }
+    else if (data->virtual_pad.y < data->virtual_pad.viewport_top)
+    {
+        data->virtual_pad.viewport_top -= data->window.height - 4;
+        data->virtual_pad.viewport_bottom -= data->window.height - 4;
+    }
     prefresh(data->virtual_pad.itself,
-             data->virtual_pad.y, data->virtual_pad.x + 2,
+             data->virtual_pad.viewport_top, data->virtual_pad.x + 2,
              data->window.y + 3,                       // move the pad 2 units down and show borders
              data->window.x + 2,                       // move the pad 2 units right and show borders
              data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,

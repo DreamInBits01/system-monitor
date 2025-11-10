@@ -16,4 +16,9 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
 void cleanup_processes(Process **processes);
 void cleanup_y_to_pid(YToPid **y_to_pid);
 void read_processes_data(DIR *fd, ProcessesBlock *data);
+void remove_process_highlight(ProcessesBlock *data);
+void refresh_processes_pad(ProcessesBlock *data, unsigned processes_count);
+void handle_manual_process_selection(AppContext *ctx);
+void show_process_information(Process *process, Window *window, WINDOW *virtual_pad, int y);
+
 #endif

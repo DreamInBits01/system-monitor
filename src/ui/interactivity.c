@@ -56,7 +56,7 @@ void *interactivity_routine(void *data)
                 // read_processes(&ctx->processes, ctx->processes_count);
                 // werase(ctx->pad_config.itself);
                 // show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
-                // refresh_pad(&ctx->pad_config, ctx->processes_count);
+                // refresh_processes_pad(&ctx->pad_config, ctx->processes_count);
             }
 
             if (ctx->processes_block->selected_process->pid == getpid())
@@ -87,14 +87,14 @@ void *interactivity_routine(void *data)
         //     if (ctx->processes_block->virtual_pad.x < ctx->processes_block->virtual_pad.width)
         //     {
         //         ctx->processes_block->virtual_pad.x += 2;
-        //         refresh_pad(ctx->processes_block, ctx->processes_count);
+        //         refresh_processes_pad(ctx->processes_block, ctx->processes_count);
         //     }
         //     break;
         // case KEY_LEFT:
         //     if (ctx->processes_block->virtual_pad.x > 0)
         //     {
         //         ctx->processes_block->virtual_pad.x -= 2;
-        //         refresh_pad(ctx->processes_block, ctx->processes_count);
+        //         refresh_processes_pad(ctx->processes_block, ctx->processes_count);
         //     }
         //     break;
         case KEY_UP:

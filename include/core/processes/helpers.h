@@ -18,5 +18,8 @@ void read_process_cpu_usage(FILE *fd, Process *found_process);
 void read_process_location(char *stat_path, char **destination);
 void read_process_stat(char *ep_name, Process *process);
 void parse_processes_dir(struct dirent *ep, void *data);
+void draw_processes_window(ProcessesBlock *data);
+void highlight_process(ProcessesBlock *data);
+void update_interactivity_metadata(ProcessesBlock *data, int processes_count);
 
 #endif

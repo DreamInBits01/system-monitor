@@ -53,7 +53,6 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     }
     *get_process_faild = false;
 }
-
 void mark_y_to_pid_unseen(YToPid **y_to_pid)
 {
     YToPid *y_to_pid_entry;
@@ -74,7 +73,6 @@ void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
         }
     }
 }
-
 void read_uptime(double *uptime, double *idle_time)
 {
     FILE *proc_uptime = fopen("/proc/uptime", "r");
@@ -83,7 +81,6 @@ void read_uptime(double *uptime, double *idle_time)
     fscanf(proc_uptime, "%lf %lf", uptime, idle_time);
     fclose(proc_uptime);
 }
-
 void read_process_cpu_usage(FILE *fd, Process *found_process)
 {
     rewind(fd);

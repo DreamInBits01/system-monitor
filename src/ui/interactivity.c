@@ -83,20 +83,6 @@ void *interactivity_routine(void *data)
             }
             ctx->sort_menu.visible = !ctx->sort_menu.visible;
             break;
-        // case KEY_RIGHT:
-        //     if (ctx->processes_block->virtual_pad.x < ctx->processes_block->virtual_pad.width)
-        //     {
-        //         ctx->processes_block->virtual_pad.x += 2;
-        //         refresh_processes_pad(ctx->processes_block, ctx->processes_count);
-        //     }
-        //     break;
-        // case KEY_LEFT:
-        //     if (ctx->processes_block->virtual_pad.x > 0)
-        //     {
-        //         ctx->processes_block->virtual_pad.x -= 2;
-        //         refresh_processes_pad(ctx->processes_block, ctx->processes_count);
-        //     }
-        //     break;
         case KEY_UP:
             if (ctx->processes_block->virtual_pad.y > 0 && ctx->sort_menu.visible == false)
             {

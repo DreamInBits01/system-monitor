@@ -19,7 +19,7 @@ typedef struct
 {
     char *path;
     char *key;
-    int read_mode;
+    char *read_mode;
     FILE *fd;
     DIR *dir;
     bool is_directory;

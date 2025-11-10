@@ -10,7 +10,7 @@ void cleanup_cached_fds(ProcFile *files, size_t size)
         }
         else
         {
-            close(files[i].fd);
+            fclose(files[i].fd);
         }
     }
 }
@@ -63,9 +63,9 @@ void initialize_fds(ProcFile *destination)
     // a double pointer would require dynamiclly allocated memory which increases complexity
     ProcFile files[CACHED_PROC_FILES_NUMBER] = {
         // PATH,KEY,READ MODE, FD,DIR*, is_directory
-        {"/proc/meminfo", "meminfo", O_RDONLY, -1, 0, false},
-        {"/proc/cpuinfo", "cpuinfo", O_RDONLY, -1, 0, false},
-        {"/proc/", "processes", 0, -1, NULL, true},
+        {"/proc/meminfo", "meminfo", "r", NULL, NULL, false},
+        {"/proc/cpuinfo", "cpuinfo", "r", NULL, NULL, false},
+        {"/proc/", "processes", 0, NULL, NULL, true},
     };
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
     {
@@ -82,7 +82,7 @@ void initialize_fds(ProcFile *destination)
         }
         else
         {
-            destination[i].fd = fopen(files[i].path, "r");
+            destination[i].fd = fopen(files[i].path, files[i].read_mode);
             if (destination[i].fd == NULL)
             {
                 perror(destination[i].path);

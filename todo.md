@@ -13,6 +13,7 @@
 
 - Create a function to handle render when having static and dynamic data
   - cpu
+- There's an issue with the process selection function, i think it's because the pad is starting at x + 3
 
 ## Memory management
 

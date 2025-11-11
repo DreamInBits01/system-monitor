@@ -37,6 +37,7 @@ void remove_unseen_processes(Process **processes, YToPid **y_to_pid)
             {
                 HASH_DEL(*y_to_pid, corresponding_y_to_pid);
             }
+            free(corresponding_y_to_pid);
             HASH_DEL(*processes, current_process);
             cleanup_process(current_process);
         }
@@ -46,7 +47,6 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
 {
     // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
     YToPid *found_y_to_pid_entry;
-    Process *previous_process = *output;
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
     if (found_y_to_pid_entry == NULL)
         *get_process_faild = true;
@@ -54,11 +54,12 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
     if (*output == NULL)
     {
-        // to not go out of boundry;
-        *output = previous_process;
         *get_process_faild = true;
     }
-    *get_process_faild = false;
+    else
+    {
+        *get_process_faild = false;
+    }
 }
 void mark_y_to_pid_unseen(YToPid **y_to_pid)
 {
@@ -249,7 +250,12 @@ void draw_processes_window(ProcessesBlock *data)
         data->window.height - 1,
         2,
         "%d/%d", data->virtual_pad.y,
-        data->processes_count);
+        data->processes_count - 1);
+    mvwprintw(
+        data->window.itself,
+        0,
+        15,
+        "%d", data->selected_process->pid);
     mvwprintw(data->window.itself, 2, 2, "PID");
     mvwprintw(data->window.itself, 2, data->window.width * .16, "Name");
     mvwprintw(data->window.itself, 2, data->window.width * .5, "CPU");

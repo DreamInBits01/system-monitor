@@ -55,6 +55,11 @@ void show_processes(ProcessesBlock *data)
         }
         // used when mapping from y to pid
         process->y = line_height;
+        if (data->selected_process == NULL && line_height == 0)
+        {
+            data->selected_process_y = line_height;
+            handle_manual_process_selection(data);
+        }
         // get ready for the next operation
         process = process->hh.next;
         line_height++;
@@ -88,13 +93,6 @@ void refresh_processes_pad(ProcessesBlock *data, unsigned processes_count)
         data->virtual_pad.y = processes_count - 1;
     }
     draw_processes_window(data);
-    // prefresh(data->virtual_pad.itself,
-    //          data->virtual_pad.y, data->virtual_pad.x + 2,
-    //          data->window.y + 3,                       // move the pad 2 units down and show borders
-    //          data->window.x + 2,                       // move the pad 2 units right and show borders
-    //          data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
-    //          data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
-    // );
     if (data->virtual_pad.y > data->virtual_pad.viewport_bottom)
     {
         data->virtual_pad.viewport_top += data->window.height - 4;
@@ -107,28 +105,28 @@ void refresh_processes_pad(ProcessesBlock *data, unsigned processes_count)
     }
     prefresh(data->virtual_pad.itself,
              data->virtual_pad.viewport_top, data->virtual_pad.x + 2,
-             data->window.y + 3,                       // move the pad 2 units down and show borders
+             data->window.y + 3,                       // move the pad 3 units down and show borders
              data->window.x + 2,                       // move the pad 2 units right and show borders
              data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
              data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
     );
 }
-void handle_manual_process_selection(AppContext *ctx)
+void handle_manual_process_selection(ProcessesBlock *data)
 {
     // get new selected process
     get_selected_process(
-        &ctx->processes_block->processes,
-        &ctx->processes_block->y_to_pid,
-        &ctx->processes_block->selected_process,
-        &ctx->processes_block->get_process_faild,
-        ctx->processes_block->selected_process_y);
+        &data->processes,
+        &data->y_to_pid,
+        &data->selected_process,
+        &data->get_process_faild,
+        data->selected_process_y);
     // add highlighting if successful
-    if (!ctx->processes_block->get_process_faild)
+    if (!data->get_process_faild)
     {
-        ctx->processes_block->virtual_pad.y = ctx->processes_block->selected_process_y;
-        highlight_process(ctx->processes_block);
+        data->virtual_pad.y = data->selected_process_y;
+        highlight_process(data);
         // refresh
-        refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+        refresh_processes_pad(data, data->processes_count);
 
         // visible elements are in the range of pad view height
         // create a viewport_top (cursor position, starts at 0), viewport_bottom (viewtop+pad_view.height)

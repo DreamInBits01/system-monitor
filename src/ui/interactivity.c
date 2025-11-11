@@ -90,7 +90,7 @@ void *interactivity_routine(void *data)
                 remove_process_highlight(ctx->processes_block);
                 // next process's y
                 ctx->processes_block->selected_process_y = ctx->processes_block->virtual_pad.y - 1;
-                handle_manual_process_selection(ctx);
+                handle_manual_process_selection(ctx->processes_block);
             }
             break;
         case KEY_DOWN:
@@ -100,7 +100,7 @@ void *interactivity_routine(void *data)
                 remove_process_highlight(ctx->processes_block);
                 // next process's y
                 ctx->processes_block->selected_process_y = ctx->processes_block->virtual_pad.y + 1;
-                handle_manual_process_selection(ctx);
+                handle_manual_process_selection(ctx->processes_block);
             };
             break;
         case KEY_HOME:
@@ -108,7 +108,7 @@ void *interactivity_routine(void *data)
             remove_process_highlight(ctx->processes_block);
             // next process's y
             ctx->processes_block->selected_process_y = 0;
-            handle_manual_process_selection(ctx);
+            handle_manual_process_selection(ctx->processes_block);
 
             break;
             // case KEY_END:
@@ -120,7 +120,7 @@ void *interactivity_routine(void *data)
             //     // ctx->processes_block->window.y =
             //     ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
 
-            //     handle_manual_process_selection(ctx);
+            //     handle_manual_process_selection(ctx->processes_block);
             //     break;
         }
         flushinp();

@@ -31,6 +31,7 @@ void show_processes(ProcessesBlock *data)
         }
         else
         {
+            found_y_to_pid_entry->y = line_height;
             found_y_to_pid_entry->seen = true;
         }
 

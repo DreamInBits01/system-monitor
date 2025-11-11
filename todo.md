@@ -14,6 +14,9 @@
 - Create a function to handle render when having static and dynamic data
   - cpu
 - There's an issue with the process selection function, i think it's because the pad is starting at x + 3
+  - The issue is happening because I'm refreshing the pad which creates new y for each process
+  - I'm assigning the y only in the show_processes
+  - So the used y is redundent
 
 ## Memory management
 

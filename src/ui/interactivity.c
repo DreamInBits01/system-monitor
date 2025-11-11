@@ -111,14 +111,19 @@ void *interactivity_routine(void *data)
             handle_manual_process_selection(ctx);
 
             break;
-        case KEY_END:
-            // remove highlighting
-            remove_process_highlight(ctx->processes_block);
-            // next process's y
-            ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
-            handle_manual_process_selection(ctx);
-            break;
+            // case KEY_END:
+            //     // remove highlighting
+            //     remove_process_highlight(ctx->processes_block);
+            //     // next process's y
+            //     ctx->processes_block->virtual_pad.viewport_top = ctx->processes_block->processes_count;
+            //     ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->processes_count;
+            //     // ctx->processes_block->window.y =
+            //     ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
+
+            //     handle_manual_process_selection(ctx);
+            //     break;
         }
+        flushinp();
         pthread_mutex_unlock(&ctx->mutex);
         // usleep(50000);
         nanosleep(&delay, NULL);

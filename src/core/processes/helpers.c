@@ -23,15 +23,22 @@ void mark_processes_unseen(Process **processes)
         process->seen = false;
     }
 };
-void remove_unseen_processes(Process **processes)
+void remove_unseen_processes(Process **processes, YToPid **y_to_pid)
 {
-    Process *current, *tmp;
-    HASH_ITER(hh, *processes, current, tmp)
+    Process *current_process, *tmp_process;
+    YToPid *corresponding_y_to_pid;
+    HASH_ITER(hh, *processes, current_process, tmp_process)
     {
-        if (current->seen == false)
+        if (current_process->seen == false)
         {
-            HASH_DEL(*processes, current);
-            cleanup_process(current);
+            // need to delete the line height of the unseen process
+            HASH_FIND_INT(*y_to_pid, &current_process->y, corresponding_y_to_pid);
+            if (corresponding_y_to_pid != NULL)
+            {
+                HASH_DEL(*y_to_pid, corresponding_y_to_pid);
+            }
+            HASH_DEL(*processes, current_process);
+            cleanup_process(current_process);
         }
     }
 };

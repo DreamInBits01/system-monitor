@@ -7,7 +7,7 @@ void read_processes_data(DIR *fd, ProcessesBlock *data)
         fd,
         parse_processes_dir,
         data);
-    remove_unseen_processes(&data->processes);
+    remove_unseen_processes(&data->processes, &data->y_to_pid);
     data->processes_count = HASH_COUNT(data->processes);
 }
 void show_processes(ProcessesBlock *data)
@@ -31,7 +31,6 @@ void show_processes(ProcessesBlock *data)
         }
         else
         {
-            found_y_to_pid_entry->y = line_height;
             found_y_to_pid_entry->seen = true;
         }
 

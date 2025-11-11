@@ -53,6 +53,7 @@ void cleanup_context(AppContext *ctx)
     del_panel(ctx->sort_menu.panel);
     // ctx
     pthread_mutex_destroy(&ctx->mutex);
+    // pthread_cond_destroy(&ctx->cv);
     free(ctx);
     endwin();
 }
@@ -175,4 +176,5 @@ void initialize_context(AppContext *ctx)
     // ctx mutex
     ctx->running = 1;
     pthread_mutex_init(&ctx->mutex, NULL);
+    // pthread_cond_init(&ctx->cv, NULL);
 }

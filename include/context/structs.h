@@ -31,11 +31,14 @@ typedef struct
     ProcessesBlock *processes_block;
     ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
     pthread_mutex_t mutex;
+    // pthread_cond_t cv;
     SortMenu sort_menu;
     int max_rows;
     int max_cols;
     unsigned bar_width;
     volatile int running;
+    // bool is_interactivty_active;
+    // bool is_render_active;
 } AppContext;
 
 #endif

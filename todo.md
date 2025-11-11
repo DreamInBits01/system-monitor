@@ -17,6 +17,7 @@
   - The issue is happening because I'm refreshing the pad which creates new y for each process
   - I'm assigning the y only in the show_processes
   - So the used y is redundent
+- need to delete the line height of the unseen process
 
 ## Memory management
 

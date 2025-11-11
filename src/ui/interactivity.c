@@ -17,7 +17,7 @@ void *interactivity_routine(void *data)
     AppContext *ctx = (AppContext *)data;
     struct timespec delay = {
         .tv_sec = 0,
-        .tv_nsec = 90000000};
+        .tv_nsec = 50000000};
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);

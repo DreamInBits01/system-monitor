@@ -10,7 +10,7 @@
 int is_numeric(char *name);
 void cleanup_process(Process *process);
 void mark_processes_unseen(Process **processes);
-void remove_unseen_processes(Process **processes);
+void remove_unseen_processes(Process **processes, YToPid **y_to_pid);
 void mark_y_to_pid_unseen(YToPid **y_to_pid);
 void remove_y_to_pid_unseen_entries(YToPid **y_to_pid);
 void read_process_name(FILE *fd, char **destination);

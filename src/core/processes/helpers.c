@@ -49,17 +49,18 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     YToPid *found_y_to_pid_entry;
     HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
     if (found_y_to_pid_entry == NULL)
+    {
         *get_process_faild = true;
+        return;
+    }
 
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
     if (*output == NULL)
     {
         *get_process_faild = true;
+        return;
     }
-    else
-    {
-        *get_process_faild = false;
-    }
+    *get_process_faild = false;
 }
 void mark_y_to_pid_unseen(YToPid **y_to_pid)
 {
@@ -283,16 +284,6 @@ void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {
     mvwprintw(data->window.itself, 1, 2, "Count:%d", processes_count);
     mvwprintw(data->window.itself, 1, 25, "Scrolled:%.0f%%", (float)data->virtual_pad.y / (processes_count - 1) * 100);
-}
-void remove_process_highlight(ProcessesBlock *data)
-{
-    if (data->selected_process == NULL || data->get_process_faild)
-        return;
-    show_process_information(
-        data->selected_process,
-        &data->window,
-        data->virtual_pad.itself,
-        data->virtual_pad.y);
 }
 void highlight_process(ProcessesBlock *data)
 {

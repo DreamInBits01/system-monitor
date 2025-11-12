@@ -37,13 +37,8 @@ void show_processes(ProcessesBlock *data)
         // render
         if (line_height == data->virtual_pad.y)
         {
-            wattron(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
-            show_process_information(
-                process,
-                &data->window,
-                data->virtual_pad.itself,
-                line_height);
-            wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+            // wattron(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
+            highlight_process(data);
         }
         else
         {
@@ -93,23 +88,30 @@ void refresh_processes_pad(ProcessesBlock *data, unsigned processes_count)
         data->virtual_pad.y = processes_count - 1;
     }
     draw_processes_window(data);
-    if (data->virtual_pad.y > data->virtual_pad.viewport_bottom)
-    {
-        data->virtual_pad.viewport_top += data->window.height - 4;
-        data->virtual_pad.viewport_bottom += data->window.height - 4;
-    }
-    else if (data->virtual_pad.y < data->virtual_pad.viewport_top)
-    {
-        data->virtual_pad.viewport_top -= data->window.height - 4;
-        data->virtual_pad.viewport_bottom -= data->window.height - 4;
-    }
     prefresh(data->virtual_pad.itself,
-             data->virtual_pad.viewport_top, data->virtual_pad.x + 2,
+             data->virtual_pad.y, data->virtual_pad.x + 2,
              data->window.y + 3,                       // move the pad 3 units down and show borders
              data->window.x + 2,                       // move the pad 2 units right and show borders
              data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
              data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
     );
+    // if (data->virtual_pad.y > data->virtual_pad.viewport_bottom)
+    // {
+    //     data->virtual_pad.viewport_top += data->window.height - 4;
+    //     data->virtual_pad.viewport_bottom += data->window.height - 4;
+    // }
+    // else if (data->virtual_pad.y < data->virtual_pad.viewport_top)
+    // {
+    //     data->virtual_pad.viewport_top -= data->window.height - 4;
+    //     data->virtual_pad.viewport_bottom -= data->window.height - 4;
+    // }
+    // prefresh(data->virtual_pad.itself,
+    //          data->virtual_pad.viewport_top, data->virtual_pad.x + 2,
+    //          data->window.y + 3,                       // move the pad 3 units down and show borders
+    //          data->window.x + 2,                       // move the pad 2 units right and show borders
+    //          data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
+    //          data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
+    // );
 }
 void handle_manual_process_selection(ProcessesBlock *data)
 {
@@ -121,7 +123,7 @@ void handle_manual_process_selection(ProcessesBlock *data)
         &data->get_process_faild,
         data->selected_process_y);
     // add highlighting if successful
-    if (!data->get_process_faild)
+    if (data->selected_process && !data->get_process_faild)
     {
         data->virtual_pad.y = data->selected_process_y;
         highlight_process(data);
@@ -131,6 +133,16 @@ void handle_manual_process_selection(ProcessesBlock *data)
         // visible elements are in the range of pad view height
         // create a viewport_top (cursor position, starts at 0), viewport_bottom (viewtop+pad_view.height)
     }
+}
+void remove_process_highlight(ProcessesBlock *data)
+{
+    if (data->selected_process == NULL || data->get_process_faild)
+        return;
+    show_process_information(
+        data->selected_process,
+        &data->window,
+        data->virtual_pad.itself,
+        data->virtual_pad.y);
 }
 /*
 

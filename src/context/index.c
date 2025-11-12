@@ -158,7 +158,7 @@ void initialize_context(AppContext *ctx)
         ctx->processes_block->window.y,
         ctx->processes_block->window.x);
     // virtual pad
-    // ctx->processes_block->virtual_pad.y=3;
+    ctx->processes_block->virtual_pad.y = 0;
     ctx->processes_block->virtual_pad.height = 500;
     ctx->processes_block->virtual_pad.width = 200;
     ctx->processes_block->virtual_pad.itself = newpad(

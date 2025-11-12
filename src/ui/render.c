@@ -24,7 +24,7 @@ void redraw_screen(AppContext *ctx)
     {
         // only update real y if selection succeeded
         ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
-        handle_manual_process_selection(ctx);
+        handle_manual_process_selection(ctx->processes_block);
     }
     else
     {

@@ -14,7 +14,7 @@ void show_processes(ProcessesBlock *data)
 {
     unsigned line_height = 0;
     Process *process = data->processes;
-    // mark_y_to_pid_unseen(&data->y_to_pid);
+    mark_y_to_pid_unseen(&data->y_to_pid);
     while (line_height < data->virtual_pad.height && process != NULL)
     {
         // map y to process's pid in the y_to_pid
@@ -66,7 +66,7 @@ void show_processes(ProcessesBlock *data)
         process = process->hh.next;
         line_height++;
     }
-    // remove_y_to_pid_unseen_entries(&data->y_to_pid);
+    remove_y_to_pid_unseen_entries(&data->y_to_pid);
 }
 void cleanup_processes(Process **processes)
 {

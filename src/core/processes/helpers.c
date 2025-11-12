@@ -26,18 +26,10 @@ void mark_processes_unseen(Process **processes)
 void remove_unseen_processes(Process **processes, YToPid **y_to_pid)
 {
     Process *current_process, *tmp_process;
-    YToPid *corresponding_y_to_pid;
     HASH_ITER(hh, *processes, current_process, tmp_process)
     {
         if (current_process->seen == false)
         {
-            // need to delete the line height of the unseen process
-            HASH_FIND_INT(*y_to_pid, &current_process->y, corresponding_y_to_pid);
-            if (corresponding_y_to_pid != NULL)
-            {
-                HASH_DEL(*y_to_pid, corresponding_y_to_pid);
-            }
-            free(corresponding_y_to_pid);
             HASH_DEL(*processes, current_process);
             cleanup_process(current_process);
         }
@@ -256,7 +248,7 @@ void draw_processes_window(ProcessesBlock *data)
         data->window.itself,
         0,
         15,
-        "%d", data->selected_process->pid);
+        "%d / %d", data->selected_process->pid, HASH_COUNT(data->y_to_pid));
     mvwprintw(data->window.itself, 2, 2, "PID");
     mvwprintw(data->window.itself, 2, data->window.width * .16, "Name");
     mvwprintw(data->window.itself, 2, data->window.width * .5, "CPU");

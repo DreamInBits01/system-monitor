@@ -18,6 +18,7 @@ void show_processes(ProcessesBlock *data)
     while (line_height < data->virtual_pad.height && process != NULL)
     {
         // map y to process's pid in the y_to_pid
+        process->y = line_height;
         YToPid *found_y_to_pid_entry;
         HASH_FIND_INT(data->y_to_pid, &line_height, found_y_to_pid_entry);
         if (found_y_to_pid_entry == NULL)
@@ -31,13 +32,20 @@ void show_processes(ProcessesBlock *data)
         }
         else
         {
+            /*
+                If there's a found entry, we must check its pid to the current process
+                If they're not equal, then we must update the entry to aim at the new process shown at the same line height
+            */
+            if (process->pid != found_y_to_pid_entry->pid)
+            {
+                found_y_to_pid_entry->pid = process->pid;
+            }
             found_y_to_pid_entry->seen = true;
         }
 
         // render
         if (line_height == data->virtual_pad.y)
         {
-            // wattron(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
             highlight_process(data);
         }
         else
@@ -49,7 +57,6 @@ void show_processes(ProcessesBlock *data)
                 line_height);
         }
         // used when mapping from y to pid
-        process->y = line_height;
         if (data->selected_process == NULL && line_height == 0)
         {
             data->selected_process_y = line_height;

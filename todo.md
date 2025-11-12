@@ -24,6 +24,9 @@
   - However, when i render the items, the y that's going to be used for the first time to show the item is zero, where in fact it should be 3
   - that creates an issue when i use the y that's starting from zero to show processes that are starting with a pad offest of 3
   - the solution is to match the search y with with the offest
+  ***
+  - Possibly the issue is with the show_processes
+    - the corresponding y is not being updated correctly
 
 ## Memory management
 

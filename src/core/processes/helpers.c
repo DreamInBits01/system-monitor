@@ -260,13 +260,6 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
 {
     if (process == NULL || process->exe_path == NULL || process->name == NULL)
         return;
-    // reset what's shown on that location to avoid overlaping
-    // this needs to be separated into a new function
-    // mvwprintw(virtual_pad, y, 2, "%d", 0);
-    // mvwprintw(virtual_pad, y, (window->width * .16), "%s", "\0");
-    // mvwprintw(virtual_pad, y, (window->width * .5), "%.2f", 0);
-    // mvwprintw(virtual_pad, y, (window->width * .6), "%s", "\0");
-
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
     mvwprintw(virtual_pad, y, (window->width * .16), "%s", process->name);
     mvwprintw(virtual_pad, y, (window->width * .5), "%.2f", process->cpu_usage);

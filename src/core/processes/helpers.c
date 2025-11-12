@@ -266,7 +266,7 @@ void draw_processes_window(ProcessesBlock *data)
 }
 void show_process_information(Process *process, Window *window, WINDOW *virtual_pad, int y)
 {
-    if (process->exe_path == NULL || process->name == NULL)
+    if (process == NULL || process->exe_path == NULL || process->name == NULL)
         return;
     // reset what's shown on that location to avoid overlaping
     // this needs to be separated into a new function

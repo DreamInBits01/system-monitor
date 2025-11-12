@@ -27,6 +27,7 @@
   ***
   - Possibly the issue is with the show_processes
     - the corresponding y is not being updated correctly
+  - The issue was with the y_to_pid hash being stale
 
 ## Memory management
 

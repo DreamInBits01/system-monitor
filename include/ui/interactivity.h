@@ -5,5 +5,6 @@
 #include "ui/render.h"
 #include "context/index.h"
 #include "utils.h"
+#include "init.h"
 void *interactivity_routine(void *data);
 #endif

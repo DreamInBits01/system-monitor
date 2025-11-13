@@ -42,6 +42,10 @@ void *interactivity_routine(void *data)
             {
                 perror("Kill faild!\n");
             }
+            if (ctx->processes_block->selected_process->pid == getpid())
+            {
+                goto cleanup;
+            }
             else
             {
                 // YToPid *found_y_to_pid_entry;
@@ -57,11 +61,6 @@ void *interactivity_routine(void *data)
                 // werase(ctx->pad_config.itself);
                 // show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
                 // refresh_processes_pad(&ctx->pad_config, ctx->processes_count);
-            }
-
-            if (ctx->processes_block->selected_process->pid == getpid())
-            {
-                goto cleanup;
             }
             break;
 
@@ -133,5 +132,6 @@ void *interactivity_routine(void *data)
     }
 cleanup:
     cleanup_context(ctx);
+    cleanup_ncurses(ctx);
     return NULL;
 }

@@ -41,7 +41,6 @@ A terminal-based system monitoring tool written in C that provides real-time ins
 - **Interactive Features**
   - Keyboard navigation
   - Scrollable process list
-  - Window focus management
   - Color-coded information
 
 ### 🔧 Technical Features
@@ -78,6 +77,7 @@ A terminal-based system monitoring tool written in C that provides real-time ins
 
 - GCC compiler
 - ncurses library
+- uthash
 - Linux-based system
 - Make utility
 
@@ -99,7 +99,6 @@ make
 ### Navigation
 
 - Arrow keys: Navigate process list
-- Tab: Switch between windows
 - Q: Quit application
 
 ### Windows
@@ -120,10 +119,6 @@ The project uses:
 ## Acknowledgment
 
 This project is for learning purposes, it is inspired by htop & btop
-
-## License
-
-[Your chosen license]
 
 ## Author
 

@@ -17,7 +17,7 @@ void *interactivity_routine(void *data)
     AppContext *ctx = (AppContext *)data;
     struct timespec delay = {
         .tv_sec = 0,
-        .tv_nsec = 50000000};
+        .tv_nsec = 25000000};
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
@@ -107,6 +107,8 @@ void *interactivity_routine(void *data)
             // remove highlighting
             remove_process_highlight(ctx->processes_block);
             // next process's y
+            ctx->processes_block->virtual_pad.viewport_top = 0;
+            ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->window.height - INITIAL_VIEWPORT_BOTTOM_ALIGNMENT;
             ctx->processes_block->selected_process_y = 0;
             handle_manual_process_selection(ctx->processes_block);
 
@@ -115,8 +117,9 @@ void *interactivity_routine(void *data)
             // remove highlighting
             remove_process_highlight(ctx->processes_block);
             // next process's y
-            // ctx->processes_block->virtual_pad.viewport_top = ctx->processes_block->processes_count;
-            // ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->processes_count;
+            // Because the pad is starting from y = 3, the viewport top must be the height of the window, with the added 3 and one to exclude last one viewed from the last viewport
+            ctx->processes_block->virtual_pad.viewport_top = ctx->processes_block->processes_count - ctx->processes_block->window.height + PROCESS_PAD_ALIGNMENT;
+            ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->processes_count - 1;
             // ctx->processes_block->window.y =
             ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
 

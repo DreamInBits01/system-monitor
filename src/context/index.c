@@ -119,7 +119,7 @@ void initialize_context(AppContext *ctx)
         ctx->memory_block->window.y,
         ctx->memory_block->window.x);
     ctx->memory_block->bar_width = ctx->max_cols / 4;
-    // Cpu config
+    // CPU config
     ctx->cpu_block = malloc(sizeof(CPUBlock));
     if (ctx->cpu_block == NULL)
     {
@@ -144,7 +144,6 @@ void initialize_context(AppContext *ctx)
         cleanup_context(ctx);
         exit(1);
     }
-    ctx->processes_block->processes_count = 0;
     ctx->processes_block->y_to_pid = NULL;
     ctx->processes_block->processes = NULL;
     // window
@@ -164,7 +163,8 @@ void initialize_context(AppContext *ctx)
     ctx->processes_block->virtual_pad.itself = newpad(
         ctx->processes_block->virtual_pad.height,
         ctx->processes_block->virtual_pad.width);
-    ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->window.height - 5; // 3 is where the processes list show;
+    //-5 to exclude the first element from the next list
+    ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->window.height - INITIAL_VIEWPORT_BOTTOM_ALIGNMENT;
     ctx->processes_block->virtual_pad.viewport_top = 0;
     // Sort menu
     ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);

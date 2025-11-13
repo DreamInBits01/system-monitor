@@ -95,30 +95,23 @@ void refresh_processes_pad(ProcessesBlock *data, unsigned processes_count)
         data->virtual_pad.y = processes_count - 1;
     }
     draw_processes_window(data);
+    if (data->virtual_pad.y > data->virtual_pad.viewport_bottom)
+    {
+        data->virtual_pad.viewport_top += data->window.height - PROCESS_PAD_ALIGNMENT;
+        data->virtual_pad.viewport_bottom += data->window.height - PROCESS_PAD_ALIGNMENT;
+    }
+    else if (data->virtual_pad.y < data->virtual_pad.viewport_top)
+    {
+        data->virtual_pad.viewport_top -= data->window.height - PROCESS_PAD_ALIGNMENT;
+        data->virtual_pad.viewport_bottom -= data->window.height - PROCESS_PAD_ALIGNMENT;
+    }
     prefresh(data->virtual_pad.itself,
-             data->virtual_pad.y, data->virtual_pad.x + 2,
-             data->window.y + 3,                       // move the pad 3 units down and show borders
+             data->virtual_pad.viewport_top, data->virtual_pad.x + 2,
+             data->window.y + PROCESSES_PAD_OFFSET,    // move the pad 3 units down and show borders
              data->window.x + 2,                       // move the pad 2 units right and show borders
              data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
              data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
     );
-    // if (data->virtual_pad.y > data->virtual_pad.viewport_bottom)
-    // {
-    //     data->virtual_pad.viewport_top += data->window.height - 4;
-    //     data->virtual_pad.viewport_bottom += data->window.height - 4;
-    // }
-    // else if (data->virtual_pad.y < data->virtual_pad.viewport_top)
-    // {
-    //     data->virtual_pad.viewport_top -= data->window.height - 4;
-    //     data->virtual_pad.viewport_bottom -= data->window.height - 4;
-    // }
-    // prefresh(data->virtual_pad.itself,
-    //          data->virtual_pad.viewport_top, data->virtual_pad.x + 2,
-    //          data->window.y + 3,                       // move the pad 3 units down and show borders
-    //          data->window.x + 2,                       // move the pad 2 units right and show borders
-    //          data->window.y + data->window.height - 2, // move the pad 2 units up and show borders,
-    //          data->window.x + data->window.width - 2   // move the pad 2 units left and show borders
-    // );
 }
 void handle_manual_process_selection(ProcessesBlock *data)
 {

@@ -5,11 +5,15 @@
 #include <dirent.h>
 #include "ui_structs.h"
 #include "../../third_party/uthash/src/uthash.h"
-
+#define PROCESSES_PAD_OFFSET 3
+//  OFFSET +1 because y is starting from zero.
+// Making it +2, will prevent the program from skipping the last element from the previous list
+#define PROCESS_PAD_ALIGNMENT 4
+// 5 instead of 4 (PROCESSES_PAD_OFFSET+1) To exclude the first element from the next list
+#define INITIAL_VIEWPORT_BOTTOM_ALIGNMENT 5
 typedef struct
 {
     // 8 bytes
-    // char *name;
     char *exe_path;
     char *name;
     double cpu_time;

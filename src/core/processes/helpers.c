@@ -277,7 +277,8 @@ void highlight_process(ProcessesBlock *data)
         wattron(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
         show_process_information(
             data->selected_process,
-            &data->window, data->virtual_pad.itself,
+            &data->window,
+            data->virtual_pad.itself,
             data->virtual_pad.y);
         wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
     }

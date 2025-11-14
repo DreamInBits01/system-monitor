@@ -1,6 +1,7 @@
 #ifndef MEMORY_HELPERS
 #define MEMORY_HELPERS
-#define KB_TO_GB(x) ((x) / (1024 * 1024))
+// Use floating-point arithmetic
+#define KB_TO_GB(x) ((x) / (1024.0 * 1024.0))
 
 #include <stdio.h>
 #include <string.h>

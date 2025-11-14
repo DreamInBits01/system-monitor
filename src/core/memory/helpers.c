@@ -41,21 +41,21 @@ void parse_memory_line(char *line, void *data)
     MemoryData *memory_data = (MemoryData *)data;
     if (memory_data->total == 0 && strncmp("MemTotal:", line, 9) == 0)
     {
-        float kb;
-        sscanf(line, "MemTotal: %f", &kb);
-        memory_data->total = KB_TO_GB(kb);
+        unsigned long kb;
+        sscanf(line, "MemTotal: %lu", &kb);
+        memory_data->total = (float)KB_TO_GB(kb);
     }
     if (strncmp("MemFree:", line, 8) == 0)
     {
-        float kb;
-        sscanf(line, "MemFree: %f", &kb);
-        memory_data->free = KB_TO_GB(kb);
+        unsigned long kb;
+        sscanf(line, "MemFree: %lu", &kb);
+        memory_data->free = (float)KB_TO_GB(kb);
     }
     if (strncmp("MemAvailable:", line, 13) == 0)
     {
         unsigned long kb;
         sscanf(line, "MemAvailable: %lu", &kb);
-        memory_data->available = KB_TO_GB(kb);
+        memory_data->available = (float)KB_TO_GB(kb);
     }
     if (strncmp("Buffers:", line, 8) == 0)
     {

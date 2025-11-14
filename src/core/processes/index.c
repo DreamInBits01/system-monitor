@@ -43,7 +43,12 @@ void show_processes(ProcessesBlock *data)
         }
 
         // render
-        if (line_height == data->virtual_pad.y)
+        if (data->selected_process == NULL && line_height == 0)
+        {
+            data->selected_process_y = line_height;
+            handle_manual_process_selection(data);
+        }
+        if (line_height == data->virtual_pad.y && data->selected_process != NULL)
         {
             highlight_process(data);
         }
@@ -54,12 +59,6 @@ void show_processes(ProcessesBlock *data)
                 &data->window,
                 data->virtual_pad.itself,
                 line_height);
-        }
-        // used when mapping from y to pid
-        if (data->selected_process == NULL && line_height == 0)
-        {
-            data->selected_process_y = line_height;
-            handle_manual_process_selection(data);
         }
         // get ready for the next operation
         process->y = line_height;

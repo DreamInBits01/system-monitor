@@ -39,6 +39,8 @@ typedef struct
     volatile int running;
     // bool is_interactivty_active;
     // bool is_render_active;
+    struct timespec render_delay;
+    struct timespec interactivity_delay;
 } AppContext;
 
 #endif

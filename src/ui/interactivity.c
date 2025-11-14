@@ -15,9 +15,6 @@
 void *interactivity_routine(void *data)
 {
     AppContext *ctx = (AppContext *)data;
-    struct timespec delay = {
-        .tv_sec = 0,
-        .tv_nsec = 25000000};
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
@@ -48,19 +45,26 @@ void *interactivity_routine(void *data)
             }
             else
             {
-                // YToPid *found_y_to_pid_entry;
-                // HASH_FIND_INT(ctx->y_to_pid, ctx->pad_config.selected_process_y, found_y_to_pid_entry);
-                // if (found_y_to_pid_entry != NULL)
-                // {
-                //     HASH_DEL(ctx->y_to_pid, found_y_to_pid_entry);
-                //     free(found_y_to_pid_entry);
-                // }
-                // HASH_DEL(ctx->processes, ctx->pad_config.selected_process);
-                // free(ctx->pad_config.selected_process);
-                // read_processes(&ctx->processes, ctx->processes_count);
-                // werase(ctx->pad_config.itself);
-                // show_processes(&ctx->processes, &ctx->y_to_pid, ctx->pad_config.itself, ctx->pad_config.height, ctx->pad_config.y);
-                // refresh_processes_pad(&ctx->pad_config, ctx->processes_count);
+                //----
+                // YToPid *corresponding_y_to_pid_entry;
+                // HASH_FIND_INT(ctx->processes_block->y_to_pid, &ctx->processes_block->selected_process_y, corresponding_y_to_pid_entry);
+                // if (corresponding_y_to_pid_entry == NULL)
+                //     return;
+                // HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
+                // free(corresponding_y_to_pid_entry);
+                // HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
+                // free(ctx->processes_block->selected_process);
+                // ctx->processes_block->selected_process = NULL;
+                // mvwprintw(
+                //     ctx->processes_block->virtual_pad.itself,
+                //     ctx->processes_block->selected_process_y,
+                //     0,
+                //     "Deleted");
+                // refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+                //---
+                werase(ctx->processes_block->virtual_pad.itself);
+                show_processes(ctx->processes_block);
+                refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
             }
             break;
 
@@ -125,10 +129,10 @@ void *interactivity_routine(void *data)
             handle_manual_process_selection(ctx->processes_block);
             break;
         }
+        // discard buffered keyboard strokes
         flushinp();
         pthread_mutex_unlock(&ctx->mutex);
-        // usleep(50000);
-        nanosleep(&delay, NULL);
+        nanosleep(&ctx->interactivity_delay, NULL);
     }
 cleanup:
     cleanup_context(ctx);

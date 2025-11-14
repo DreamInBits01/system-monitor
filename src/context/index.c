@@ -176,5 +176,13 @@ void initialize_context(AppContext *ctx)
     // ctx mutex
     ctx->running = 1;
     pthread_mutex_init(&ctx->mutex, NULL);
+    struct timespec interactivity_delay = {
+        .tv_sec = 0,
+        .tv_nsec = 25000000};
+    struct timespec render_delay = {
+        .tv_sec = 2,
+        .tv_nsec = 500000000};
+    ctx->interactivity_delay = interactivity_delay;
+    ctx->render_delay = render_delay;
     // pthread_cond_init(&ctx->cv, NULL);
 }

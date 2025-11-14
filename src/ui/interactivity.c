@@ -137,5 +137,6 @@ void *interactivity_routine(void *data)
 cleanup:
     cleanup_context(ctx);
     cleanup_ncurses(ctx);
+    exit(1);
     return NULL;
 }

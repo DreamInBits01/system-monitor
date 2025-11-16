@@ -8,4 +8,6 @@
 #include "utils.h"
 void read_memory_data(FILE *fd, MemoryData *data);
 void show_memory_data(MemoryBlock *data);
+bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols);
+void cleanup_memory_context(MemoryBlock *data);
 #endif

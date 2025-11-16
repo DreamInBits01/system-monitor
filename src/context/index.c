@@ -38,16 +38,11 @@ void cleanup_context(AppContext *ctx)
 
     // memory
     if (ctx->memory_block != NULL)
-    {
-        delwin(ctx->memory_block->window.itself);
-        free(ctx->memory_block);
-    }
+        cleanup_memory_context(ctx->memory_block);
+
     // CPU cleanup
     if (ctx->cpu_block != NULL)
-    {
-        free(ctx->cpu_block);
-        delwin(ctx->cpu_block->window.itself);
-    };
+        cleanup_cpu_context(ctx->cpu_block);
     // sort
     delwin(ctx->sort_menu.window);
     del_panel(ctx->sort_menu.panel);
@@ -103,40 +98,18 @@ void initialize_context(AppContext *ctx)
     // screen
     getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
     initialize_fds(ctx->proc_files);
-    // Memory config
-    ctx->memory_block = malloc(sizeof(MemoryBlock));
-    if (ctx->memory_block == NULL)
+    // Memory conf
+    if (!initialize_memory_context(&ctx->memory_block, ctx->max_rows, ctx->max_cols))
     {
         cleanup_context(ctx);
         exit(1);
     }
-    memset(ctx->memory_block, 0, sizeof(MemoryBlock));
-    ctx->memory_block->window.height = ctx->max_rows * .25;
-    ctx->memory_block->window.width = ctx->max_cols * .48;
-    ctx->memory_block->window.itself = newwin(
-        ctx->memory_block->window.height,
-        ctx->memory_block->window.width,
-        ctx->memory_block->window.y,
-        ctx->memory_block->window.x);
-    ctx->memory_block->bar_width = ctx->max_cols / 4;
     // CPU config
-    ctx->cpu_block = malloc(sizeof(CPUBlock));
-    if (ctx->cpu_block == NULL)
+    if (!initialize_cpu_context(&ctx->cpu_block, ctx->max_rows, ctx->max_cols))
     {
         cleanup_context(ctx);
         exit(1);
     }
-    memset(ctx->cpu_block, 0, sizeof(CPUBlock));
-    ctx->cpu_block->window.height = ctx->max_rows * .25;
-    ctx->cpu_block->window.width = ctx->max_cols * .48;
-    ctx->cpu_block->window.x = (ctx->max_cols) / 2;
-    ctx->cpu_block->window.y = 0;
-    ctx->cpu_block->window.itself = newwin(
-        ctx->cpu_block->window.height,
-        ctx->cpu_block->window.width,
-        ctx->cpu_block->window.y,
-        ctx->cpu_block->window.x);
-
     // Processes block
     ctx->processes_block = malloc(sizeof(ProcessesBlock));
     if (ctx->processes_block == NULL)

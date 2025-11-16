@@ -46,24 +46,23 @@ void *interactivity_routine(void *data)
             else
             {
                 //----
-                // YToPid *corresponding_y_to_pid_entry;
-                // HASH_FIND_INT(ctx->processes_block->y_to_pid, &ctx->processes_block->selected_process_y, corresponding_y_to_pid_entry);
-                // if (corresponding_y_to_pid_entry == NULL)
-                //     return;
-                // HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
-                // free(corresponding_y_to_pid_entry);
-                // HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
-                // free(ctx->processes_block->selected_process);
-                // ctx->processes_block->selected_process = NULL;
-                // mvwprintw(
-                //     ctx->processes_block->virtual_pad.itself,
-                //     ctx->processes_block->selected_process_y,
-                //     0,
-                //     "Deleted");
-                // refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
-                //---
-                werase(ctx->processes_block->virtual_pad.itself);
-                show_processes(ctx->processes_block);
+                YToPid *corresponding_y_to_pid_entry;
+                HASH_FIND_INT(ctx->processes_block->y_to_pid, &ctx->processes_block->selected_process_y, corresponding_y_to_pid_entry);
+                if (corresponding_y_to_pid_entry == NULL)
+                    return;
+                HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
+                free(corresponding_y_to_pid_entry);
+                HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
+                free(ctx->processes_block->selected_process);
+                ctx->processes_block->selected_process = NULL;
+                wattron(ctx->processes_block->virtual_pad.itself, COLOR_RED);
+                mvwprintw(
+                    ctx->processes_block->virtual_pad.itself,
+                    ctx->processes_block->selected_process_y,
+                    2,
+                    "Deleted");
+                wattroff(ctx->processes_block->virtual_pad.itself, COLOR_RED);
+                refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
                 refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
             }
             break;
@@ -71,7 +70,6 @@ void *interactivity_routine(void *data)
         case KEY_F(3):
             if (ctx->sort_menu.visible)
             {
-                clear();
                 hide_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
@@ -82,7 +80,6 @@ void *interactivity_routine(void *data)
                 top_panel(ctx->sort_menu.panel);
                 update_panels();
                 doupdate();
-                redraw_screen(ctx);
             }
             ctx->sort_menu.visible = !ctx->sort_menu.visible;
             break;
@@ -136,7 +133,7 @@ void *interactivity_routine(void *data)
     }
 cleanup:
     cleanup_context(ctx);
-    cleanup_ncurses(ctx);
+    cleanup_ncurses();
     exit(1);
     return NULL;
 }

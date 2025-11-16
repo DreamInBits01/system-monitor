@@ -3,6 +3,7 @@ void redraw_screen(AppContext *ctx)
 {
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     // clear();
+
     read_memory_data(
         find_proc_file_fd(ctx->proc_files, "meminfo"),
         &ctx->memory_block->data);
@@ -31,6 +32,12 @@ void redraw_screen(AppContext *ctx)
         refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
     }
     // show data
+    // if (ctx->sort_menu.visible)
+    // {
+    //     top_panel(ctx->sort_menu.panel);
+    //     update_panels();
+    //     doupdate();
+    // }
     show_memory_data(ctx->memory_block);
     update_cpu_block(ctx->cpu_block);
 }

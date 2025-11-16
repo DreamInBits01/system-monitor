@@ -1,0 +1,10 @@
+Functional requirement:
+-Show CPU cores
+-Show per core usage
+
+Context 
+-Parse /proc/stat
+
+Mechanismes
+-Count number of cores during context initialization  
+-Allocate an array to hold cores' data  (active time, idle time, usage_percentage)

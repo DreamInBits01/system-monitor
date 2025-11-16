@@ -43,7 +43,7 @@ void show_processes(ProcessesBlock *data)
         }
 
         // render
-        if (data->selected_process == NULL && line_height == 0)
+        if (data->selected_process == NULL && line_height == 0 && data->selected_process_y == 0)
         {
             data->selected_process_y = line_height;
             handle_manual_process_selection(data);

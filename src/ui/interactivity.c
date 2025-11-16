@@ -45,7 +45,6 @@ void *interactivity_routine(void *data)
             }
             else
             {
-                //----
                 YToPid *corresponding_y_to_pid_entry;
                 HASH_FIND_INT(ctx->processes_block->y_to_pid, &ctx->processes_block->selected_process_y, corresponding_y_to_pid_entry);
                 if (corresponding_y_to_pid_entry == NULL)
@@ -55,13 +54,13 @@ void *interactivity_routine(void *data)
                 HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
                 free(ctx->processes_block->selected_process);
                 ctx->processes_block->selected_process = NULL;
-                wattron(ctx->processes_block->virtual_pad.itself, COLOR_RED);
+                wattron(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
                 mvwprintw(
                     ctx->processes_block->virtual_pad.itself,
                     ctx->processes_block->selected_process_y,
                     2,
                     "Deleted");
-                wattroff(ctx->processes_block->virtual_pad.itself, COLOR_RED);
+                wattroff(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
                 refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
                 refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
             }

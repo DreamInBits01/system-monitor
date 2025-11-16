@@ -143,6 +143,7 @@ void remove_process_highlight(ProcessesBlock *data)
         data->virtual_pad.itself,
         data->virtual_pad.y);
 }
+
 /*
 
 -if it doesn't exist, you can add it

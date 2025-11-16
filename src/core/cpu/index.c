@@ -37,25 +37,3 @@ void update_cpu_block(CPUBlock *data)
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
 }
-bool initialize_cpu_context(CPUBlock **data, int max_rows, int max_cols)
-{
-    *data = malloc(sizeof(CPUBlock));
-    if (*data == NULL)
-        return false;
-    memset(*data, 0, sizeof(CPUBlock));
-    (*data)->window.height = max_rows * .25;
-    (*data)->window.width = max_cols * .48;
-    (*data)->window.x = (max_cols) / 2;
-    (*data)->window.y = 0;
-    (*data)->window.itself = newwin(
-        (*data)->window.height,
-        (*data)->window.width,
-        (*data)->window.y,
-        (*data)->window.x);
-    return true;
-}
-void cleanup_cpu_context(CPUBlock *data)
-{
-    delwin(data->window.itself);
-    free(data);
-}

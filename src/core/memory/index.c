@@ -26,24 +26,3 @@ void show_memory_data(MemoryBlock *data)
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
 }
-bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
-{
-    *data = malloc(sizeof(MemoryBlock));
-    if (*data == NULL)
-        return false;
-    memset(*data, 0, sizeof(MemoryBlock));
-    (*data)->window.height = max_rows * .25;
-    (*data)->window.width = max_cols * .48;
-    (*data)->window.itself = newwin(
-        (*data)->window.height,
-        (*data)->window.width,
-        (*data)->window.y,
-        (*data)->window.x);
-    (*data)->bar_width = max_cols / 4;
-    return true;
-}
-void cleanup_memory_context(MemoryBlock *data)
-{
-    delwin(data->window.itself);
-    free(data);
-}

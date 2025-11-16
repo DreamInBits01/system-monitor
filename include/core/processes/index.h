@@ -20,5 +20,4 @@ void remove_process_highlight(ProcessesBlock *data);
 void refresh_processes_pad(ProcessesBlock *data, unsigned processes_count);
 void handle_manual_process_selection(ProcessesBlock *data);
 void show_process_information(Process *process, Window *window, WINDOW *virtual_pad, int y);
-
 #endif

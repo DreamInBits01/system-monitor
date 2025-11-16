@@ -14,12 +14,13 @@ void cleanup_context(AppContext *ctx)
     // CPU cleanup
     if (ctx->cpu_block != NULL)
         cleanup_cpu_context(ctx->cpu_block);
-    // sort
-    delwin(ctx->sort_menu.window);
-    del_panel(ctx->sort_menu.panel);
+
+    if (ctx->sort_menu != NULL)
+    {
+        cleanup_sort_menu_context(ctx->sort_menu);
+    }
     // ctx
-    pthread_mutex_destroy(&ctx->mutex);
-    // pthread_cond_destroy(&ctx->cv);
+    cleanup_threads_context(ctx);
     free(ctx);
     endwin();
 }
@@ -47,22 +48,16 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     // Sort menu
-    ctx->sort_menu.window = newwin(15, 50, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
-    box(ctx->sort_menu.window, 0, 0);
-    mvwaddstr(ctx->sort_menu.window, 1, 1, "Sort");
-    // sort panel
-    ctx->sort_menu.panel = new_panel(ctx->sort_menu.window);
-    ctx->sort_menu.visible = false;
+    if (!initialize_sort_menu_context(&ctx->sort_menu, ctx->max_rows, ctx->max_cols))
+    {
+        cleanup_context(ctx);
+        exit(1);
+    }
     // ctx mutex
+    if (!initialize_threads_context(ctx))
+    {
+        cleanup_context(ctx);
+        exit(1);
+    }
     ctx->running = 1;
-    pthread_mutex_init(&ctx->mutex, NULL);
-    struct timespec interactivity_delay = {
-        .tv_sec = 0,
-        .tv_nsec = 25000000};
-    struct timespec render_delay = {
-        .tv_sec = 2,
-        .tv_nsec = 500000000};
-    ctx->interactivity_delay = interactivity_delay;
-    ctx->render_delay = render_delay;
-    // pthread_cond_init(&ctx->cv, NULL);
 }

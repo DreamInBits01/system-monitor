@@ -108,6 +108,7 @@ bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_c
     *data = malloc(sizeof(ProcessesBlock));
     if ((*data) == NULL)
         return false;
+    memset(*data, 0, sizeof(ProcessesBlock));
     (*data)->y_to_pid = NULL;
     (*data)->processes = NULL;
     // window
@@ -147,4 +148,47 @@ void cleanup_processes_context(ProcessesBlock *data)
     delwin(data->window.itself);
     delwin(data->virtual_pad.itself);
     free(data);
+}
+// SORT MENU
+bool initialize_sort_menu_context(SortMenu **data, int max_rows, int max_cols)
+{
+    *data = malloc(sizeof(SortMenu));
+    if (*data == NULL)
+        return false;
+
+    memset(*data, 0, sizeof(SortMenu));
+
+    (*data)->window = newwin(15, 50, (max_rows - 15) / 2, (max_cols - 50) / 2);
+    box((*data)->window, 0, 0);
+    mvwaddstr((*data)->window, 1, 1, "Sort");
+    // sort panel
+    (*data)->panel = new_panel((*data)->window);
+    (*data)->visible = false;
+    return true;
+}
+void cleanup_sort_menu_context(SortMenu *data)
+{
+    delwin(data->window);
+    del_panel(data->panel);
+    free(data);
+}
+
+// THREADS
+bool initialize_threads_context(AppContext *ctx)
+{
+    struct timespec interactivity_delay = {
+        .tv_sec = 0,
+        .tv_nsec = 25000000};
+    struct timespec render_delay = {
+        .tv_sec = 2,
+        .tv_nsec = 500000000};
+    ctx->interactivity_delay = interactivity_delay;
+    ctx->render_delay = render_delay;
+    pthread_mutex_init(&ctx->mutex, NULL);
+    return true;
+}
+void cleanup_threads_context(AppContext *ctx)
+{
+    pthread_mutex_destroy(&ctx->mutex);
+    // pthread_cond_destroy(&ctx->cv);
 }

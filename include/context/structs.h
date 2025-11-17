@@ -6,7 +6,7 @@
 #include "core/cpu/structs.h"
 #include "core/processes/structs.h"
 #include "core/memory/structs.h"
-#define CACHED_PROC_FILES_NUMBER 3
+#define CACHED_PROC_FILES_NUMBER 4
 // Sort menu
 /*
 

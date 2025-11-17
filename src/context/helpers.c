@@ -6,10 +6,11 @@ void initialize_fds(ProcFile *destination)
     // define it first here to easily put them inside destination
     //*destination = files wouldn't work as that would change just the first element of the context's array
     // a double pointer would require dynamiclly allocated memory which increases complexity
-    ProcFile files[CACHED_PROC_FILES_NUMBER] = {
+    const ProcFile files[CACHED_PROC_FILES_NUMBER] = {
         // PATH,KEY,READ MODE, FD,DIR*, is_directory
         {"/proc/meminfo", "meminfo", "r", NULL, NULL, false},
         {"/proc/cpuinfo", "cpuinfo", "r", NULL, NULL, false},
+        {"/proc/stat", "procstat", "r", NULL, NULL, false},
         {"/proc/", "processes", 0, NULL, NULL, true},
     };
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
@@ -80,6 +81,7 @@ void cleanup_cpu_context(CPUBlock *data)
     delwin(data->window.itself);
     free(data);
 }
+
 // MEMORY
 bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
 {
@@ -102,6 +104,7 @@ void cleanup_memory_context(MemoryBlock *data)
     delwin(data->window.itself);
     free(data);
 }
+
 // PROCESSES
 bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_cols)
 {
@@ -149,6 +152,7 @@ void cleanup_processes_context(ProcessesBlock *data)
     delwin(data->virtual_pad.itself);
     free(data);
 }
+
 // SORT MENU
 bool initialize_sort_menu_context(SortMenu **data, int max_rows, int max_cols)
 {

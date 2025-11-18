@@ -5,7 +5,7 @@ void read_memory_data(FILE *fd, MemoryData *data)
     proc_file_read_and_parse(
         fd,
         parse_memory_line,
-        data);
+        data, 0);
 }
 void show_memory_data(MemoryBlock *data)
 {

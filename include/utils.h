@@ -52,5 +52,5 @@ bool proc_dir_read_and_parse(DIR *fd, void (*callback)(struct dirent *ep, void *
  *
  * Return: true on success, false if fd is NULL or seek fails
  */
-bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *output), void *output);
+bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *output), void *output, size_t lines_to_skip);
 #endif

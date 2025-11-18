@@ -39,3 +39,8 @@ void parse_static_cpu_data(char *line, void *data)
         static_cpu_data->physical_cores = atoi(line + 12);
     }
 }
+void parse_cpu_cores_count(char *line, size_t *output)
+{
+    if (strncmp(line, "cpu", 3) == 0)
+        *output = *output + 1;
+}

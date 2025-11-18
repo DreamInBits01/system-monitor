@@ -48,4 +48,9 @@
 ## Refactor
 
 - Refactor utils file
-  - Most of the functions belong to the processes feature
+  - Most of the functions belong to the processes feature:DONE
+  - Refactor context:DONE
+
+## Utils
+
+- Add lines to skip argument in proc_file_read_and_parse

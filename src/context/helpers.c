@@ -59,7 +59,7 @@ void cleanup_cached_fds(ProcFile *files, size_t size)
 }
 
 // CPU
-bool initialize_cpu_context(CPUBlock **data, int max_rows, int max_cols)
+bool initialize_cpu_context(CPUBlock **data, FILE *fd, int max_rows, int max_cols)
 {
     *data = malloc(sizeof(CPUBlock));
     if (*data == NULL)
@@ -74,6 +74,7 @@ bool initialize_cpu_context(CPUBlock **data, int max_rows, int max_cols)
         (*data)->window.width,
         (*data)->window.y,
         (*data)->window.x);
+    (*data)->static_data.cpu_cores_count = cpu_cores_count(fd);
     return true;
 }
 void cleanup_cpu_context(CPUBlock *data)

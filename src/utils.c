@@ -43,7 +43,7 @@ bool proc_dir_read_and_parse(DIR *fd, void (*callback)(struct dirent *ep, void *
     }
     return true;
 }
-bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *output), void *output)
+bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *output), void *output, size_t lines_to_skip)
 {
     if (fd == NULL)
     {
@@ -51,7 +51,7 @@ bool proc_file_read_and_parse(FILE *fd, void (*callback)(char *line, void *outpu
         return false;
     }
     // start at the beginning of the file
-    if (fseek(fd, 0, SEEK_SET) < 0)
+    if (fseek(fd, lines_to_skip, SEEK_SET) < 0)
     {
         perror("lseek");
         return false;

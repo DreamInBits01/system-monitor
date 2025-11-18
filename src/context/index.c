@@ -36,7 +36,11 @@ void initialize_context(AppContext *ctx)
         exit(1);
     }
     // CPU config
-    if (!initialize_cpu_context(&ctx->cpu_block, ctx->max_rows, ctx->max_cols))
+    if (!initialize_cpu_context(
+            &ctx->cpu_block,
+            find_proc_file_fd(ctx->proc_files, "procstat"),
+            ctx->max_rows,
+            ctx->max_cols))
     {
         cleanup_context(ctx);
         exit(1);

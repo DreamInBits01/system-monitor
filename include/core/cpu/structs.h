@@ -3,11 +3,10 @@
 #include "ui_structs.h"
 typedef struct
 {
-    size_t usage;
-    size_t heat;
+    int usage;
+    int heat;
     double active_time;
     double idle_time;
-
 } CPUCore;
 // typedef struct
 // {
@@ -25,8 +24,8 @@ typedef struct
 {
     int logical_cpus;
     int physical_cores;
-    char model_name[128];
-    size_t cpu_cores_count;
+    int cpu_cores_count;
+    char model_name[64];
     float avg_mhz;
     CPUCore *cores;
 } CPUData;

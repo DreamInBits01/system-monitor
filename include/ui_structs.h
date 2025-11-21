@@ -7,7 +7,7 @@
 typedef struct
 {
     WINDOW *itself;
-    unsigned height, width, x, y;
+    int height, width, x, y;
     bool hidden;
 } Window;
 typedef struct

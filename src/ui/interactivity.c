@@ -48,7 +48,7 @@ void *interactivity_routine(void *data)
                 YToPid *corresponding_y_to_pid_entry;
                 HASH_FIND_INT(ctx->processes_block->y_to_pid, &ctx->processes_block->selected_process_y, corresponding_y_to_pid_entry);
                 if (corresponding_y_to_pid_entry == NULL)
-                    return;
+                    return NULL;
                 HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
                 free(corresponding_y_to_pid_entry);
                 HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
@@ -134,5 +134,4 @@ cleanup:
     cleanup_context(ctx);
     cleanup_ncurses();
     exit(1);
-    return NULL;
 }

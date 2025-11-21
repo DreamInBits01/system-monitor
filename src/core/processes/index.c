@@ -7,7 +7,7 @@ void read_processes_data(DIR *fd, ProcessesBlock *data)
         fd,
         parse_processes_dir,
         data);
-    remove_unseen_processes(&data->processes, &data->y_to_pid);
+    remove_unseen_processes(&data->processes);
     data->processes_count = HASH_COUNT(data->processes);
 }
 void show_processes(ProcessesBlock *data)

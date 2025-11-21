@@ -28,7 +28,17 @@ void parse_cpuinfo_line(char *line, void *data)
     // model name
     if (strncmp("model name", line, 10) == 0 && strlen(cpu_data->model_name) == 0)
     {
-        strncpy(cpu_data->model_name, line + 13, 128);
+        char *token = strtok(line + 13, " ");
+        while (token != NULL)
+        {
+            if (strncmp(token, "Gen", 3) != 0 && strncmp(token, "Intel(R)", 8) != 0 && strncmp(token, "Core(TM)", 8) != 0)
+            {
+                strcat(cpu_data->model_name, token);
+                strcat(cpu_data->model_name, " ");
+            }
+            token = strtok(NULL, " ");
+        }
+        // cpu_data->model_name[6] = '\0';
     }
     // pyhsical cores
     if (strncmp("cpu cores", line, 9) == 0 && cpu_data->physical_cores == 0)
@@ -36,8 +46,19 @@ void parse_cpuinfo_line(char *line, void *data)
         cpu_data->physical_cores = atoi(line + 12);
     }
 }
-void parse_cpu_cores_count(char *line, size_t *output)
+void parse_procstat_cpu_line(char *line, void *data)
 {
+    CPUData *cpu_data = (CPUData *)data;
+    if (strncmp("cpu", line, 3) == 0)
+    {
+        int index;
+        sscanf(line, "cpu%d", &index);
+        cpu_data->cores[index].usage = index;
+    }
+}
+void parse_cpu_cores_count(char *line, void *output)
+{
+    size_t *count = (size_t *)output;
     if (strncmp(line, "cpu", 3) == 0)
-        *output = *output + 1;
+        *count = *count + 1;
 }

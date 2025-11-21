@@ -23,7 +23,7 @@ void mark_processes_unseen(Process **processes)
         process->seen = false;
     }
 };
-void remove_unseen_processes(Process **processes, YToPid **y_to_pid)
+void remove_unseen_processes(Process **processes)
 {
     Process *current_process, *tmp_process;
     HASH_ITER(hh, *processes, current_process, tmp_process)

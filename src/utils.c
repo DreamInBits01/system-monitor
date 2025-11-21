@@ -1,10 +1,4 @@
 #include "utils.h"
-// int proc_read_buffer_size()
-// {
-//     int cores = sysconf(_SC_NPROCESSORS_ONLN);
-//     int page_size = sysconf(_SC_PAGESIZE);
-
-// }
 FILE *find_proc_file_fd(ProcFile *files, char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)

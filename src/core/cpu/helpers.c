@@ -1,8 +1,10 @@
 #include "core/cpu/helpers.h"
+// void parse_cpu_data(char *line, void *data) {
 
-void parse_dynamic_cpu_data(char *line, void *data)
+// };
+void parse_cpuinfo_line(char *line, void *data)
 {
-    DynamicCpuData *dynamic_cpu_data = (DynamicCpuData *)data;
+    CPUData *cpu_data = (CPUData *)data;
     float total_mhz = 0;
     int mhz_occurrence = 0;
     if (strncmp("cpu MHz", line, 7) == 0)
@@ -17,26 +19,21 @@ void parse_dynamic_cpu_data(char *line, void *data)
     if (mhz_occurrence > 0)
     {
         float avg_mhz = (float)total_mhz / mhz_occurrence;
-        dynamic_cpu_data->avg_mhz = avg_mhz;
+        cpu_data->avg_mhz = avg_mhz;
     }
-}
-void parse_static_cpu_data(char *line, void *data)
-{
-    StaticCpuData *static_cpu_data = (StaticCpuData *)data;
-    // logical CPUs
     if (strncmp("processor", line, 9) == 0)
     {
-        static_cpu_data->logical_cpus++;
+        cpu_data->logical_cpus++;
     }
     // model name
-    if (strncmp("model name", line, 10) == 0 && strlen(static_cpu_data->model_name) == 0)
+    if (strncmp("model name", line, 10) == 0 && strlen(cpu_data->model_name) == 0)
     {
-        strncpy(static_cpu_data->model_name, line + 13, 128);
+        strncpy(cpu_data->model_name, line + 13, 128);
     }
     // pyhsical cores
-    if (strncmp("cpu cores", line, 9) == 0 && static_cpu_data->physical_cores == 0)
+    if (strncmp("cpu cores", line, 9) == 0 && cpu_data->physical_cores == 0)
     {
-        static_cpu_data->physical_cores = atoi(line + 12);
+        cpu_data->physical_cores = atoi(line + 12);
     }
 }
 void parse_cpu_cores_count(char *line, size_t *output)

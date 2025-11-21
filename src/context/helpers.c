@@ -74,11 +74,13 @@ bool initialize_cpu_context(CPUBlock **data, FILE *fd, int max_rows, int max_col
         (*data)->window.width,
         (*data)->window.y,
         (*data)->window.x);
-    (*data)->static_data.cpu_cores_count = cpu_cores_count(fd);
+    (*data)->data.cpu_cores_count = cpu_cores_count(fd);
+    (*data)->data.cores = malloc(((*data)->data.cpu_cores_count + 1) * sizeof(CPUCore));
     return true;
 }
 void cleanup_cpu_context(CPUBlock *data)
 {
+    free(data->data.cores);
     delwin(data->window.itself);
     free(data);
 }

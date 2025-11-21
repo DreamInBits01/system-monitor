@@ -7,12 +7,9 @@ void redraw_screen(AppContext *ctx)
     read_memory_data(
         find_proc_file_fd(ctx->proc_files, "meminfo"),
         &ctx->memory_block->data);
-    read_static_cpu_data(
+    read_cpuinfo_data(
         find_proc_file_fd(ctx->proc_files, "cpuinfo"),
-        &ctx->cpu_block->static_data);
-    read_dynamic_cpu_data(
-        find_proc_file_fd(ctx->proc_files, "cpuinfo"),
-        &ctx->cpu_block->dynamic_data);
+        &ctx->cpu_block->data);
     read_processes_data(
         find_proc_dir_fd(ctx->proc_files, "processes"),
         ctx->processes_block);
@@ -38,8 +35,8 @@ void redraw_screen(AppContext *ctx)
     //     update_panels();
     //     doupdate();
     // }
+    show_cpuinfo_data(ctx->cpu_block);
     show_memory_data(ctx->memory_block);
-    update_cpu_block(ctx->cpu_block);
 }
 void *render_routine(void *data)
 {

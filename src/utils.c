@@ -1,5 +1,5 @@
 #include "utils.h"
-FILE *find_proc_file_fd(ProcFile *files, char *key)
+FILE *find_proc_file_fd(const ProcFile *files, const char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
     {
@@ -10,7 +10,7 @@ FILE *find_proc_file_fd(ProcFile *files, char *key)
     }
     return NULL;
 }
-DIR *find_proc_dir_fd(ProcFile *files, char *key)
+DIR *find_proc_dir_fd(const ProcFile *files, const char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
     {

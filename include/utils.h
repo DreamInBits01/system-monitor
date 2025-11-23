@@ -15,7 +15,7 @@
  *
  * Return: FILE pointer if found, NULL if not found or key matches a directory
  */
-FILE *find_proc_file_fd(ProcFile *files, char *key);
+FILE *find_proc_file_fd(const ProcFile *files, const char *key);
 /**
  * find_proc_dir_fd - Find cached directory descriptor by key
  * @files: Array of cached proc files to search
@@ -26,7 +26,7 @@ FILE *find_proc_file_fd(ProcFile *files, char *key);
  *
  * Return: DIR pointer if found, NULL if not found or key matches a regular file
  */
-DIR *find_proc_dir_fd(ProcFile *files, char *key);
+DIR *find_proc_dir_fd(const ProcFile *files, const char *key);
 /**
  * proc_dir_read_and_parse - Read directory entries and apply callback to each
  * @fd: Open directory stream to read from

@@ -31,26 +31,14 @@
 
 ## Memory management
 
-- Create a block for each part of the ui (memory, cpu, processes): DONE
-- Create an initialization function for each ui block
-- Create a cleanup function for each ui block
-
 ## OPTIMIZATIONS
-
-- cache proc files fds at the beginning:DONE
-  - clean up opened files after:DONE
-- write proc_file_read_and_parse && proc_dir_read_and_parse:DONE
-  - refactor reading functions to use proc_file_read_and_parse && proc_dir_read_and_parse:DONE
-- Cache uptime file and refactor it
 
 ## Systems considerations
 
 ## Refactor
 
-- Refactor utils file
-  - Most of the functions belong to the processes feature:DONE
-  - Refactor context:DONE
+## Core functionality
+
+- Read each CPU core usage
 
 ## Utils
-
-- Add lines to skip argument in proc_file_read_and_parse

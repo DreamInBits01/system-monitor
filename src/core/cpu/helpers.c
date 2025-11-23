@@ -38,7 +38,8 @@ void parse_cpuinfo_line(char *line, void *data)
             }
             token = strtok(NULL, " ");
         }
-        // cpu_data->model_name[6] = '\0';
+        //-1 for starting from zero and -1 for last added " "
+        cpu_data->model_name[strlen(cpu_data->model_name) - 2] = '\0';
     }
     // pyhsical cores
     if (strncmp("cpu cores", line, 9) == 0 && cpu_data->physical_cores == 0)

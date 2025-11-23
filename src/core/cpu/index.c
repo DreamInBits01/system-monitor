@@ -47,8 +47,8 @@ void show_cpu_data(CPUBlock *cpu_block)
     box(cpu_block->window.itself, 0, 0);
     wattroff(cpu_block->window.itself, COLOR_PAIR(4));
     wattron(cpu_block->window.itself, A_BOLD);
-    mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 12, "MhZ:%.2f", cpu_block->data.avg_mhz);
     mvwaddstr(cpu_block->window.itself, 0, 2, cpu_block->data.model_name);
+    mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 10, "MhZ:%d", cpu_block->data.avg_mhz);
     wattroff(cpu_block->window.itself, A_BOLD);
     wrefresh(cpu_block->window.itself);
 }

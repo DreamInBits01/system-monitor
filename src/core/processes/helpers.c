@@ -251,8 +251,9 @@ void draw_processes_window(ProcessesBlock *data)
         "%d", data->selected_process_y);
     mvwprintw(data->window.itself, 2, 2, "PID");
     mvwprintw(data->window.itself, 2, data->window.width * .16, "Name");
-    mvwprintw(data->window.itself, 2, data->window.width * .5, "CPU");
-    mvwprintw(data->window.itself, 2, data->window.width * .6, "Path");
+    mvwprintw(data->window.itself, 2, data->window.width * .4, "CPU");
+    mvwprintw(data->window.itself, 2, data->window.width * .5, "User");
+    mvwprintw(data->window.itself, 2, data->window.width * .65, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
 }
@@ -262,8 +263,8 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
         return;
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
     mvwprintw(virtual_pad, y, (window->width * .16), "%s", process->name);
-    mvwprintw(virtual_pad, y, (window->width * .5), "%.2f", process->cpu_usage);
-    mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->exe_path);
+    mvwprintw(virtual_pad, y, (window->width * .4), "%.2f", process->cpu_usage);
+    mvwprintw(virtual_pad, y, (window->width * .65), "%s", process->exe_path);
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {

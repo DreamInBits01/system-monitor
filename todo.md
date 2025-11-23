@@ -37,6 +37,9 @@
 
 ## Refactor
 
+- For UI components initialization, separate the window/panel etc. creation (create at 0,0)
+  - Create a separate function for resizing to be used in both the initialization and resizing app
+
 ## Core functionality
 
 - Read each CPU core usage

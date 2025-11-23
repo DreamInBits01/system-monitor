@@ -65,10 +65,8 @@ bool initialize_cpu_context(CPUBlock **data, FILE *fd, int max_rows, int max_col
     if (*data == NULL)
         return false;
     memset(*data, 0, sizeof(CPUBlock));
-    (*data)->window.height = max_rows * .25;
-    (*data)->window.width = max_cols * .48;
-    (*data)->window.x = (max_cols) / 2;
-    (*data)->window.y = 0;
+    (*data)->window.height = max_rows * .28;
+    (*data)->window.width = max_cols;
     (*data)->window.itself = newwin(
         (*data)->window.height,
         (*data)->window.width,
@@ -92,8 +90,12 @@ bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
     if (*data == NULL)
         return false;
     memset(*data, 0, sizeof(MemoryBlock));
-    (*data)->window.height = max_rows * .25;
-    (*data)->window.width = max_cols * .48;
+    // (*data)->window.height = max_rows * .25;
+    // (*data)->window.width = max_cols * .48;
+    (*data)->window.y = (int)(max_rows * .28);
+    (*data)->window.x = (int)(max_cols * .55);
+    (*data)->window.height = (int)(.35 * max_rows);
+    (*data)->window.width = (int)(.45 * max_cols);
     (*data)->window.itself = newwin(
         (*data)->window.height,
         (*data)->window.width,

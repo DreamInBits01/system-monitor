@@ -6,16 +6,16 @@ void initialize_ncurses()
     initscr();
     start_color();
     // Colors
-    init_color(10, 255, 122, 48);  // ORANGE
-    init_color(20, 233, 227, 223); // OFFWHITE
+    init_color(40, 255, 122, 48);  // ORANGE
+    init_color(50, 233, 227, 223); // OFFWHITE
     // PAIRS
     //  Status
     init_pair(1, COLOR_GREEN, COLOR_BLACK);
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
     init_pair(3, COLOR_RED, COLOR_BLACK);
     // Borders and frames
-    init_pair(4, 10, COLOR_BLACK); // Orange
-    init_pair(5, 20, COLOR_BLACK); // OFFWHITE
+    init_pair(4, 3, COLOR_BLACK);  // Orange
+    init_pair(5, 50, COLOR_BLACK); // OFFWHITE
     // Headers and titles
     init_pair(6, COLOR_YELLOW, COLOR_BLACK);  // Section titles ("Memory total:", "Model name:")
     init_pair(7, COLOR_MAGENTA, COLOR_BLACK); // Important labels

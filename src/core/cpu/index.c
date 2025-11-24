@@ -25,16 +25,16 @@ void show_cpu_data(CPUBlock *cpu_block)
     {
         if (i < (cpu_block->data.cpu_cores_count / 2))
         {
-            mvwprintw(cpu_block->window.itself, y, 2, "C%d:%.2f%%", i, cpu_block->data.cores[i].usage);
+            mvwprintw(cpu_block->window.itself, y, 2, "C%d:%.1f%%", i, cpu_block->data.cores[i].usage);
         }
         if (i == floor(((cpu_block->data.cpu_cores_count - 1) / 2)))
         {
             y = 0;
-            mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:%.2f%%", i, cpu_block->data.cores[i].usage);
+            mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:%.1f%%", i, cpu_block->data.cores[i].usage);
         }
         else
         {
-            mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:%.2f%%", i, cpu_block->data.cores[i].usage);
+            mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:%.1f%%", i, cpu_block->data.cores[i].usage);
         }
         y++;
     }

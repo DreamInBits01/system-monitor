@@ -55,7 +55,14 @@ void parse_procstat_cpu_line(char *line, void *data)
         unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
         unsigned index;
         int parsed = sscanf(line, "cpu%u %llu %llu %llu %llu %llu %llu %llu",
-                            &index, &user, &nice, &system, &idle, &iowait, &irq, &softirq);
+                            &index,
+                            &user,
+                            &nice,
+                            &system,
+                            &idle,
+                            &iowait,
+                            &irq,
+                            &softirq);
         if (parsed < 8)
             return;
         if (parsed < 11)
@@ -70,7 +77,7 @@ void parse_procstat_cpu_line(char *line, void *data)
         // Calculate delta
         unsigned long long total_time_delta = current_total_time - cpu_data->cores[index].prev_total_time;
         unsigned long long active_time_delta = current_active_time - cpu_data->cores[index].prev_active_time;
-        if (total_time_delta > 50 && cpu_data->cores[index].prev_total_time > 0)
+        if (total_time_delta > 25 && cpu_data->cores[index].prev_total_time > 0)
         {
             double cpu_usage = (double)active_time_delta / (double)total_time_delta * 100;
             cpu_data->cores[index].usage = cpu_usage;

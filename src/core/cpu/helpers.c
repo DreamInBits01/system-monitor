@@ -52,9 +52,32 @@ void parse_procstat_cpu_line(char *line, void *data)
     CPUData *cpu_data = (CPUData *)data;
     if (strncmp("cpu", line, 3) == 0)
     {
-        int index;
-        sscanf(line, "cpu%d", &index);
-        cpu_data->cores[index].usage = index;
+        unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
+        unsigned index;
+        int parsed = sscanf(line, "cpu%u %llu %llu %llu %llu %llu %llu %llu",
+                            &index, &user, &nice, &system, &idle, &iowait, &irq, &softirq);
+        if (parsed < 8)
+            return;
+        if (parsed < 11)
+        {
+            steal = 0;
+            guest = 0;
+            guest_nice = 0;
+        }
+        // Calculate active & idle time
+        unsigned long long current_total_time = user + nice + system + irq + softirq + idle + iowait + steal + guest + guest_nice;
+        unsigned long long current_active_time = current_total_time - idle - iowait;
+        // Calculate delta
+        unsigned long long total_time_delta = current_total_time - cpu_data->cores[index].prev_total_time;
+        unsigned long long active_time_delta = current_active_time - cpu_data->cores[index].prev_active_time;
+        if (total_time_delta > 50 && cpu_data->cores[index].prev_total_time > 0)
+        {
+            double cpu_usage = (double)active_time_delta / (double)total_time_delta * 100;
+            cpu_data->cores[index].usage = cpu_usage;
+        }
+
+        cpu_data->cores[index].prev_active_time = current_active_time;
+        cpu_data->cores[index].prev_total_time = current_total_time;
     }
 }
 void parse_cpu_cores_count(char *line, void *output)

@@ -3,10 +3,10 @@
 #include "ui_structs.h"
 typedef struct
 {
-    int usage;
+    double usage;
     int heat;
-    double active_time;
-    double idle_time;
+    unsigned long long prev_active_time;
+    unsigned long long prev_total_time;
 } CPUCore;
 // typedef struct
 // {

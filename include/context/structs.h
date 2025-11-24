@@ -6,7 +6,7 @@
 #include "core/cpu/structs.h"
 #include "core/processes/structs.h"
 #include "core/memory/structs.h"
-#define CACHED_PROC_FILES_NUMBER 4
+#define CACHED_PROC_FILES_NUMBER 5
 // Sort menu
 /*
 
@@ -34,13 +34,10 @@ typedef struct
     SortMenu *sort_menu;
     ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
     pthread_mutex_t mutex;
-    // pthread_cond_t cv;
     int max_rows;
     int max_cols;
     unsigned bar_width;
     volatile int running;
-    // bool is_interactivty_active;
-    // bool is_render_active;
     struct timespec render_delay;
     struct timespec interactivity_delay;
 } AppContext;

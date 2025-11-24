@@ -11,6 +11,7 @@ void initialize_fds(ProcFile *destination)
         {"/proc/meminfo", "meminfo", "r", NULL, NULL, false},
         {"/proc/cpuinfo", "cpuinfo", "r", NULL, NULL, false},
         {"/proc/stat", "procstat", "r", NULL, NULL, false},
+        {"/proc/uptime", "uptime", "r", NULL, NULL, false},
         {"/proc/", "processes", 0, NULL, NULL, true},
     };
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)

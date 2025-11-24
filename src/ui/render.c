@@ -3,7 +3,6 @@ void redraw_screen(AppContext *ctx)
 {
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     // clear();
-
     read_memory_data(
         find_proc_file_fd(ctx->proc_files, "meminfo"),
         &ctx->memory_block->data);

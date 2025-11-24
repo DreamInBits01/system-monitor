@@ -1,6 +1,7 @@
 #ifndef CPU_STRUCTS_H
 #define CPU_STRUCTS_H
 #include "ui_structs.h"
+#include "core/system/structs.h"
 typedef struct
 {
     double usage;

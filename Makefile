@@ -58,8 +58,8 @@ CORE_SRC = $(SRC_DIR)/core/cpu/index.c \
            $(SRC_DIR)/core/memory/index.c \
            $(SRC_DIR)/core/memory/helpers.c \
            $(SRC_DIR)/core/processes/index.c \
-           $(SRC_DIR)/core/processes/helpers.c
-
+           $(SRC_DIR)/core/processes/helpers.c \
+           $(SRC_DIR)/core/system/index.c 
 # All source files
 SOURCES = $(MAIN_SRC) $(CONTEXT_SRC) $(UTILS_SRC) $(UI_SRC) $(CORE_SRC)
 

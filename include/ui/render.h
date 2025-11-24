@@ -4,6 +4,7 @@
 #include "core/memory/index.h"
 #include "core/cpu/index.h"
 #include "core/processes/index.h"
+#include "core/system/index.h"
 #include "utils.h"
 #include <unistd.h>
 void *render_routine(void *data);

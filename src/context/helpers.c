@@ -96,7 +96,7 @@ bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
     (*data)->window.y = (int)(max_rows * .28);
     (*data)->window.x = (int)(max_cols * .55);
     (*data)->window.height = (int)(.35 * max_rows);
-    (*data)->window.width = (int)(.45 * max_cols);
+    (*data)->window.width = (int)(.46 * max_cols);
     (*data)->window.itself = newwin(
         (*data)->window.height,
         (*data)->window.width,

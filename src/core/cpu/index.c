@@ -75,7 +75,7 @@ void show_cpu_data(CPUBlock *cpu_block)
 //     wattroff(cpu_block->window.itself, A_BOLD);
 //     wrefresh(cpu_block->window.itself);
 // }
-size_t cpu_cores_count(FILE *fd)
+unsigned cpu_cores_count(FILE *fd)
 {
     size_t output = -1;
     proc_file_read_and_parse(

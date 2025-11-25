@@ -25,7 +25,7 @@ typedef struct
 {
     int logical_cpus;
     int physical_cores;
-    int cpu_cores_count;
+    unsigned cpu_cores_count;
     int avg_mhz;
     char model_name[32];
     CPUCore *cores;

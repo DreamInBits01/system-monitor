@@ -1,5 +1,5 @@
 #include "core/cpu/index.h"
-
+#define CPU_USAGE_BAR_WIDTH 10
 void read_cpuinfo_data(FILE *fd, CPUData *data)
 {
     data->logical_cpus = 0;
@@ -20,64 +20,84 @@ void read_procstat_cpu_data(FILE *fd, CPUData *data)
 }
 void show_cpu_data(CPUBlock *cpu_block)
 {
-    int y = 1;
-    for (int i = 0; i < cpu_block->data.cpu_cores_count; i++)
+    int cores_per_page = 6;
+    int pages = (cpu_block->data.cpu_cores_count + 4) / cores_per_page;
+    // int page = 0;
+    /*
+    sol 1
+    -Loop over the number of pages
+    -Then loop over the items in that page (keep j outside)
+
+    sol 2
+    -Breaking point
+    -Current page * 5
+    */
+    for (int page = 0; page < pages; page++)
     {
-        if (i < (cpu_block->data.cpu_cores_count / 2))
+        int y = 1;
+        int start_core = page * cores_per_page;
+        int end_core = start_core + cores_per_page;
+        if (end_core > cpu_block->data.cpu_cores_count)
         {
-            mvwprintw(cpu_block->window.itself, y, 2, "C%d:%.1f%%", i, cpu_block->data.cores[i].usage);
+            end_core = cpu_block->data.cpu_cores_count;
         }
-        if (i == floor(((cpu_block->data.cpu_cores_count - 1) / 2)))
+        for (int core = start_core; core < end_core; core++)
         {
-            y = 0;
-            mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:%.1f%%", i, cpu_block->data.cores[i].usage);
+            float fill = ((float)cpu_block->data.cores[core].usage / 100.0f * CPU_USAGE_BAR_WIDTH);
+            mvwprintw(
+                cpu_block->window.itself,
+                y,
+                2 + page * (cpu_block->window.width / 5),
+                "C%d:",
+                core);
+            cpu_usage_bar(
+                cpu_block->window.itself,
+                fill,
+                CPU_USAGE_BAR_WIDTH,
+                y,
+                2 + page * (cpu_block->window.width / 5) + 3);
+            mvwprintw(
+                cpu_block->window.itself,
+                y,
+                CPU_USAGE_BAR_WIDTH + 6 + page * (cpu_block->window.width / 5),
+                "%.1f%%",
+                cpu_block->data.cores[core].usage);
+            y++;
         }
-        else
-        {
-            mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:%.1f%%", i, cpu_block->data.cores[i].usage);
-        }
-        y++;
     }
 
-    // mvwprintw(cpu_block->window.itself, 1, 1, "Model name: %s", cpu_block->data.model_name);
-    // mvwprintw(cpu_block->window.itself, 2, 1, "Logical CPUs: %d", cpu_block->data.logical_cpus);
-    // mvwprintw(cpu_block->window.itself, 3, 1, "Pyhiscal cores: %d", cpu_block->data.physical_cores);
-    // mvwprintw(cpu_block->window.itself, 4, 1, "Cores: %ld", cpu_block->data.cpu_cores_count);
-    wattron(cpu_block->window.itself, COLOR_PAIR(4));
-    box(cpu_block->window.itself, 0, 0);
-    wattroff(cpu_block->window.itself, COLOR_PAIR(4));
-    wattron(cpu_block->window.itself, A_BOLD);
-    mvwaddstr(cpu_block->window.itself, 0, 2, cpu_block->data.model_name);
-    // print time
-    time_t now;
-    time(&now);
-    struct tm *local_time = localtime(&now);
-    char buffer[80];
-    strftime(buffer, sizeof(buffer), "%H:%M", local_time);
-    mvwprintw(cpu_block->window.itself, 0, (cpu_block->window.width - strlen(buffer)) / 2, "%s", buffer);
-    // print MhZ
-    mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 10, "MhZ:%d", cpu_block->data.avg_mhz);
-    wattroff(cpu_block->window.itself, A_BOLD);
-    wrefresh(cpu_block->window.itself);
+    // for (int i = 0; i < cpu_block->data.cpu_cores_count; i++)
+    // {
+    //     if (i == (current_page * maximum_pages))
+    //     {
+    //         mvwprintw(cpu_block->window.itself, 5, 40 + CPU_USAGE_BAR_WIDTH, "%d", current_page);
+    //         current_page++;
+    //     }
+    //     if (i < (cpu_block->data.cpu_cores_count / 2))
+    //     {
+    //         mvwprintw(cpu_block->window.itself, y, 2, "C%d:", i);
+    //         float fill = ((float)cpu_block->data.cores[i].usage / 100.0f * CPU_USAGE_BAR_WIDTH);
+    //         cpu_usage_bar(cpu_block->window.itself, fill, CPU_USAGE_BAR_WIDTH, y, 4);
+    //         mvwprintw(cpu_block->window.itself, y, CPU_USAGE_BAR_WIDTH + 5, "%.1f%%", cpu_block->data.cores[i].usage);
+    //     }
+    //     if (i == floor(((cpu_block->data.cpu_cores_count - 1) / 2)))
+    //     {
+    //         y = 0;
+    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .25, "C%d:", i);
+    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .25 + CPU_USAGE_BAR_WIDTH, "%.1f%%", cpu_block->data.cores[i].usage);
+    //     }
+    //     else
+    //     {
+    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:", i, cpu_block->data.cores[i].usage);
+    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2 + CPU_USAGE_BAR_WIDTH, "%.1f%%", cpu_block->data.cores[i].usage);
+    //     }
+    //     y++;
+    // }
+    draw_cpu_window(cpu_block);
 }
-// void show_cpuinfo_data(CPUBlock *cpu_block)
-// {
-//     mvwprintw(cpu_block->window.itself, 1, 1, "Model name: %s", cpu_block->data.model_name);
-//     mvwprintw(cpu_block->window.itself, 2, 1, "Logical CPUs: %d", cpu_block->data.logical_cpus);
-//     mvwprintw(cpu_block->window.itself, 3, 1, "Pyhiscal cores: %d", cpu_block->data.physical_cores);
-//     mvwprintw(cpu_block->window.itself, 4, 1, "Cores: %ld", cpu_block->data.cpu_cores_count);
-//     mvwprintw(cpu_block->window.itself, 5, 1, "Avg Mhz:%.2f", cpu_block->data.avg_mhz);
-//     wattron(cpu_block->window.itself, COLOR_PAIR(4));
-//     box(cpu_block->window.itself, 0, 0);
-//     wattroff(cpu_block->window.itself, COLOR_PAIR(4));
-//     wattron(cpu_block->window.itself, A_BOLD);
-//     mvwaddstr(cpu_block->window.itself, 0, 2, "CPU");
-//     wattroff(cpu_block->window.itself, A_BOLD);
-//     wrefresh(cpu_block->window.itself);
-// }
 unsigned cpu_cores_count(FILE *fd)
 {
-    size_t output = -1;
+    size_t output = 0;
     proc_file_read_and_parse(
         fd,
         parse_cpu_cores_count,

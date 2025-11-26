@@ -87,9 +87,77 @@ void parse_procstat_cpu_line(char *line, void *data)
         cpu_data->cores[index].prev_total_time = current_total_time;
     }
 }
+void draw_cpu_window(CPUBlock *cpu_block)
+{
+    wattron(cpu_block->window.itself, COLOR_PAIR(4));
+    box(cpu_block->window.itself, 0, 0);
+    wattroff(cpu_block->window.itself, COLOR_PAIR(4));
+    wattron(cpu_block->window.itself, A_BOLD);
+    mvwaddstr(cpu_block->window.itself, 0, 2, cpu_block->data.model_name);
+    time_t now;
+    time(&now);
+    struct tm *local_time = localtime(&now);
+    char buffer[80];
+    strftime(buffer, sizeof(buffer), "%H:%M", local_time);
+    mvwprintw(cpu_block->window.itself, 0, (cpu_block->window.width - strlen(buffer)) / 2, "%s", buffer);
+    // print MhZ
+    mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 10, "MhZ:%d", cpu_block->data.avg_mhz);
+    wattroff(cpu_block->window.itself, A_BOLD);
+    wrefresh(cpu_block->window.itself);
+}
 void parse_cpu_cores_count(char *line, void *output)
 {
     size_t *count = (size_t *)output;
     if (strncmp(line, "cpu", 3) == 0)
         *count = *count + 1;
+}
+void cpu_usage_bar(WINDOW *window, float fill, int bar_width, int y, int x)
+{
+    mvwaddch(window, y, x, '[');
+    int x_position = x;
+    for (int i = 0; i < bar_width; i++)
+    {
+        x_position = x + i + 1;
+        if (i <= fill)
+        {
+            if (i >= bar_width * .6)
+            {
+                wattron(window, COLOR_PAIR(3)); // red
+                mvwaddch(window, y, x_position, '|');
+                wattroff(window, COLOR_PAIR(3));
+            }
+            else if (i >= bar_width * .3)
+            {
+                wattron(window, COLOR_PAIR(2)); // yellow
+                mvwaddch(window, y, x_position, '|');
+
+                wattroff(window, COLOR_PAIR(2));
+            }
+            // else
+            // {
+            //     wattron(window, COLOR_PAIR(1)); // green
+            //     mvwaddch(window, y, x_position, '|');
+            //     wattroff(window, COLOR_PAIR(1));
+            // }
+            else if (fill > 0)
+            {
+                wattron(window, COLOR_PAIR(1)); // green
+                mvwaddch(window, y, x_position, '|');
+                wattroff(window, COLOR_PAIR(1));
+            }
+        }
+        else
+        {
+            // empty
+            mvwaddch(window, y, x_position, ' ');
+        };
+    }
+    mvwaddch(window, y, x_position, ']');
+}
+void show_cpu_core_information(CPUBlock *cpu_block, int i, int y, int x)
+{
+    mvwprintw(cpu_block->window.itself, y, 2, "C%d:", i);
+    int fill = (int)((float)cpu_block->data.cores[i].usage / 100.0f * CPU_USAGE_BAR_WIDTH);
+    cpu_usage_bar(cpu_block->window.itself, fill, CPU_USAGE_BAR_WIDTH, y, 4);
+    mvwprintw(cpu_block->window.itself, y, CPU_USAGE_BAR_WIDTH + 5, "%d%%", cpu_block->data.cores[i].usage);
 }

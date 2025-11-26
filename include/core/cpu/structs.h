@@ -9,18 +9,6 @@ typedef struct
     unsigned long long prev_active_time;
     unsigned long long prev_total_time;
 } CPUCore;
-// typedef struct
-// {
-//     float avg_mhz;
-//     CPUCore *cores;
-// } DynamicCpuData;
-// typedef struct
-// {
-//     int logical_cpus;
-//     int physical_cores;
-//     char model_name[128];
-//     size_t cpu_cores_count;
-// } StaticCpuData;
 typedef struct
 {
     int logical_cpus;

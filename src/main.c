@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     AppContext *ctx = malloc(sizeof(AppContext));
     memset(ctx, 0, sizeof(AppContext));
 
-    initialize_context(ctx); 
+    initialize_context(ctx);
     pthread_t interactivity_thread_id;
     pthread_t render_thread_id;
 

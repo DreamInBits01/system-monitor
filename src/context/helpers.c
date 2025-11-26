@@ -91,8 +91,6 @@ bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
     if (*data == NULL)
         return false;
     memset(*data, 0, sizeof(MemoryBlock));
-    // (*data)->window.height = max_rows * .25;
-    // (*data)->window.width = max_cols * .48;
     (*data)->window.y = (int)(max_rows * .28);
     (*data)->window.x = (int)(max_cols * .55);
     (*data)->window.height = (int)(.35 * max_rows);
@@ -102,7 +100,7 @@ bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
         (*data)->window.width,
         (*data)->window.y,
         (*data)->window.x);
-    (*data)->bar_width = max_cols / 4;
+    (*data)->bar_width = (*data)->window.width / 5;
     return true;
 }
 void cleanup_memory_context(MemoryBlock *data)

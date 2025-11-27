@@ -1,4 +1,13 @@
 #include "utils.h"
+int digit_count(int digit)
+{
+    int count = 0;
+    while ((digit = digit / 10) != 0)
+    {
+        count++;
+    }
+    return count;
+}
 FILE *find_proc_file_fd(const ProcFile *files, const char *key)
 {
     for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)

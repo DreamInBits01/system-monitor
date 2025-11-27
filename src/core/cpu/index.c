@@ -44,10 +44,11 @@ void show_cpu_data(CPUBlock *cpu_block)
         for (int core = start_core; core < end_core; core++)
         {
             float fill = ((float)cpu_block->data.cores[core].usage / 100.0f * CPU_USAGE_BAR_WIDTH);
+            int start_x = page * (cpu_block->window.width / 5);
             mvwprintw(
                 cpu_block->window.itself,
                 y,
-                2 + page * (cpu_block->window.width / 5),
+                2 + start_x,
                 "C%d:",
                 core);
             cpu_usage_bar(
@@ -55,11 +56,11 @@ void show_cpu_data(CPUBlock *cpu_block)
                 fill,
                 CPU_USAGE_BAR_WIDTH,
                 y,
-                2 + page * (cpu_block->window.width / 5) + 3);
+                2 + start_x + 4 + (digit_count(core) - 1));
             mvwprintw(
                 cpu_block->window.itself,
                 y,
-                CPU_USAGE_BAR_WIDTH + 6 + page * (cpu_block->window.width / 5),
+                CPU_USAGE_BAR_WIDTH + 7 + start_x + (digit_count(core) - 1),
                 "%.1f%%",
                 cpu_block->data.cores[core].usage);
             y++;

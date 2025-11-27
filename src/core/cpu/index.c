@@ -66,34 +66,6 @@ void show_cpu_data(CPUBlock *cpu_block)
             y++;
         }
     }
-
-    // for (int i = 0; i < cpu_block->data.cpu_cores_count; i++)
-    // {
-    //     if (i == (current_page * maximum_pages))
-    //     {
-    //         mvwprintw(cpu_block->window.itself, 5, 40 + CPU_USAGE_BAR_WIDTH, "%d", current_page);
-    //         current_page++;
-    //     }
-    //     if (i < (cpu_block->data.cpu_cores_count / 2))
-    //     {
-    //         mvwprintw(cpu_block->window.itself, y, 2, "C%d:", i);
-    //         float fill = ((float)cpu_block->data.cores[i].usage / 100.0f * CPU_USAGE_BAR_WIDTH);
-    //         cpu_usage_bar(cpu_block->window.itself, fill, CPU_USAGE_BAR_WIDTH, y, 4);
-    //         mvwprintw(cpu_block->window.itself, y, CPU_USAGE_BAR_WIDTH + 5, "%.1f%%", cpu_block->data.cores[i].usage);
-    //     }
-    //     if (i == floor(((cpu_block->data.cpu_cores_count - 1) / 2)))
-    //     {
-    //         y = 0;
-    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .25, "C%d:", i);
-    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .25 + CPU_USAGE_BAR_WIDTH, "%.1f%%", cpu_block->data.cores[i].usage);
-    //     }
-    //     else
-    //     {
-    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2, "C%d:", i, cpu_block->data.cores[i].usage);
-    //         mvwprintw(cpu_block->window.itself, y, cpu_block->window.width * .2 + CPU_USAGE_BAR_WIDTH, "%.1f%%", cpu_block->data.cores[i].usage);
-    //     }
-    //     y++;
-    // }
     draw_cpu_window(cpu_block);
 }
 unsigned cpu_cores_count(FILE *fd)

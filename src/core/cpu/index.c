@@ -56,11 +56,11 @@ void show_cpu_data(CPUBlock *cpu_block)
                 fill,
                 CPU_USAGE_BAR_WIDTH,
                 y,
-                2 + start_x + 4 + (digit_count(core) - 1));
+                2 + start_x + 4 + (count_digits(core) - 1));
             mvwprintw(
                 cpu_block->window.itself,
                 y,
-                CPU_USAGE_BAR_WIDTH + 7 + start_x + (digit_count(core) - 1),
+                CPU_USAGE_BAR_WIDTH + 7 + start_x + (count_digits(core) - 1),
                 "%.1f%%",
                 cpu_block->data.cores[core].usage);
             y++;

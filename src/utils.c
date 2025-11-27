@@ -1,5 +1,5 @@
 #include "utils.h"
-int digit_count(int digit)
+int count_digits(int digit)
 {
     int count = 0;
     while ((digit = digit / 10) != 0)

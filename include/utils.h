@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include "context/structs.h"
 #include "core/processes/structs.h"
-int digit_count(int digit);
+int count_digits(int digit);
 /**
  * find_proc_file_fd - Find cached FILE descriptor by key
  * @files: Array of cached proc files to search

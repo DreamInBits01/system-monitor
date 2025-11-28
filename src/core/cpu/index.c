@@ -32,13 +32,14 @@ void show_cpu_data(CPUBlock *cpu_block)
         int y = 1;
         int start_core = page * cores_per_page;
         int end_core = start_core + cores_per_page;
+        int cpu_usage_bar_width = cpu_block->window.width * .06;
         if (end_core > cpu_block->data.cpu_cores_count)
         {
             end_core = cpu_block->data.cpu_cores_count;
         }
         for (int core = start_core; core < end_core; core++)
         {
-            float fill = ((float)cpu_block->data.cores[core].usage / 100.0f * CORE_USAGE_BAR_WIDTH);
+            float fill = ((float)cpu_block->data.cores[core].usage / 100.0f * cpu_usage_bar_width);
             int start_x = page * (cpu_block->window.width / 5);
             mvwprintw(
                 cpu_block->window.itself,
@@ -50,13 +51,13 @@ void show_cpu_data(CPUBlock *cpu_block)
             cpu_usage_bar(
                 cpu_block->window.itself,
                 fill,
-                CORE_USAGE_BAR_WIDTH,
+                cpu_usage_bar_width,
                 y,
                 2 + start_x + 4 + (count_digits(core) - 1));
             mvwprintw(
                 cpu_block->window.itself,
                 y,
-                CORE_USAGE_BAR_WIDTH + 7 + start_x + (count_digits(core) - 1),
+                2 + cpu_usage_bar_width + 5 + start_x + (count_digits(core) - 1),
                 "%.1f%%",
                 cpu_block->data.cores[core].usage);
             y++;

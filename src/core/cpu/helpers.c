@@ -89,18 +89,22 @@ void parse_procstat_cpu_line(char *line, void *data)
 }
 void draw_cpu_window(CPUBlock *cpu_block)
 {
+    // Add box
     wattron(cpu_block->window.itself, COLOR_PAIR(4));
     box(cpu_block->window.itself, 0, 0);
     wattroff(cpu_block->window.itself, COLOR_PAIR(4));
+    // Add metadata
     wattron(cpu_block->window.itself, A_BOLD);
+    // CPU model
     mvwaddstr(cpu_block->window.itself, 0, 2, cpu_block->data.model_name);
     time_t now;
     time(&now);
     struct tm *local_time = localtime(&now);
     char buffer[80];
     strftime(buffer, sizeof(buffer), "%H:%M", local_time);
+    // Time
     mvwprintw(cpu_block->window.itself, 0, (cpu_block->window.width - strlen(buffer)) / 2, "%s", buffer);
-    // print MhZ
+    // MhZ
     mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 10, "MhZ:%d", cpu_block->data.avg_mhz);
     wattroff(cpu_block->window.itself, A_BOLD);
     wrefresh(cpu_block->window.itself);

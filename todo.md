@@ -42,6 +42,11 @@
 
 ## Core functionality
 
-- Read each CPU core usage
+- Read each CPU core usage:DONE
+- Read total CPU usage
+- Processes
+  - Parse /proc/[pid]/status
+    - Create a line parsing function
+    - Give the parsing function to proc_read_and_parse
 
 ## Utils

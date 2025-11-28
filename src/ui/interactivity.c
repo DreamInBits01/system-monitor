@@ -60,6 +60,8 @@ void *interactivity_routine(void *data)
                     ctx->processes_block->selected_process_y,
                     2,
                     "Deleted");
+                // ctx->processes_block->selected_process_y -= 1;
+                // handle_manual_process_selection(ctx->processes_block);
                 wattroff(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
                 refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
                 refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);

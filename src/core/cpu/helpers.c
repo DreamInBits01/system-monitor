@@ -97,13 +97,16 @@ void draw_cpu_window(CPUBlock *cpu_block)
     wattron(cpu_block->window.itself, A_BOLD);
     // CPU model
     mvwaddstr(cpu_block->window.itself, 0, 2, cpu_block->data.model_name);
+    // Local Time
     time_t now;
     time(&now);
     struct tm *local_time = localtime(&now);
     char buffer[80];
     strftime(buffer, sizeof(buffer), "%H:%M", local_time);
-    // Time
     mvwprintw(cpu_block->window.itself, 0, (cpu_block->window.width - strlen(buffer)) / 2, "%s", buffer);
+    // Uptime
+    mvwprintw(cpu_block->window.itself, cpu_block->window.height - 1, (cpu_block->window.width - 10) / 2, "Uptime: %s", "7d");
+
     // MhZ
     mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 10, "MhZ:%d", cpu_block->data.avg_mhz);
     wattroff(cpu_block->window.itself, A_BOLD);
@@ -157,11 +160,4 @@ void cpu_usage_bar(WINDOW *window, float fill, int bar_width, int y, int x)
         };
     }
     mvwaddch(window, y, x_position, ']');
-}
-void show_cpu_core_information(CPUBlock *cpu_block, int i, int y, int x)
-{
-    mvwprintw(cpu_block->window.itself, y, 2, "C%d:", i);
-    int fill = (int)((float)cpu_block->data.cores[i].usage / 100.0f * CPU_USAGE_BAR_WIDTH);
-    cpu_usage_bar(cpu_block->window.itself, fill, CPU_USAGE_BAR_WIDTH, y, 4);
-    mvwprintw(cpu_block->window.itself, y, CPU_USAGE_BAR_WIDTH + 5, "%d%%", cpu_block->data.cores[i].usage);
 }

@@ -22,6 +22,10 @@ void read_procstat_cpu_data(FILE *fd, CPUData *data)
 void show_cpu_data(CPUBlock *cpu_block)
 {
     int cores_per_page = 6;
+    if (cores_per_page > (cpu_block->window.height - 2))
+    {
+        cores_per_page = cpu_block->window.height - 2;
+    }
     int pages = (cpu_block->data.cpu_cores_count + 4) / cores_per_page;
     for (int page = 0; page < pages; page++)
     {
@@ -65,7 +69,11 @@ void show_cpu_data(CPUBlock *cpu_block)
         CPU_USAGE_BAR_WIDTH,
         cpu_block->window.height - 2,
         2 + 4 + (count_digits(30) - 1));
-    mvwprintw(cpu_block->window.itself, cpu_block->window.height - 2, 2 + CPU_USAGE_BAR_WIDTH + 4 + (count_digits(30) - 1) + 1, "%.1f%%", .3);
+    mvwprintw(
+        cpu_block->window.itself,
+        cpu_block->window.height - 2,
+        2 + CPU_USAGE_BAR_WIDTH + 4 + (count_digits(30) - 1) + 1,
+        "%.1f%%", .3);
     draw_cpu_window(cpu_block);
 }
 unsigned cpu_cores_count(FILE *fd)

@@ -24,7 +24,7 @@ void show_cpu_data(CPUBlock *cpu_block)
     int cores_per_page = 6;
     if (cores_per_page > (cpu_block->window.height - 2))
     {
-        cores_per_page = cpu_block->window.height - 2;
+        cores_per_page = cpu_block->window.height - 3;
     }
     int pages = (cpu_block->data.cpu_cores_count + 4) / cores_per_page;
     for (int page = 0; page < pages; page++)
@@ -76,9 +76,9 @@ void show_cpu_data(CPUBlock *cpu_block)
         "%.1f%%", .3);
     draw_cpu_window(cpu_block);
 }
-unsigned cpu_cores_count(FILE *fd)
+int cpu_cores_count(FILE *fd)
 {
-    size_t output = 0;
+    int output = 0;
     proc_file_read_and_parse(
         fd,
         parse_cpu_cores_count,

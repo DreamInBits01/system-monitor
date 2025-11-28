@@ -11,7 +11,7 @@ void show_memory_data(MemoryBlock *data)
 {
     double used_percent = (data->data.total - data->data.free) / data->data.total * 100;
     // get a fraction and multiply it by the width
-    int memory_bar_fill = (int)((float)used_percent / 100 * data->bar_width);
+    // int memory_bar_fill = (int)((float)used_percent / 100 * data->bar_width);
     mvwprintw(data->window.itself, 1, 1, "Total: %.2fgb", data->data.total);
     mvwprintw(data->window.itself, 1, data->window.width / 3, "Available: %.2fgb", data->data.available);
     mvwprintw(data->window.itself, 3, 1, "Free: %.2fgb", data->data.free);

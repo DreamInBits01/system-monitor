@@ -9,5 +9,5 @@
 void read_cpuinfo_data(FILE *fd, CPUData *data);
 void show_cpu_data(CPUBlock *cpu_block);
 void read_procstat_cpu_data(FILE *fd, CPUData *data);
-unsigned cpu_cores_count(FILE *fd);
+int cpu_cores_count(FILE *fd);
 #endif

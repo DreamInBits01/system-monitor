@@ -148,7 +148,6 @@ void read_process_location(char *ep_name, char **destination)
     {
         *destination = strdup("unknown");
     }
-    // strcat()
     free(exe_path);
 }
 void read_process_name(FILE *fd, char **destination)

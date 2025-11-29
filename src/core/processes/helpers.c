@@ -229,6 +229,19 @@ void parse_processes_dir(struct dirent *ep, void *data)
 }
 void parse_process_status_line(char *line, void *output)
 {
+    Process *process = (Process *)output;
+    if (strncmp(line, "Name:", 5) == 0)
+    {
+    }
+    if (strncmp(line, "State:", 6) == 0)
+    {
+    }
+    if (strncmp(line, "Threads:", 8) == 0)
+    {
+    }
+    if (strncmp(line, "Uid:", 4) == 0)
+    {
+    }
 }
 
 // UI

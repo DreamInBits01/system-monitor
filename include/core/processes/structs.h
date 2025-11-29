@@ -16,6 +16,7 @@ typedef struct
     // 8 bytes
     char *exe_path;
     char *name;
+    char *owner;
     double cpu_time;
     double last_uptime;
     UT_hash_handle hh;

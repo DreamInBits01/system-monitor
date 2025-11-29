@@ -9,71 +9,7 @@ int is_numeric(char *name)
     };
     return 1;
 }
-void cleanup_process(Process *process)
-{
-    free(process->exe_path);
-    free(process->name);
-    free(process);
-}
-void mark_processes_unseen(Process **processes)
-{
-    Process *process;
-    for (process = *processes; process != NULL; process = process->hh.next)
-    {
-        process->seen = false;
-    }
-};
-void remove_unseen_processes(Process **processes)
-{
-    Process *current_process, *tmp_process;
-    HASH_ITER(hh, *processes, current_process, tmp_process)
-    {
-        if (current_process->seen == false)
-        {
-            HASH_DEL(*processes, current_process);
-            cleanup_process(current_process);
-        }
-    }
-};
-void get_selected_process(Process **processes, YToPid **y_to_pid, Process **output, bool *get_process_faild, unsigned target_y)
-{
-    // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
-    YToPid *found_y_to_pid_entry;
-    HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
-    if (found_y_to_pid_entry == NULL)
-    {
-        *get_process_faild = true;
-        return;
-    }
-
-    HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
-    if (*output == NULL)
-    {
-        *get_process_faild = true;
-        return;
-    }
-    *get_process_faild = false;
-}
-void mark_y_to_pid_unseen(YToPid **y_to_pid)
-{
-    YToPid *y_to_pid_entry;
-    for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
-    {
-        y_to_pid_entry->seen = false;
-    };
-}
-void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
-{
-    YToPid *current, *tmp;
-    HASH_ITER(hh, *y_to_pid, current, tmp)
-    {
-        if (current->seen == false)
-        {
-            HASH_DEL(*y_to_pid, current);
-            free(current);
-        }
-    }
-}
+// Reading
 void read_uptime(double *uptime, double *idle_time)
 {
     FILE *proc_uptime = fopen("/proc/uptime", "r");
@@ -197,6 +133,69 @@ void read_process_stat(char *ep_name, Process *process)
     free(stat_path);
     fclose(process_stat_file);
 }
+
+// Processes state housekeeping
+void mark_processes_unseen(Process **processes)
+{
+    Process *process;
+    for (process = *processes; process != NULL; process = process->hh.next)
+    {
+        process->seen = false;
+    }
+};
+void remove_unseen_processes(Process **processes)
+{
+    Process *current_process, *tmp_process;
+    HASH_ITER(hh, *processes, current_process, tmp_process)
+    {
+        if (current_process->seen == false)
+        {
+            HASH_DEL(*processes, current_process);
+            cleanup_process(current_process);
+        }
+    }
+};
+void get_selected_process(Process **processes, YToPid **y_to_pid, Process **output, bool *get_process_faild, unsigned target_y)
+{
+    // map y to pid, then pid, to the corresponding process, then change its attributes shown on the screen
+    YToPid *found_y_to_pid_entry;
+    HASH_FIND_INT(*y_to_pid, &target_y, found_y_to_pid_entry);
+    if (found_y_to_pid_entry == NULL)
+    {
+        *get_process_faild = true;
+        return;
+    }
+
+    HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
+    if (*output == NULL)
+    {
+        *get_process_faild = true;
+        return;
+    }
+    *get_process_faild = false;
+}
+void mark_y_to_pid_unseen(YToPid **y_to_pid)
+{
+    YToPid *y_to_pid_entry;
+    for (y_to_pid_entry = *y_to_pid; y_to_pid_entry != NULL; y_to_pid_entry = y_to_pid_entry->hh.next)
+    {
+        y_to_pid_entry->seen = false;
+    };
+}
+void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
+{
+    YToPid *current, *tmp;
+    HASH_ITER(hh, *y_to_pid, current, tmp)
+    {
+        if (current->seen == false)
+        {
+            HASH_DEL(*y_to_pid, current);
+            free(current);
+        }
+    }
+}
+
+// Parsing
 void parse_processes_dir(struct dirent *ep, void *data)
 {
     ProcessesBlock *processes_data = (ProcessesBlock *)data;
@@ -228,6 +227,11 @@ void parse_processes_dir(struct dirent *ep, void *data)
         }
     }
 }
+void parse_process_status_line(char *line, void *output)
+{
+}
+
+// UI
 void draw_processes_window(ProcessesBlock *data)
 {
     wclear(data->window.itself);
@@ -282,4 +286,11 @@ void highlight_process(ProcessesBlock *data)
             data->virtual_pad.y);
         wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
     }
+}
+// Cleanup
+void cleanup_process(Process *process)
+{
+    free(process->exe_path);
+    free(process->name);
+    free(process);
 }

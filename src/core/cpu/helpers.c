@@ -108,7 +108,7 @@ void draw_cpu_window(CPUBlock *cpu_block)
     mvwprintw(cpu_block->window.itself, cpu_block->window.height - 1, (cpu_block->window.width - 10) / 2, "Uptime: %s", "7d");
 
     // MhZ
-    mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 10, "MhZ:%d", cpu_block->data.avg_mhz);
+    mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 7 - count_digits(cpu_block->data.avg_mhz), "MhZ:%d", cpu_block->data.avg_mhz);
     wattroff(cpu_block->window.itself, A_BOLD);
     wrefresh(cpu_block->window.itself);
 }

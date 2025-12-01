@@ -12,10 +12,9 @@
 
 int is_numeric(char *name);
 // Read functions
-void read_process_name(FILE *fd, char **destination);
 void read_process_cpu_usage(FILE *fd, Process *found_process);
 void read_process_location(char *stat_path, char **destination);
-void read_process_stat(char *ep_name, Process *process);
+void read_process_status(char *ep_name, Process *process);
 
 // Processes state housekeeping
 void mark_processes_unseen(Process **processes);

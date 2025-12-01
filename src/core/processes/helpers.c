@@ -29,13 +29,13 @@ void parse_processes_dir(struct dirent *ep, void *data)
             found_process->seen = true;
             found_process->type = ep->d_type;
 
-            read_process_stat(ep->d_name, found_process);
+            read_process_status(ep->d_name, found_process);
             HASH_ADD_INT(processes_data->processes, pid, found_process);
         }
         else
         {
             found_process->seen = true;
-            read_process_stat(ep->d_name, found_process);
+            read_process_status(ep->d_name, found_process);
         }
     }
 }
@@ -45,8 +45,9 @@ void parse_process_status_line(char *line, void *output)
     if (strncmp(line, "Name:", 5) == 0)
     {
         char buffer[17];
+        buffer[0] = '\0';
+        sscanf(line + 5, "%s", buffer);
         int buffer_len = strlen(buffer);
-        sscanf(line + 5, "%s", &buffer);
         if (buffer_len > 2 && buffer[0] == '(')
         {
             memmove(buffer, buffer + 1, buffer_len - 1);
@@ -156,29 +157,7 @@ void read_process_location(char *ep_name, char **destination)
     }
     free(exe_path);
 }
-void read_process_name(FILE *fd, char **destination)
-{
-    rewind(fd);
-    char line[256];
-    char process_name[17];
-    fgets(line, sizeof(line), fd);
-    sscanf(line, "%*d %16s", process_name);
-    int process_name_len = strlen(process_name);
-    if (process_name_len >= 2 && process_name[0] == '(' && process_name[process_name_len - 1] == ')')
-    {
-        memmove(process_name, process_name + 1, process_name_len - 2);
-        process_name[process_name_len - 2] = '\0';
-    }
-    else if (process_name_len >= 2 && process_name[0] == '(')
-    {
-        memmove(process_name, process_name + 1, process_name_len - 2);
-        process_name[process_name_len - 2] = '\0';
-    }
-    // neglect anything after /
-    char *tokenized_line = strtok(process_name, "/");
-    *destination = strdup(tokenized_line);
-}
-void read_process_stat(char *ep_name, Process *process)
+void read_process_status(char *ep_name, Process *process)
 {
     // int ep_name_len = strlen(ep_name);
     // char *stat_path = malloc(14 + ep_name_len);

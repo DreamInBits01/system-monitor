@@ -12,7 +12,8 @@
 
 int is_numeric(char *name);
 // Read functions
-void read_process_cpu_usage(FILE *fd, Process *found_process);
+// void read_process_cpu_usage(FILE *fd, Process *found_process);
+void read_process_cpu_usage(char *ep_name, Process *output);
 void read_process_location(char *stat_path, char **destination);
 void read_process_status(char *ep_name, Process *process);
 

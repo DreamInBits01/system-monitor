@@ -30,12 +30,13 @@ void parse_processes_dir(struct dirent *ep, void *data)
             found_process->type = ep->d_type;
 
             read_process_status(ep->d_name, found_process);
+            read_process_cpu_usage(ep->d_name, found_process);
             HASH_ADD_INT(processes_data->processes, pid, found_process);
         }
         else
         {
             found_process->seen = true;
-            read_process_status(ep->d_name, found_process);
+            read_process_cpu_usage(ep->d_name, found_process);
         }
     }
 }
@@ -89,11 +90,21 @@ void read_uptime(double *uptime, double *idle_time)
     fscanf(proc_uptime, "%lf %lf", uptime, idle_time);
     fclose(proc_uptime);
 }
-void read_process_cpu_usage(FILE *fd, Process *found_process)
+void read_process_cpu_usage(char *ep_name, Process *output)
 {
-    rewind(fd);
+    int ep_name_len = strlen(ep_name);
+    char *stat_path = malloc(14 + ep_name_len + 1);
+    if (stat_path == NULL)
+        return;
+    sprintf(stat_path, "/proc/%s/stat", ep_name);
+    FILE *stat_fd = fopen(stat_path, "r");
+    if (stat_fd == NULL)
+    {
+        free(stat_path);
+        return;
+    }
     char line[256];
-    if (fgets(line, sizeof(line), fd))
+    if (fgets(line, sizeof(line), stat_fd))
     {
         // the total time that the process has spent in the cpu, measured in seconds / the time the system has been running in seconds
         // on multi-core systems, this calculation gives the number of cores used, so it can be 1 core or 1.5 cores etc...
@@ -102,34 +113,36 @@ void read_process_cpu_usage(FILE *fd, Process *found_process)
         unsigned long utime, stime;
         char state;
         sscanf(line, "%*d %*s %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);
-        found_process->state = state;
+        output->state = state;
         // calculate the cpu && wall time delta
         long tick_per_sec = sysconf(_SC_CLK_TCK);
         // divide by tick_per_sec to convert from clock tick unit to seconds
         double current_cpu_time = (double)(utime + stime) / tick_per_sec;
         double uptime, idle_time;
         read_uptime(&uptime, &idle_time);
-        if (found_process->cpu_time)
+        if (output->cpu_time)
         {
             // calc the delta
-            double cpu_delta = current_cpu_time - found_process->cpu_time;
-            double uptime_delta = uptime - found_process->last_uptime;
+            double cpu_delta = current_cpu_time - output->cpu_time;
+            double uptime_delta = uptime - output->last_uptime;
             if (uptime_delta > .9)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
                 // divide by the total cores to get the overall percentage
                 // if the process is using 1 core and the system has 10 cores, then the usage is 10%
-                found_process->cpu_usage = cpu_delta / uptime_delta * 100 / num_cores;
+                output->cpu_usage = cpu_delta / uptime_delta * 100 / num_cores;
             }
         }
         else
         {
-            found_process->cpu_usage = 0;
+            output->cpu_usage = 0;
         };
         // store the current raw values to be used next
-        found_process->cpu_time = current_cpu_time;
-        found_process->last_uptime = uptime;
+        output->cpu_time = current_cpu_time;
+        output->last_uptime = uptime;
     }
+    free(stat_path);
+    fclose(stat_fd);
 }
 void read_process_location(char *ep_name, char **destination)
 {
@@ -159,28 +172,6 @@ void read_process_location(char *ep_name, char **destination)
 }
 void read_process_status(char *ep_name, Process *process)
 {
-    // int ep_name_len = strlen(ep_name);
-    // char *stat_path = malloc(14 + ep_name_len);
-    // if (stat_path == NULL)
-    //     return;
-    // sprintf(stat_path, "/proc/%s/stat", ep_name);
-    // FILE *process_stat_file = fopen(stat_path, "r");
-    // if (process_stat_file == NULL)
-    //     return;
-
-    // if (process->exe_path == NULL)
-    // {
-    //     read_process_location(ep_name, &process->exe_path);
-    // }
-    // if (process->name == NULL)
-    // {
-    //     read_process_name(process_stat_file, &process->name);
-    // }
-
-    // read_process_cpu_usage(process_stat_file, process);
-    // // reset
-    // free(stat_path);
-    // fclose(process_stat_file);
     int ep_name_len = strlen(ep_name);
     char *status_path = malloc(16 + ep_name_len + 1);
     if (status_path == NULL)

@@ -21,6 +21,7 @@ typedef struct
     double last_uptime;
     UT_hash_handle hh;
     // 4 bytes
+    int threads;
     float cpu_usage;
     pid_t pid;
     unsigned y;

@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include "structs.h"
+#include "utils.h"
 #define PROCESS_EXE_PATH_SIZE 30
 
 int is_numeric(char *name);

@@ -9,6 +9,76 @@ int is_numeric(char *name)
     };
     return 1;
 }
+// Parsing
+void parse_processes_dir(struct dirent *ep, void *data)
+{
+    ProcessesBlock *processes_data = (ProcessesBlock *)data;
+    // check if the filename is numeric to determine if the file is a process
+    if (is_numeric(ep->d_name))
+    {
+        int pid = atoi(ep->d_name);
+        Process *found_process = NULL;
+        HASH_FIND_INT(processes_data->processes, &pid, found_process);
+        if (found_process == NULL)
+        {
+            found_process = malloc(sizeof(Process));
+            if (found_process == NULL)
+                return;
+            memset(found_process, 0, sizeof(Process));
+            found_process->pid = pid;
+            found_process->seen = true;
+            found_process->type = ep->d_type;
+
+            read_process_stat(ep->d_name, found_process);
+            HASH_ADD_INT(processes_data->processes, pid, found_process);
+        }
+        else
+        {
+            found_process->seen = true;
+            read_process_stat(ep->d_name, found_process);
+        }
+    }
+}
+void parse_process_status_line(char *line, void *output)
+{
+    Process *process = (Process *)output;
+    if (strncmp(line, "Name:", 5) == 0)
+    {
+        char buffer[17];
+        int buffer_len = strlen(buffer);
+        sscanf(line + 5, "%s", &buffer);
+        if (buffer_len > 2 && buffer[0] == '(')
+        {
+            memmove(buffer, buffer + 1, buffer_len - 1);
+        }
+        if (buffer_len > 2 && buffer[buffer_len - 1] == ')')
+        {
+            memmove(buffer, buffer, buffer_len - 2);
+        };
+        buffer[buffer_len - 1] = '\0';
+        char *tokenized_buffer = strtok(buffer, "/");
+        process->name = strdup(tokenized_buffer);
+    }
+    if (strncmp(line, "State:", 6) == 0)
+    {
+        char state;
+        sscanf(line + 5, "%c", &state);
+        process->state = state;
+    }
+    if (strncmp(line, "Threads:", 8) == 0)
+    {
+        int threads;
+        sscanf(line + 8, "%d", &threads);
+        process->threads = threads;
+    }
+    if (strncmp(line, "Uid:", 4) == 0)
+    {
+        uid_t uid;
+        sscanf(line + 4, "%u", &uid);
+        struct passwd *owner = getpwuid(uid);
+        process->owner = strdup(owner->pw_name);
+    }
+}
 // Reading
 void read_uptime(double *uptime, double *idle_time)
 {
@@ -110,28 +180,44 @@ void read_process_name(FILE *fd, char **destination)
 }
 void read_process_stat(char *ep_name, Process *process)
 {
+    // int ep_name_len = strlen(ep_name);
+    // char *stat_path = malloc(14 + ep_name_len);
+    // if (stat_path == NULL)
+    //     return;
+    // sprintf(stat_path, "/proc/%s/stat", ep_name);
+    // FILE *process_stat_file = fopen(stat_path, "r");
+    // if (process_stat_file == NULL)
+    //     return;
+
+    // if (process->exe_path == NULL)
+    // {
+    //     read_process_location(ep_name, &process->exe_path);
+    // }
+    // if (process->name == NULL)
+    // {
+    //     read_process_name(process_stat_file, &process->name);
+    // }
+
+    // read_process_cpu_usage(process_stat_file, process);
+    // // reset
+    // free(stat_path);
+    // fclose(process_stat_file);
     int ep_name_len = strlen(ep_name);
-    char *stat_path = malloc(14 + ep_name_len);
-    if (stat_path == NULL)
+    char *status_path = malloc(16 + ep_name_len + 1);
+    if (status_path == NULL)
         return;
-    sprintf(stat_path, "/proc/%s/stat", ep_name);
-    FILE *process_stat_file = fopen(stat_path, "r");
-    if (process_stat_file == NULL)
+    sprintf(status_path, "/proc/%s/status", ep_name);
+    FILE *process_status_file = fopen(status_path, "r");
+    if (process_status_file == NULL)
         return;
-
-    if (process->exe_path == NULL)
-    {
-        read_process_location(ep_name, &process->exe_path);
-    }
-    if (process->name == NULL)
-    {
-        read_process_name(process_stat_file, &process->name);
-    }
-
-    read_process_cpu_usage(process_stat_file, process);
-    // reset
-    free(stat_path);
-    fclose(process_stat_file);
+    proc_file_read_and_parse(
+        process_status_file,
+        parse_process_status_line,
+        process,
+        0);
+    // cleanup
+    free(status_path);
+    fclose(process_status_file);
 }
 
 // Processes state housekeeping
@@ -195,55 +281,6 @@ void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
     }
 }
 
-// Parsing
-void parse_processes_dir(struct dirent *ep, void *data)
-{
-    ProcessesBlock *processes_data = (ProcessesBlock *)data;
-    // check if the filename is numeric to determine if the file is a process
-    if (is_numeric(ep->d_name))
-    {
-        int pid = atoi(ep->d_name);
-        Process *found_process = NULL;
-        HASH_FIND_INT(processes_data->processes, &pid, found_process);
-        if (found_process == NULL)
-        {
-            found_process = malloc(sizeof(Process));
-            if (found_process == NULL)
-            {
-                return;
-            }
-            memset(found_process, 0, sizeof(Process));
-            found_process->pid = pid;
-            found_process->seen = true;
-            found_process->type = ep->d_type;
-
-            read_process_stat(ep->d_name, found_process);
-            HASH_ADD_INT(processes_data->processes, pid, found_process);
-        }
-        else
-        {
-            found_process->seen = true;
-            read_process_stat(ep->d_name, found_process);
-        }
-    }
-}
-void parse_process_status_line(char *line, void *output)
-{
-    Process *process = (Process *)output;
-    if (strncmp(line, "Name:", 5) == 0)
-    {
-    }
-    if (strncmp(line, "State:", 6) == 0)
-    {
-    }
-    if (strncmp(line, "Threads:", 8) == 0)
-    {
-    }
-    if (strncmp(line, "Uid:", 4) == 0)
-    {
-    }
-}
-
 // UI
 void draw_processes_window(ProcessesBlock *data)
 {
@@ -266,21 +303,24 @@ void draw_processes_window(ProcessesBlock *data)
         15,
         "%d", data->selected_process_y);
     mvwprintw(data->window.itself, 2, 2, "PID");
-    mvwprintw(data->window.itself, 2, data->window.width * .12, "Name");
-    mvwprintw(data->window.itself, 2, data->window.width * .35, "CPU");
-    mvwprintw(data->window.itself, 2, data->window.width * .45, "User");
-    mvwprintw(data->window.itself, 2, data->window.width * .65, "Path");
+    mvwprintw(data->window.itself, 2, data->window.width * .12, "CPU");
+    mvwprintw(data->window.itself, 2, data->window.width * .25, "Threads");
+    mvwprintw(data->window.itself, 2, data->window.width * .35, "User");
+    mvwprintw(data->window.itself, 2, data->window.width * .55, "Name");
+    // mvwprintw(data->window.itself, 2, data->window.width * .65, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
 }
 void show_process_information(Process *process, Window *window, WINDOW *virtual_pad, int y)
 {
-    if (process == NULL || process->exe_path == NULL || process->name == NULL)
+    if (process == NULL || process->owner == NULL || process->name == NULL)
         return;
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
-    mvwprintw(virtual_pad, y, (window->width * .12), "%s", process->name);
-    mvwprintw(virtual_pad, y, (window->width * .35), "%.2f", process->cpu_usage);
-    mvwprintw(virtual_pad, y, (window->width * .65), "%s", process->exe_path);
+    mvwprintw(virtual_pad, y, (window->width * .12), "%.2f", process->cpu_usage);
+    mvwprintw(virtual_pad, y, (window->width * .25), "%d", process->threads);
+    mvwprintw(virtual_pad, y, (window->width * .35), "%s", process->owner);
+    mvwprintw(virtual_pad, y, (window->width * .55), "%s", process->name);
+    // mvwprintw(virtual_pad, y, (window->width * .65), "%s", process->exe_path);
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {
@@ -305,5 +345,6 @@ void cleanup_process(Process *process)
 {
     free(process->exe_path);
     free(process->name);
+    free(process->owner);
     free(process);
 }

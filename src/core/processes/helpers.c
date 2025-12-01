@@ -57,7 +57,6 @@ void parse_process_status_line(char *line, void *output)
         {
             memmove(buffer, buffer, buffer_len - 2);
         };
-        buffer[buffer_len - 1] = '\0';
         char *tokenized_buffer = strtok(buffer, "/");
         process->name = strdup(tokenized_buffer);
     }
@@ -125,7 +124,7 @@ void read_process_cpu_usage(char *ep_name, Process *output)
             // calc the delta
             double cpu_delta = current_cpu_time - output->cpu_time;
             double uptime_delta = uptime - output->last_uptime;
-            if (uptime_delta > .9)
+            if (uptime_delta > .5)
             {
                 int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
                 // divide by the total cores to get the overall percentage

@@ -63,7 +63,7 @@ void parse_process_status_line(char *line, void *output)
     if (strncmp(line, "State:", 6) == 0)
     {
         char state;
-        sscanf(line + 7, "%c", &state);
+        sscanf(line + 6, " %c", &state);
         process->state = state;
     }
     if (strncmp(line, "Threads:", 8) == 0)

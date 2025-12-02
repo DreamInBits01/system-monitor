@@ -63,7 +63,7 @@ void parse_process_status_line(char *line, void *output)
     if (strncmp(line, "State:", 6) == 0)
     {
         char state;
-        sscanf(line + 5, "%c", &state);
+        sscanf(line + 7, "%c", &state);
         process->state = state;
     }
     if (strncmp(line, "Threads:", 8) == 0)
@@ -110,7 +110,6 @@ void read_process_cpu_usage(char *ep_name, Process *output)
         // CPU Usage % = (CPU time delta / Wall time delta) × 100
         // to get the overall usage, you must divide the number of cores used by the system's total cores
         unsigned long utime, stime;
-        char state;
         int scanf_result = sscanf(line, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &utime, &stime);
         if (scanf_result < 2)
         {
@@ -277,9 +276,10 @@ void draw_processes_window(ProcessesBlock *data)
         "%d", data->selected_process_y);
     mvwprintw(data->window.itself, 2, 2, "PID");
     mvwprintw(data->window.itself, 2, data->window.width * .12, "CPU");
-    mvwprintw(data->window.itself, 2, data->window.width * .25, "Threads");
-    mvwprintw(data->window.itself, 2, data->window.width * .35, "User");
-    mvwprintw(data->window.itself, 2, data->window.width * .55, "Name");
+    mvwprintw(data->window.itself, 2, data->window.width * .2, "State");
+    mvwprintw(data->window.itself, 2, data->window.width * .3, "Threads");
+    mvwprintw(data->window.itself, 2, data->window.width * .45, "User");
+    mvwprintw(data->window.itself, 2, data->window.width * .62, "Name");
     // mvwprintw(data->window.itself, 2, data->window.width * .65, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
@@ -290,9 +290,10 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
         return;
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
     mvwprintw(virtual_pad, y, (window->width * .12), "%.2f", process->cpu_usage);
-    mvwprintw(virtual_pad, y, (window->width * .25), "%d", process->threads);
-    mvwprintw(virtual_pad, y, (window->width * .35), "%s", process->owner);
-    mvwprintw(virtual_pad, y, (window->width * .55), "%s", process->name);
+    mvwprintw(virtual_pad, y, (window->width * .2), "%c", process->state);
+    mvwprintw(virtual_pad, y, (window->width * .3), "%d", process->threads);
+    mvwprintw(virtual_pad, y, (window->width * .45), "%s", process->owner);
+    mvwprintw(virtual_pad, y, (window->width * .62), "%s", process->name);
     // mvwprintw(virtual_pad, y, (window->width * .65), "%s", process->exe_path);
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)

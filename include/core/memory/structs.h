@@ -15,16 +15,4 @@ typedef struct
     Window window;
     int bar_width;
 } MemoryBlock;
-
-// typedef struct
-// {
-//     unsigned buffers; // kb
-//     unsigned cached;  // kb
-//     float free;       // gb
-// } DynamicMemoryData;
-// typedef struct
-// {
-//     float total; // gb
-
-// } StaticMemoryData;
 #endif

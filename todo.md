@@ -46,7 +46,9 @@
 - Read total CPU usage
 - Processes
   - Parse /proc/[pid]/status
-    - Create a line parsing function
-    - Give the parsing function to proc_read_and_parse
+    - Parse memory usage of each process
+- Sort menu
+  - Fix rendering issue
+  - Make it scrollable
 
 ## Utils

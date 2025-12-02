@@ -14,7 +14,7 @@ void initialize_ncurses()
     init_pair(2, COLOR_YELLOW, COLOR_BLACK);
     init_pair(3, COLOR_RED, COLOR_BLACK);
     // Borders and frames
-    init_pair(4, 3, COLOR_BLACK);  // Orange
+    init_pair(4, 40, COLOR_BLACK); // Orange
     init_pair(5, 50, COLOR_BLACK); // OFFWHITE
     // Headers and titles
     init_pair(6, COLOR_YELLOW, COLOR_BLACK);  // Section titles ("Memory total:", "Model name:")

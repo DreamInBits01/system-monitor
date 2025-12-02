@@ -111,8 +111,12 @@ void read_process_cpu_usage(char *ep_name, Process *output)
         // to get the overall usage, you must divide the number of cores used by the system's total cores
         unsigned long utime, stime;
         char state;
-        sscanf(line, "%*d %*s %c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &state, &utime, &stime);
-        output->state = state;
+        int scanf_result = sscanf(line, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu", &utime, &stime);
+        if (scanf_result < 2)
+        {
+            utime = 0;
+            stime = 0;
+        }
         // calculate the cpu && wall time delta
         long tick_per_sec = sysconf(_SC_CLK_TCK);
         // divide by tick_per_sec to convert from clock tick unit to seconds
@@ -309,6 +313,7 @@ void highlight_process(ProcessesBlock *data)
         wattroff(data->virtual_pad.itself, COLOR_PAIR(1) | A_REVERSE | A_BOLD);
     }
 }
+
 // Cleanup
 void cleanup_process(Process *process)
 {

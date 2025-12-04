@@ -185,13 +185,7 @@ void cpu_usage_bar(WINDOW *window, float fill, int bar_width, int y, int x)
 
                 wattroff(window, COLOR_PAIR(2));
             }
-            // else
-            // {
-            //     wattron(window, COLOR_PAIR(1)); // green
-            //     mvwaddch(window, y, x_position, '|');
-            //     wattroff(window, COLOR_PAIR(1));
-            // }
-            else if (fill > 0)
+            else
             {
                 wattron(window, COLOR_PAIR(1)); // green
                 mvwaddch(window, y, x_position, '|');

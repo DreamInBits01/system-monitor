@@ -80,6 +80,7 @@ void parse_process_status_line(char *line, void *output)
         process->owner = strdup(owner->pw_name);
     }
 }
+
 // Reading
 void read_uptime(double *uptime, double *idle_time)
 {
@@ -288,10 +289,7 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
 {
     if (process == NULL || process->owner == NULL || process->name == NULL)
         return;
-    wattron(window->itself, COLOR_PAIR(5));
-    if (process->is_deleted)
-    {
-    }
+    // wattron(virtual_pad, COLOR_PAIR(5));
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
     mvwprintw(virtual_pad, y, (window->width * .12), "%.2f", process->cpu_usage);
     mvwprintw(virtual_pad, y, (window->width * .2), "%c", process->state);
@@ -299,7 +297,7 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
     mvwprintw(virtual_pad, y, (window->width * .45), "%s", process->owner);
     mvwprintw(virtual_pad, y, (window->width * .62), "%s", process->name);
     // mvwprintw(virtual_pad, y, (window->width * .65), "%s", process->exe_path);
-    wattroff(window->itself, COLOR_PAIR(5));
+    // wattroff(virtual_pad, COLOR_PAIR(5));
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {

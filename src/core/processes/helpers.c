@@ -267,7 +267,7 @@ void draw_processes_window(ProcessesBlock *data)
         data->window.itself,
         data->window.height - 1,
         2,
-        "%d/%d", data->virtual_pad.y,
+        "%d/%d", data->selected_process->pid,
         data->processes_count - 1);
     mvwprintw(
         data->window.itself,
@@ -289,6 +289,9 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
     if (process == NULL || process->owner == NULL || process->name == NULL)
         return;
     wattron(window->itself, COLOR_PAIR(5));
+    if (process->is_deleted)
+    {
+    }
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
     mvwprintw(virtual_pad, y, (window->width * .12), "%.2f", process->cpu_usage);
     mvwprintw(virtual_pad, y, (window->width * .2), "%c", process->state);

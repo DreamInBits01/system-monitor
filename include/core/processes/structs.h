@@ -29,6 +29,7 @@ typedef struct
     char state;
     unsigned char type;
     bool seen;
+    bool is_deleted;
 } Process;
 typedef struct
 {
@@ -49,5 +50,6 @@ typedef struct
     unsigned processes_count;
     int selected_process_y;
     bool get_process_faild;
+    // bool selected_process_deleted;
 } ProcessesBlock;
 #endif

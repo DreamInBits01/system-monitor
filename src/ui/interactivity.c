@@ -32,7 +32,8 @@ void *interactivity_routine(void *data)
         case KEY_F(2):
             if (ctx->processes_block->selected_process == NULL)
                 return NULL;
-            if (ctx->processes_block->selected_process->pid == 0)
+            if (ctx->processes_block->selected_process->pid == 0 ||
+                ctx->processes_block->selected_process->is_deleted)
                 return NULL;
             int kill_result = kill(ctx->processes_block->selected_process->pid, SIGKILL);
             if (kill_result == -1)
@@ -40,20 +41,25 @@ void *interactivity_routine(void *data)
                 perror("Kill faild!\n");
             }
             if (ctx->processes_block->selected_process->pid == getpid())
-            {
                 goto cleanup;
-            }
+
             else
             {
-                YToPid *corresponding_y_to_pid_entry;
-                HASH_FIND_INT(ctx->processes_block->y_to_pid, &ctx->processes_block->selected_process_y, corresponding_y_to_pid_entry);
-                if (corresponding_y_to_pid_entry == NULL)
+                // YToPid *corresponding_y_to_pid_entry;
+                // Mark it as deleted
+                Process *found_process;
+                HASH_FIND_INT(
+                    ctx->processes_block->processes,
+                    &ctx->processes_block->selected_process->pid,
+                    found_process);
+                if (found_process == NULL)
                     return NULL;
-                HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
-                free(corresponding_y_to_pid_entry);
-                HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
-                free(ctx->processes_block->selected_process);
-                ctx->processes_block->selected_process = NULL;
+                found_process->is_deleted = true;
+                // HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
+                // free(corresponding_y_to_pid_entry);
+                // HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
+                // free(ctx->processes_block->selected_process);
+                // ctx->processes_block->selected_process = NULL;
                 wattron(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
                 mvwprintw(
                     ctx->processes_block->virtual_pad.itself,
@@ -63,8 +69,7 @@ void *interactivity_routine(void *data)
                 // ctx->processes_block->selected_process_y -= 1;
                 // handle_manual_process_selection(ctx->processes_block);
                 wattroff(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
-                refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
-                refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+                // refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
             }
             break;
 

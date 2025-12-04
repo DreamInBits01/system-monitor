@@ -17,7 +17,7 @@ void read_procstat_cpu_data(FILE *fd, CPUData *data)
         fd,
         parse_procstat_cpu_line,
         data,
-        1);
+        0);
 }
 void show_cpu_data(CPUBlock *cpu_block)
 {
@@ -32,14 +32,14 @@ void show_cpu_data(CPUBlock *cpu_block)
         int y = 1;
         int start_core = page * cores_per_page;
         int end_core = start_core + cores_per_page;
-        int cpu_usage_bar_width = cpu_block->window.width * .06;
+        int core_bar_width = cpu_block->window.width * .06;
         if (end_core > cpu_block->data.cpu_cores_count)
         {
             end_core = cpu_block->data.cpu_cores_count;
         }
         for (int core = start_core; core < end_core; core++)
         {
-            float fill = ((float)cpu_block->data.cores[core].usage / 100.0f * cpu_usage_bar_width);
+            float fill = ((float)cpu_block->data.cores[core].usage / 100.0f * core_bar_width);
             int start_x = page * (cpu_block->window.width / 5);
             mvwprintw(
                 cpu_block->window.itself,
@@ -51,30 +51,31 @@ void show_cpu_data(CPUBlock *cpu_block)
             cpu_usage_bar(
                 cpu_block->window.itself,
                 fill,
-                cpu_usage_bar_width,
+                core_bar_width,
                 y,
                 2 + start_x + 4 + (count_digits(core) - 1));
             mvwprintw(
                 cpu_block->window.itself,
                 y,
-                2 + cpu_usage_bar_width + 5 + start_x + (count_digits(core) - 1),
+                2 + core_bar_width + 5 + start_x + (count_digits(core) - 1),
                 "%.1f%%",
                 cpu_block->data.cores[core].usage);
             y++;
         }
     }
+    float cpu_usage_fill = ((float)cpu_block->data.cpu_usage / 100.0f * CPU_USAGE_BAR_WIDTH);
     mvwprintw(cpu_block->window.itself, cpu_block->window.height - 2, 2, "CPU:");
     cpu_usage_bar(
         cpu_block->window.itself,
-        3,
+        cpu_usage_fill,
         CPU_USAGE_BAR_WIDTH,
         cpu_block->window.height - 2,
-        2 + 4 + (count_digits(30) - 1));
+        2 + 4);
     mvwprintw(
         cpu_block->window.itself,
         cpu_block->window.height - 2,
-        2 + CPU_USAGE_BAR_WIDTH + 4 + (count_digits(30) - 1) + 1,
-        "%.1f%%", .3);
+        2 + CPU_USAGE_BAR_WIDTH + 4 + 1,
+        "%.1f%%", cpu_block->data.cpu_usage);
     draw_cpu_window(cpu_block);
 }
 int cpu_cores_count(FILE *fd)

@@ -16,6 +16,9 @@ typedef struct
     int cpu_cores_count;
     int avg_mhz;
     char model_name[32];
+    double cpu_usage;
+    unsigned long long prev_active_time;
+    unsigned long long prev_total_time;
     CPUCore *cores;
 } CPUData;
 typedef struct

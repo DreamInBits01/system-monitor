@@ -50,11 +50,33 @@ void parse_cpuinfo_line(char *line, void *data)
 void parse_procstat_cpu_line(char *line, void *data)
 {
     CPUData *cpu_data = (CPUData *)data;
+    // Data
+    unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
+    unsigned long long current_total_time;
+    unsigned long long current_active_time;
+    unsigned long long total_time_delta;
+    unsigned long long active_time_delta;
+    double usage;
+    int index = -1;
+    bool is_cpu_line = false;
+    // Gather && process data
     if (strncmp("cpu", line, 3) == 0)
     {
-        unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
-        unsigned index;
-        int parsed = sscanf(line, "cpu%u %llu %llu %llu %llu %llu %llu %llu",
+        int parsed;
+        if (line[3] == ' ')
+        {
+            parsed = sscanf(line + 3, "%llu %llu %llu %llu %llu %llu %llu",
+                            &user,
+                            &nice,
+                            &system,
+                            &idle,
+                            &iowait,
+                            &irq,
+                            &softirq);
+        }
+        else
+        {
+            parsed = sscanf(line + 3, "%d %llu %llu %llu %llu %llu %llu %llu",
                             &index,
                             &user,
                             &nice,
@@ -63,7 +85,10 @@ void parse_procstat_cpu_line(char *line, void *data)
                             &iowait,
                             &irq,
                             &softirq);
-        if (parsed < 8)
+        }
+        if (parsed < 7 && index == -1)
+            return;
+        if (parsed < 8 && index > -1)
             return;
         if (parsed < 11)
         {
@@ -72,19 +97,39 @@ void parse_procstat_cpu_line(char *line, void *data)
             guest_nice = 0;
         }
         // Calculate active & idle time
-        unsigned long long current_total_time = user + nice + system + irq + softirq + idle + iowait + steal + guest + guest_nice;
-        unsigned long long current_active_time = current_total_time - idle - iowait;
+        current_total_time = user + nice + system + irq + softirq + idle + iowait + steal + guest + guest_nice;
+        current_active_time = current_total_time - idle - iowait;
+        is_cpu_line = true;
+    }
+    if (is_cpu_line && index >= 0 && index < cpu_data->cpu_cores_count)
+    {
         // Calculate delta
-        unsigned long long total_time_delta = current_total_time - cpu_data->cores[index].prev_total_time;
-        unsigned long long active_time_delta = current_active_time - cpu_data->cores[index].prev_active_time;
+        total_time_delta = current_total_time - cpu_data->cores[index].prev_total_time;
+        active_time_delta = current_active_time - cpu_data->cores[index].prev_active_time;
+        usage = (double)active_time_delta / (double)total_time_delta * 100;
+
+        // Core is being processed
         if (total_time_delta > 50 && cpu_data->cores[index].prev_total_time > 0)
         {
-            double cpu_usage = (double)active_time_delta / (double)total_time_delta * 100;
-            cpu_data->cores[index].usage = cpu_usage;
+            cpu_data->cores[index].usage = usage;
         }
 
         cpu_data->cores[index].prev_active_time = current_active_time;
         cpu_data->cores[index].prev_total_time = current_total_time;
+    }
+    else if (is_cpu_line && index == -1)
+    {
+        total_time_delta = current_total_time - cpu_data->prev_total_time;
+        active_time_delta = current_active_time - cpu_data->prev_active_time;
+        usage = (double)active_time_delta / (double)total_time_delta * 100;
+        // Total cpu usage
+        if (total_time_delta > 50 && cpu_data->prev_total_time > 0)
+        {
+            cpu_data->cpu_usage = usage;
+        }
+
+        cpu_data->prev_active_time = current_active_time;
+        cpu_data->prev_total_time = current_total_time;
     }
 }
 void draw_cpu_window(CPUBlock *cpu_block)

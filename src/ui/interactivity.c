@@ -30,13 +30,16 @@ void *interactivity_routine(void *data)
         case 'S':
             ctx->processes_block->sort_option += 1;
             ctx->processes_block->sort_option = ctx->processes_block->sort_option % SORT_OPTS_COUNT;
+            wattron(ctx->processes_block->window.itself, A_BOLD);
             mvwprintw(
                 ctx->processes_block->window.itself,
                 0,
                 ctx->processes_block->window.width -
-                    4 -
+                    6 -
                     strlen(ctx->processes_block->sort_options[ctx->processes_block->sort_option]),
-                "S:%s", ctx->processes_block->sort_options[ctx->processes_block->sort_option]);
+                "<S>:%s", ctx->processes_block->sort_options[ctx->processes_block->sort_option]);
+            wattroff(ctx->processes_block->window.itself, A_BOLD);
+            wrefresh(ctx->processes_block->window.itself);
             break;
         case KEY_F(1):
             goto cleanup;

@@ -255,13 +255,42 @@ void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
 }
 
 // UI
+/*
+B is the anchor
+Negative number means A comes before B
+Positive number means A comes after B
+Zero means they are equal
+
+a->cpu_usage < b->cpu_usage returns -1
+a->cpu_usage > b->cpu_usage returns 1
+a->cpu_usage == b->cpu_usage 0
+
+or use subtraction
+
+Example
+a->cpu_usage < b->cpu_usage <- (a=30, b=50)
+    returns 1, A comes after B
+a->cpu_usage < b->cpu_usage <- (a=50, b=30)
+    returns -1, A comes before B
+
+*/
 int by_cpu(const Process *a, const Process *b)
 {
-    return (a->cpu_usage < b->cpu_usage);
+    // Returns -1, meaning A comes before B (Descending)
+    if (a->cpu_usage > b->cpu_usage)
+        return -1; // a has more CPU, comes first
+    if (a->cpu_usage < b->cpu_usage)
+        return 1; // b has more CPU, comes first
+    return 0;     // equal
 }
 int by_default(const Process *a, const Process *b)
 {
-    return (a->pid > b->pid);
+    // Returns 1, meaning A comes after B (Ascending)
+    if (a->pid < b->pid)
+        return -1;
+    if (a->pid > b->pid)
+        return 1;
+    return 0;
 }
 int by_mem(const Process *a, const Process *b)
 {

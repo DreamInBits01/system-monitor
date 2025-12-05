@@ -15,10 +15,6 @@ void cleanup_context(AppContext *ctx)
     if (ctx->cpu_block != NULL)
         cleanup_cpu_context(ctx->cpu_block);
 
-    if (ctx->sort_menu != NULL)
-    {
-        cleanup_sort_menu_context(ctx->sort_menu);
-    }
     // ctx
     cleanup_threads_context(ctx);
     free(ctx);
@@ -47,12 +43,6 @@ void initialize_context(AppContext *ctx)
     }
     // Processes block
     if (!initialize_processes_context(&ctx->processes_block, ctx->max_rows, ctx->max_cols))
-    {
-        cleanup_context(ctx);
-        exit(1);
-    }
-    // Sort menu
-    if (!initialize_sort_menu_context(&ctx->sort_menu, ctx->max_rows, ctx->max_cols))
     {
         cleanup_context(ctx);
         exit(1);

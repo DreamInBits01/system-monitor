@@ -20,8 +20,6 @@ void cleanup_processes_context(ProcessesBlock *data);
 bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols);
 void cleanup_memory_context(MemoryBlock *data);
 // SORT MENU
-bool initialize_sort_menu_context(SortMenu **data, int max_rows, int max_cols);
-void cleanup_sort_menu_context(SortMenu *data);
 // CTX
 bool initialize_threads_context(AppContext *ctx);
 void cleanup_threads_context(AppContext *ctx);

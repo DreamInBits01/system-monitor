@@ -31,7 +31,6 @@ typedef struct
     MemoryBlock *memory_block;
     CPUBlock *cpu_block;
     ProcessesBlock *processes_block;
-    SortMenu *sort_menu;
     ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
     pthread_mutex_t mutex;
     int max_rows;

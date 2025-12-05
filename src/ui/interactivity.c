@@ -102,25 +102,8 @@ void *interactivity_routine(void *data)
                 // refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
             }
             break;
-
-        case KEY_F(3):
-            if (ctx->sort_menu->visible)
-            {
-                hide_panel(ctx->sort_menu->panel);
-                update_panels();
-                doupdate();
-                redraw_screen(ctx);
-            }
-            else
-            {
-                top_panel(ctx->sort_menu->panel);
-                update_panels();
-                doupdate();
-            }
-            ctx->sort_menu->visible = !ctx->sort_menu->visible;
-            break;
         case KEY_UP:
-            if (ctx->processes_block->virtual_pad.y > 0 && ctx->sort_menu->visible == false)
+            if (ctx->processes_block->virtual_pad.y > 0)
             {
                 // remove highlighting
                 remove_process_highlight(ctx->processes_block);
@@ -130,7 +113,7 @@ void *interactivity_routine(void *data)
             }
             break;
         case KEY_DOWN:
-            if (ctx->processes_block->virtual_pad.y < ctx->processes_block->processes_count - 1 && ctx->sort_menu->visible == false)
+            if (ctx->processes_block->virtual_pad.y < ctx->processes_block->processes_count - 1)
             {
                 // remove highlighting
                 remove_process_highlight(ctx->processes_block);

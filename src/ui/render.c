@@ -67,5 +67,4 @@ void resize_screen(AppContext *ctx)
              ctx->processes_block->window.x + 2,                                                  // Left edge of screen area where pad appears
              ctx->processes_block->window.y + ctx->processes_block->window.height - 2,            // Bottom edge of screen area where pad appears
              ctx->processes_block->window.x + ctx->processes_block->window.width - 2);            // Right edge of screen area where pad appears
-    mvwin(ctx->sort_menu->window, (ctx->max_rows - 15) / 2, (ctx->max_cols - 50) / 2);
 }

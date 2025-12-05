@@ -19,11 +19,11 @@ typedef struct
     WINDOW *itself;
     unsigned height, width, y, x, viewport_top, viewport_bottom;
 } VirtualPad;
-typedef struct
-{
-    WINDOW *window;
-    PANEL *panel;
-    bool visible;
-} SortMenu;
+// typedef struct
+// {
+//     WINDOW *window;
+//     PANEL *panel;
+//     bool visible;
+// } SortMenu;
 
 #endif

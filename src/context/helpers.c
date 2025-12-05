@@ -162,30 +162,6 @@ void cleanup_processes_context(ProcessesBlock *data)
     free(data);
 }
 
-// SORT MENU
-bool initialize_sort_menu_context(SortMenu **data, int max_rows, int max_cols)
-{
-    *data = malloc(sizeof(SortMenu));
-    if (*data == NULL)
-        return false;
-
-    memset(*data, 0, sizeof(SortMenu));
-
-    (*data)->window = newwin(15, 50, (max_rows - 15) / 2, (max_cols - 50) / 2);
-    box((*data)->window, 0, 0);
-    mvwaddstr((*data)->window, 1, 1, "Sort");
-    // sort panel
-    (*data)->panel = new_panel((*data)->window);
-    (*data)->visible = false;
-    return true;
-}
-void cleanup_sort_menu_context(SortMenu *data)
-{
-    delwin(data->window);
-    del_panel(data->panel);
-    free(data);
-}
-
 // THREADS
 bool initialize_threads_context(AppContext *ctx)
 {

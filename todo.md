@@ -47,8 +47,5 @@
 - Processes
   - Parse /proc/[pid]/status
     - Parse memory usage of each process
-- Sort menu
-  - Fix rendering issue
-  - Make it scrollable
 
 ## Utils

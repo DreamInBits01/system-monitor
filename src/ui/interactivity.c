@@ -26,6 +26,18 @@ void *interactivity_routine(void *data)
             resize_screen(ctx);
             redraw_screen(ctx);
             break;
+        case 's':
+        case 'S':
+            ctx->processes_block->sort_option += 1;
+            ctx->processes_block->sort_option = ctx->processes_block->sort_option % SORT_OPTS_COUNT;
+            mvwprintw(
+                ctx->processes_block->window.itself,
+                0,
+                ctx->processes_block->window.width -
+                    4 -
+                    strlen(ctx->processes_block->sort_options[ctx->processes_block->sort_option]),
+                "S:%s", ctx->processes_block->sort_options[ctx->processes_block->sort_option]);
+            break;
         case KEY_F(1):
             goto cleanup;
             break;

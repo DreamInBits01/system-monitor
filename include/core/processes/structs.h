@@ -5,6 +5,13 @@
 #include <dirent.h>
 #include "ui_structs.h"
 #include "../../third_party/uthash/src/uthash.h"
+
+// Sorting
+#define DEFAULT_SORT "DEF"
+#define SORT_BY_MEM "MEM"
+#define SORT_BY_CPU "CPU"
+#define SORT_OPTS_COUNT 3
+// UI alignment
 #define PROCESSES_PAD_OFFSET 3
 //  OFFSET +1 because y is starting from zero.
 // Making it +2, will prevent the program from skipping the last element from the previous list
@@ -47,6 +54,8 @@ typedef struct
     YToPid *y_to_pid;
     Process *processes;
     Process *selected_process;
+    char *sort_options[3];
+    int sort_option;
     unsigned processes_count;
     int selected_process_y;
     bool get_process_faild;

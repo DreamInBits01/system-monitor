@@ -270,11 +270,16 @@ void draw_processes_window(ProcessesBlock *data)
         2,
         "%d/%d", data->selected_process->pid,
         data->processes_count - 1);
+    // mvwprintw(
+    //     data->window.itself,
+    //     0,
+    //     15,
+    //     "%d", data->selected_process_y);
     mvwprintw(
         data->window.itself,
         0,
-        15,
-        "%d", data->selected_process_y);
+        data->window.width - 4 - strlen(data->sort_options[data->sort_option]),
+        "S:%s", data->sort_options[data->sort_option]);
     mvwprintw(data->window.itself, 2, 2, "PID");
     mvwprintw(data->window.itself, 2, data->window.width * .12, "CPU");
     mvwprintw(data->window.itself, 2, data->window.width * .2, "State");

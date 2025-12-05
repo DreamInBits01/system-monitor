@@ -10,7 +10,7 @@
 #define DEFAULT_SORT "DEF"
 #define SORT_BY_MEM "MEM"
 #define SORT_BY_CPU "CPU"
-#define SORT_OPTS_COUNT 3
+#define SORT_OPTS_COUNT 2
 // UI alignment
 #define PROCESSES_PAD_OFFSET 3
 //  OFFSET +1 because y is starting from zero.
@@ -54,7 +54,7 @@ typedef struct
     YToPid *y_to_pid;
     Process *processes;
     Process *selected_process;
-    char *sort_options[3];
+    char *sort_options[SORT_OPTS_COUNT];
     int sort_option;
     unsigned processes_count;
     int selected_process_y;

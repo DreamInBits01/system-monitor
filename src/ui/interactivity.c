@@ -30,16 +30,27 @@ void *interactivity_routine(void *data)
         case 'S':
             ctx->processes_block->sort_option += 1;
             ctx->processes_block->sort_option = ctx->processes_block->sort_option % SORT_OPTS_COUNT;
-            wattron(ctx->processes_block->window.itself, A_BOLD);
-            mvwprintw(
-                ctx->processes_block->window.itself,
-                0,
-                ctx->processes_block->window.width -
-                    6 -
-                    strlen(ctx->processes_block->sort_options[ctx->processes_block->sort_option]),
-                "<S>:%s", ctx->processes_block->sort_options[ctx->processes_block->sort_option]);
-            wattroff(ctx->processes_block->window.itself, A_BOLD);
-            wrefresh(ctx->processes_block->window.itself);
+            if (strcmp(ctx->processes_block->sort_options[ctx->processes_block->sort_option], "CPU") == 0)
+            {
+                sort_by_cpu(ctx->processes_block);
+            }
+            show_processes(ctx->processes_block);
+            refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+            /*
+                After render, select process state must change
+                if the corresponding y (selected process y) pid is not the same as y_to_pid pid for that y
+                new pid at y_to_pid must be used
+            */
+            YToPid *found_y_process;
+            HASH_FIND_INT(
+                ctx->processes_block->y_to_pid,
+                &ctx->processes_block->selected_process_y,
+                found_y_process);
+            // They only share y, if their values are different, y_to_pid must be used to update selected process
+            if (found_y_process != NULL && found_y_process->pid != ctx->processes_block->selected_process->pid)
+            {
+                handle_manual_process_selection(ctx->processes_block);
+            }
             break;
         case KEY_F(1):
             goto cleanup;

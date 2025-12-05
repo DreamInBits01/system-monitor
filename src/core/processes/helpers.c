@@ -255,6 +255,14 @@ void remove_y_to_pid_unseen_entries(YToPid **y_to_pid)
 }
 
 // UI
+int by_cpu(const Process *a, const Process *b)
+{
+    return (a->cpu_usage < b->cpu_usage);
+}
+int by_mem(const Process *a, const Process *b)
+{
+    // Mem usage need to be calculated
+}
 void draw_processes_window(ProcessesBlock *data)
 {
     wclear(data->window.itself);
@@ -270,11 +278,11 @@ void draw_processes_window(ProcessesBlock *data)
         2,
         "%d/%d", data->selected_process->pid,
         data->processes_count - 1);
-    // mvwprintw(
-    //     data->window.itself,
-    //     0,
-    //     15,
-    //     "%d", data->selected_process_y);
+    mvwprintw(
+        data->window.itself,
+        0,
+        15,
+        "%d", HASH_COUNT(data->y_to_pid));
     mvwprintw(
         data->window.itself,
         0,

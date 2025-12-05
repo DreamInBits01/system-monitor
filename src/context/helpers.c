@@ -142,7 +142,7 @@ bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_c
     // Sorting
     (*data)->sort_options[0] = DEFAULT_SORT;
     (*data)->sort_options[1] = SORT_BY_CPU;
-    (*data)->sort_options[2] = SORT_BY_MEM;
+    // (*data)->sort_options[2] = SORT_BY_MEM;
     return true;
 }
 void cleanup_processes_context(ProcessesBlock *data)

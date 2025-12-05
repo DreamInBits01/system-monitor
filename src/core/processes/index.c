@@ -9,6 +9,10 @@ void read_processes_data(DIR *fd, ProcessesBlock *data)
         data);
     remove_unseen_processes(&data->processes);
     data->processes_count = HASH_COUNT(data->processes);
+    if (strcmp(data->sort_options[data->sort_option], SORT_BY_CPU) == 0)
+    {
+        HASH_SORT(data->processes, by_cpu);
+    }
 }
 void show_processes(ProcessesBlock *data)
 {
@@ -125,6 +129,8 @@ void handle_manual_process_selection(ProcessesBlock *data)
     if (data->selected_process && !data->get_process_faild)
     {
         data->virtual_pad.y = data->selected_process_y;
+        wmove(data->virtual_pad.itself, data->virtual_pad.y, 0);
+        wclrtoeol(data->virtual_pad.itself); // Clear from cursor to end of line
         highlight_process(data);
         // refresh
         refresh_processes_pad(data, data->processes_count);
@@ -143,7 +149,14 @@ void remove_process_highlight(ProcessesBlock *data)
         data->virtual_pad.itself,
         data->virtual_pad.y);
 }
-
+void sort_by_cpu(ProcessesBlock *data)
+{
+    HASH_SORT(data->processes, by_cpu);
+}
+void sort_by_mem(ProcessesBlock *data)
+{
+    // Mem usage need to be calculated
+}
 /*
 
 -if it doesn't exist, you can add it

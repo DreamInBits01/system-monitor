@@ -30,9 +30,13 @@ void *interactivity_routine(void *data)
         case 'S':
             ctx->processes_block->sort_option += 1;
             ctx->processes_block->sort_option = ctx->processes_block->sort_option % SORT_OPTS_COUNT;
-            if (strcmp(ctx->processes_block->sort_options[ctx->processes_block->sort_option], "CPU") == 0)
+            if (strcmp(ctx->processes_block->sort_options[ctx->processes_block->sort_option], SORT_BY_CPU) == 0)
             {
                 sort_by_cpu(ctx->processes_block);
+            }
+            if (strcmp(ctx->processes_block->sort_options[ctx->processes_block->sort_option], DEFAULT_SORT) == 0)
+            {
+                sort_by_default(ctx->processes_block);
             }
             show_processes(ctx->processes_block);
             refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);

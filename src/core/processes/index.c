@@ -157,6 +157,10 @@ void sort_by_mem(ProcessesBlock *data)
 {
     // Mem usage need to be calculated
 }
+void sort_by_default(ProcessesBlock *data)
+{
+    HASH_SORT(data->processes, by_default);
+}
 /*
 
 -if it doesn't exist, you can add it

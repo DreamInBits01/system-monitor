@@ -33,6 +33,7 @@ void cleanup_process(Process *process);
 // UI
 int by_cpu(const Process *a, const Process *b);
 int by_mem(const Process *a, const Process *b);
+int by_default(const Process *a, const Process *b);
 void draw_processes_window(ProcessesBlock *data);
 void highlight_process(ProcessesBlock *data);
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count);

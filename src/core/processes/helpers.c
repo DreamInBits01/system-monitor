@@ -259,6 +259,10 @@ int by_cpu(const Process *a, const Process *b)
 {
     return (a->cpu_usage < b->cpu_usage);
 }
+int by_default(const Process *a, const Process *b)
+{
+    return (a->pid > b->pid);
+}
 int by_mem(const Process *a, const Process *b)
 {
     // Mem usage need to be calculated

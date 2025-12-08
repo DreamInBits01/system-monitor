@@ -226,6 +226,11 @@ void get_selected_process(Process **processes, YToPid **y_to_pid, Process **outp
     }
 
     HASH_FIND_INT(*processes, &found_y_to_pid_entry->pid, *output);
+    if ((*output)->is_deleted)
+    {
+        *get_process_faild = true;
+        return;
+    }
     if (*output == NULL)
     {
         *get_process_faild = true;
@@ -276,6 +281,8 @@ a->cpu_usage < b->cpu_usage <- (a=50, b=30)
 */
 int by_cpu(const Process *a, const Process *b)
 {
+    if (a->cpu_usage == 0 && b->cpu_usage == 0)
+        return 0;
     // Returns -1, meaning A comes before B (Descending)
     if (a->cpu_usage > b->cpu_usage)
         return -1; // a has more CPU, comes first

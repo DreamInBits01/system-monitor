@@ -10,7 +10,6 @@
 #define DEFAULT_SORT "DEF"
 #define SORT_BY_MEM "MEM"
 #define SORT_BY_CPU "CPU"
-#define SORT_OPTS_COUNT 2
 // UI alignment
 #define PROCESSES_PAD_OFFSET 3
 //  OFFSET +1 because y is starting from zero.
@@ -23,6 +22,8 @@ enum SortOption
     BY_DEFAULT,
     BY_CPU,
     BY_MEMORY,
+    // must be last element
+    SORT_OPTS_COUNT
 };
 typedef struct
 {
@@ -65,6 +66,5 @@ typedef struct
     unsigned processes_count;
     int selected_process_y;
     bool get_process_faild;
-    // bool selected_process_deleted;
 } ProcessesBlock;
 #endif

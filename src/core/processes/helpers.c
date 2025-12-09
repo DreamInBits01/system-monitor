@@ -316,13 +316,8 @@ void draw_processes_window(ProcessesBlock *data)
         data->window.itself,
         data->window.height - 1,
         2,
-        "%d/%d", data->selected_process->pid,
-        data->processes_count - 1);
-    mvwprintw(
-        data->window.itself,
-        0,
-        15,
-        "%d", HASH_COUNT(data->y_to_pid));
+        "%d/%d", data->selected_process_y + 1,
+        data->processes_count);
     mvwprintw(
         data->window.itself,
         0,

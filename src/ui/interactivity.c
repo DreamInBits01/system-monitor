@@ -28,8 +28,7 @@ void *interactivity_routine(void *data)
             break;
         case 's':
         case 'S':
-            ctx->processes_block->sort_option += 1;
-            ctx->processes_block->sort_option = ctx->processes_block->sort_option % SORT_OPTS_COUNT;
+            ctx->processes_block->sort_option = (ctx->processes_block->sort_option + 1) % SORT_OPTS_COUNT;
             if (ctx->processes_block->sort_option == BY_CPU)
             {
                 sort_by_cpu(ctx->processes_block);

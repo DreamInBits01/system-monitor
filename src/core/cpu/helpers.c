@@ -136,7 +136,7 @@ void draw_cpu_window(CPUBlock *cpu_block)
 {
     // Add box
     wattron(cpu_block->window.itself, COLOR_PAIR(4));
-    box(cpu_block->window.itself, 0, 0);
+    box(cpu_block->window.itself, '|', 0);
     wattroff(cpu_block->window.itself, COLOR_PAIR(4));
     // Add metadata
     wattron(cpu_block->window.itself, A_BOLD);

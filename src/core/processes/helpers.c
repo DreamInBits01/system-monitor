@@ -307,7 +307,7 @@ void draw_processes_window(ProcessesBlock *data)
 {
     wclear(data->window.itself);
     wattron(data->window.itself, COLOR_PAIR(4));
-    box(data->window.itself, 0, 0);
+    box(data->window.itself, '|', 0);
     wattroff(data->window.itself, COLOR_PAIR(4));
 
     wattron(data->window.itself, A_BOLD);

@@ -19,7 +19,7 @@ void show_memory_data(MemoryBlock *data)
     mvwprintw(data->window.itself, 5, 1, "Used:%.2f%%", used_percent);
     // build_loadbar(data->window.itself, memory_bar_fill, data->bar_width, 4, data->window.width / 3);
     wattron(data->window.itself, COLOR_PAIR(4));
-    box(data->window.itself, 0, 0);
+    box(data->window.itself, '|', 0);
     wattroff(data->window.itself, COLOR_PAIR(4));
     wattron(data->window.itself, A_BOLD);
     mvwaddstr(data->window.itself, 0, 2, "Memory");

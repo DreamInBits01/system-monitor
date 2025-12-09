@@ -18,6 +18,12 @@
 #define PROCESS_PAD_ALIGNMENT 4
 // 5 instead of 4 (PROCESSES_PAD_OFFSET+1) To exclude the first element from the next list
 #define INITIAL_VIEWPORT_BOTTOM_ALIGNMENT 5
+enum SortOption
+{
+    BY_DEFAULT,
+    BY_CPU,
+    BY_MEMORY,
+};
 typedef struct
 {
     // 8 bytes
@@ -55,7 +61,7 @@ typedef struct
     Process *processes;
     Process *selected_process;
     char *sort_options[SORT_OPTS_COUNT];
-    int sort_option;
+    enum SortOption sort_option;
     unsigned processes_count;
     int selected_process_y;
     bool get_process_faild;

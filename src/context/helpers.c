@@ -140,9 +140,9 @@ bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_c
     (*data)->virtual_pad.viewport_top = 0;
 
     // Sorting
-    (*data)->sort_options[BY_DEFAULT] = DEFAULT_SORT;
-    (*data)->sort_options[BY_CPU] = SORT_BY_CPU;
-    (*data)->sort_options[BY_MEMORY] = SORT_BY_MEM;
+    (*data)->sort_options[BY_DEFAULT] = "DEF";
+    (*data)->sort_options[BY_CPU] = "CPU";
+    (*data)->sort_options[BY_MEMORY] = "MEM";
     return true;
 }
 void cleanup_processes_context(ProcessesBlock *data)

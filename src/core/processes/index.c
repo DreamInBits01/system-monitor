@@ -9,7 +9,7 @@ void read_processes_data(DIR *fd, ProcessesBlock *data)
         data);
     remove_unseen_processes(&data->processes);
     data->processes_count = HASH_COUNT(data->processes);
-    if (strcmp(data->sort_options[data->sort_option], SORT_BY_CPU) == 0)
+    if (data->sort_options[data->sort_option] == BY_CPU)
     {
         HASH_SORT(data->processes, by_cpu);
     }

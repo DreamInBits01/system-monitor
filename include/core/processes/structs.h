@@ -6,10 +6,6 @@
 #include "ui_structs.h"
 #include "../../third_party/uthash/src/uthash.h"
 
-// Sorting
-#define DEFAULT_SORT "DEF"
-#define SORT_BY_MEM "MEM"
-#define SORT_BY_CPU "CPU"
 // UI alignment
 #define PROCESSES_PAD_OFFSET 3
 //  OFFSET +1 because y is starting from zero.

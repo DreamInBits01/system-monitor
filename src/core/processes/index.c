@@ -55,7 +55,11 @@ void show_processes(ProcessesBlock *data)
         // Selected process is reached
         if (line_height == data->virtual_pad.y && data->selected_process != NULL)
         {
-            // Update process at selected process y
+            /*
+            After re-render, select process state must change
+            if the corresponding y (selected process y) pid is not the same as y_to_pid pid for that y
+            new pid at y_to_pid must be used
+            */
             YToPid *found_y_process;
             HASH_FIND_INT(
                 data->y_to_pid,

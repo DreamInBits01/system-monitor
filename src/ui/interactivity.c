@@ -39,21 +39,6 @@ void *interactivity_routine(void *data)
             }
             show_processes(ctx->processes_block);
             refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
-            /*
-                After render, select process state must change
-                if the corresponding y (selected process y) pid is not the same as y_to_pid pid for that y
-                new pid at y_to_pid must be used
-            */
-            YToPid *found_y_process;
-            HASH_FIND_INT(
-                ctx->processes_block->y_to_pid,
-                &ctx->processes_block->selected_process_y,
-                found_y_process);
-            // They only share y, if their values are different, y_to_pid must be used to update selected process
-            if (found_y_process != NULL && found_y_process->pid != ctx->processes_block->selected_process->pid)
-            {
-                handle_manual_process_selection(ctx->processes_block);
-            }
             break;
         case KEY_F(1):
             goto cleanup;

@@ -9,7 +9,7 @@ void read_processes_data(DIR *fd, ProcessesBlock *data)
         data);
     remove_unseen_processes(&data->processes);
     data->processes_count = HASH_COUNT(data->processes);
-    if (data->sort_options[data->sort_option] == BY_CPU)
+    if (data->sort_option == BY_CPU)
     {
         HASH_SORT(data->processes, by_cpu);
     }
@@ -52,9 +52,24 @@ void show_processes(ProcessesBlock *data)
             data->selected_process_y = line_height;
             handle_manual_process_selection(data);
         }
+        // Selected process is reached
         if (line_height == data->virtual_pad.y && data->selected_process != NULL)
         {
-            highlight_process(data);
+            // Update process at selected process y
+            YToPid *found_y_process;
+            HASH_FIND_INT(
+                data->y_to_pid,
+                &data->selected_process_y,
+                found_y_process);
+            // They only share y, if their values are different, y_to_pid must be used to update selected process
+            if ((found_y_process != NULL && data->selected_process != NULL) && found_y_process->pid != data->selected_process->pid)
+            {
+                handle_manual_process_selection(data);
+            }
+            else
+            {
+                highlight_process(data);
+            }
         }
         else
         {

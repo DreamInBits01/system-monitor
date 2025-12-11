@@ -281,8 +281,6 @@ a->cpu_usage < b->cpu_usage <- (a=50, b=30)
 */
 int by_cpu(const Process *a, const Process *b)
 {
-    if (a->cpu_usage == 0 && b->cpu_usage == 0)
-        return 0;
     // Returns -1, meaning A comes before B (Descending)
     if (a->cpu_usage > b->cpu_usage)
         return -1; // a has more CPU, comes first
@@ -311,7 +309,9 @@ void draw_processes_window(ProcessesBlock *data)
     wattroff(data->window.itself, COLOR_PAIR(4));
 
     wattron(data->window.itself, A_BOLD);
+    // wattron(data->window.itself, COLOR_PAIR(7));
     mvwaddstr(data->window.itself, 0, 2, "Processes");
+    // wattroff(data->window.itself, COLOR_PAIR(7));
     mvwprintw(
         data->window.itself,
         data->window.height - 1,

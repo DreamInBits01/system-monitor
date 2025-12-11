@@ -1,4 +1,5 @@
 #include "ui/init.h"
+#define MAGENTA_PAIR 7
 void initialize_ncurses()
 {
     // Ncurses config
@@ -17,8 +18,8 @@ void initialize_ncurses()
     init_pair(4, COLOR_CYAN, COLOR_BLACK); // Orange
     init_pair(5, 55, COLOR_BLACK);         // OFFWHITE
     // Headers and titles
-    init_pair(6, COLOR_YELLOW, COLOR_BLACK);  // Section titles ("Memory total:", "Model name:")
-    init_pair(7, COLOR_MAGENTA, COLOR_BLACK); // Important labels
+    init_pair(6, COLOR_YELLOW, COLOR_BLACK);             // Section titles ("Memory total:", "Model name:")
+    init_pair(MAGENTA_PAIR, COLOR_MAGENTA, COLOR_BLACK); // Important labels
 
     noecho();              // character written will not be shown on the screen
     cbreak();              // Disables line buffering, making characters typed by the user immediately available to the program (no need to press enter)

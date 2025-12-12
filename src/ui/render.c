@@ -48,7 +48,12 @@ void *render_routine(void *data)
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
+        while (ctx->is_interacting)
+            pthread_cond_wait(&ctx->render_cond, &ctx->mutex);
+        ctx->is_rendering = 1;
         redraw_screen(ctx);
+        ctx->is_rendering = 0;
+        pthread_cond_signal(&ctx->interactivity_cond);
         pthread_mutex_unlock(&ctx->mutex);
         nanosleep(&ctx->render_delay, NULL);
     }

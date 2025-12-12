@@ -33,6 +33,8 @@
 
 ## OPTIMIZATIONS
 
+- Implement ping-pong condition
+
 ## Systems considerations
 
 ## Refactor
@@ -47,5 +49,6 @@
 - Processes
   - Parse /proc/[pid]/status
     - Parse memory usage of each process
+- Implement uptime reading
 
 ## Utils

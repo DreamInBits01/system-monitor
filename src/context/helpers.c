@@ -174,6 +174,8 @@ bool initialize_threads_context(AppContext *ctx)
     ctx->interactivity_delay = interactivity_delay;
     ctx->render_delay = render_delay;
     pthread_mutex_init(&ctx->mutex, NULL);
+    pthread_cond_init(&ctx->interactivity_cond, NULL);
+    pthread_cond_init(&ctx->render_cond, NULL);
     return true;
 }
 void cleanup_threads_context(AppContext *ctx)

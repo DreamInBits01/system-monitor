@@ -33,10 +33,14 @@ typedef struct
     ProcessesBlock *processes_block;
     ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
     pthread_mutex_t mutex;
+    pthread_cond_t render_cond;
+    pthread_cond_t interactivity_cond;
     int max_rows;
     int max_cols;
     unsigned bar_width;
     volatile int running;
+    volatile int is_rendering;
+    volatile int is_interacting;
     struct timespec render_delay;
     struct timespec interactivity_delay;
 } AppContext;

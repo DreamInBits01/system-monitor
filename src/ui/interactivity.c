@@ -18,6 +18,9 @@ void *interactivity_routine(void *data)
     while (ctx->running)
     {
         pthread_mutex_lock(&ctx->mutex);
+        while (ctx->is_rendering)
+            pthread_cond_wait(&ctx->interactivity_cond, &ctx->mutex);
+        ctx->is_interacting = 1; // notify render thread
         // int ch = wgetch(ctx->pad_config.pad_view.itself);
         int ch = getch();
         switch (ch)
@@ -131,6 +134,8 @@ void *interactivity_routine(void *data)
         }
         // discard buffered keyboard strokes
         flushinp();
+        ctx->is_interacting = 0;                // disable interacting
+        pthread_cond_signal(&ctx->render_cond); // allow rendering
         pthread_mutex_unlock(&ctx->mutex);
         nanosleep(&ctx->interactivity_delay, NULL);
     }

@@ -151,7 +151,7 @@ void draw_cpu_window(CPUBlock *cpu_block)
     mvwprintw(
         cpu_block->window.itself,
         cpu_block->window.height - 1,
-        (cpu_block->window.width - 12 - count_digits(days) - count_digits(hours)) / 2,
+        (cpu_block->window.width - 14 - count_digits(days) - count_digits(hours)) / 2,
         "Uptime: %hud, %huh", days, hours);
 
     // MhZ

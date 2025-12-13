@@ -54,7 +54,11 @@ void *render_routine(void *data)
         while (ctx->is_interacting)
             pthread_cond_wait(&ctx->render_cond, &ctx->mutex);
         ctx->is_rendering = 1;
+        pthread_mutex_unlock(&ctx->mutex);
+
         redraw_screen(ctx);
+
+        pthread_mutex_lock(&ctx->mutex);
         ctx->is_rendering = 0;
         pthread_cond_signal(&ctx->interactivity_cond);
         pthread_mutex_unlock(&ctx->mutex);

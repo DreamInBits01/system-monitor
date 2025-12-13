@@ -147,12 +147,15 @@ void draw_cpu_window(CPUBlock *cpu_block)
     mvwprintw(cpu_block->window.itself, 0, (cpu_block->window.width - strlen(buffer)) / 2, "%s", buffer);
     unsigned days = cpu_block->data.system_stats.uptime_in_hours / 24;
     unsigned hours = cpu_block->data.system_stats.uptime_in_hours % 24;
+    unsigned minutes = cpu_block->data.system_stats.uptime_in_minutes % 60;
+    unsigned seconds = (unsigned)cpu_block->data.system_stats.uptime_in_seconds % 60;
+
     // Uptime
     mvwprintw(
         cpu_block->window.itself,
         cpu_block->window.height - 1,
-        (cpu_block->window.width - 14 - count_digits(days) - count_digits(hours)) / 2,
-        "Uptime: %hud, %huh", days, hours);
+        (cpu_block->window.width - 16 - count_digits(days) - count_digits(hours) - count_digits(minutes) - count_digits(seconds)) / 2,
+        "Uptime: %hud, %hu:%hu:%hus", days, hours, minutes, seconds);
 
     // MhZ
     mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 7 - count_digits(cpu_block->data.avg_mhz), "MhZ:%d", cpu_block->data.avg_mhz);

@@ -45,10 +45,5 @@
 ## Core functionality
 
 - Read each CPU core usage:DONE
-- Read total CPU usage
-- Processes
-  - Parse /proc/[pid]/status
-    - Parse memory usage of each process
-- Implement uptime reading
 
 ## Utils

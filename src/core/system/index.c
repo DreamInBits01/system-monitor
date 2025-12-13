@@ -2,11 +2,16 @@
 
 void read_system_uptime(FILE *fd, SystemStats *data)
 {
-    if (fd == NULL)
+    FILE *uptime_file = fopen("/proc/uptime", "r");
+    if (uptime_file == NULL)
         return;
-    fscanf(fd, "%lf %lf", &data->uptime_in_seconds, &data->idle_time);
+    char buffer[256];
+    fgets(buffer, sizeof(buffer), uptime_file);
+    sscanf(buffer, "%lf %lf", &data->uptime_in_seconds, &data->idle_time);
+    // fscanf(fd, "%lf %lf", &data->uptime_in_seconds, &data->idle_time);
     data->uptime_in_minutes = (unsigned)data->uptime_in_seconds / 60;
     data->uptime_in_hours = (unsigned)data->uptime_in_minutes / 60;
+    fclose(uptime_file);
 }
 void read_local_time(SystemStats *data)
 {

@@ -3,7 +3,9 @@
 #include <time.h>
 typedef struct
 {
-    double uptime;
+    double uptime_in_seconds;
+    unsigned uptime_in_hours;
+    unsigned uptime_in_minutes;
     double idle_time;
     struct tm *local_time;
 } SystemStats;

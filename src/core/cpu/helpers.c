@@ -142,15 +142,17 @@ void draw_cpu_window(CPUBlock *cpu_block)
     wattron(cpu_block->window.itself, A_BOLD);
     // CPU model
     mvwaddstr(cpu_block->window.itself, 0, 2, cpu_block->data.model_name);
-    // Local Time
-    time_t now;
-    time(&now);
-    struct tm *local_time = localtime(&now);
     char buffer[80];
-    strftime(buffer, sizeof(buffer), "%H:%M", local_time);
+    strftime(buffer, sizeof(buffer), "%H:%M", cpu_block->data.system_stats.local_time);
     mvwprintw(cpu_block->window.itself, 0, (cpu_block->window.width - strlen(buffer)) / 2, "%s", buffer);
+    unsigned days = cpu_block->data.system_stats.uptime_in_hours / 24;
+    unsigned hours = cpu_block->data.system_stats.uptime_in_hours % 24;
     // Uptime
-    mvwprintw(cpu_block->window.itself, cpu_block->window.height - 1, (cpu_block->window.width - 10) / 2, "Uptime: %s", "7d");
+    mvwprintw(
+        cpu_block->window.itself,
+        cpu_block->window.height - 1,
+        (cpu_block->window.width - 12 - count_digits(days) - count_digits(hours)) / 2,
+        "Uptime: %hud, %huh", days, hours);
 
     // MhZ
     mvwprintw(cpu_block->window.itself, 0, cpu_block->window.width - 7 - count_digits(cpu_block->data.avg_mhz), "MhZ:%d", cpu_block->data.avg_mhz);

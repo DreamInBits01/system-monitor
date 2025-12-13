@@ -15,6 +15,9 @@ void redraw_screen(AppContext *ctx)
     read_processes_data(
         find_proc_dir_fd(ctx->proc_files, "processes"),
         ctx->processes_block);
+    read_system_uptime(
+        find_proc_file_fd(ctx->proc_files, "uptime"), &ctx->cpu_block->data.system_stats);
+    read_local_time(&ctx->cpu_block->data.system_stats);
 
     // clean processes' pad
     werase(ctx->processes_block->virtual_pad.itself);

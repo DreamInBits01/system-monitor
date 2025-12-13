@@ -19,6 +19,7 @@ typedef struct
     double cpu_usage;
     unsigned long long prev_active_time;
     unsigned long long prev_total_time;
+    SystemStats system_stats;
     CPUCore *cores;
 } CPUData;
 typedef struct

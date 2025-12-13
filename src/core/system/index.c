@@ -2,7 +2,11 @@
 
 void read_system_uptime(FILE *fd, SystemStats *data)
 {
-    fscanf(fd, "%lf %lf", &data->uptime, &data->idle_time);
+    if (fd == NULL)
+        return;
+    fscanf(fd, "%lf %lf", &data->uptime_in_seconds, &data->idle_time);
+    data->uptime_in_minutes = (unsigned)data->uptime_in_seconds / 60;
+    data->uptime_in_hours = (unsigned)data->uptime_in_minutes / 60;
 }
 void read_local_time(SystemStats *data)
 {

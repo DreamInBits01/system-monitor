@@ -300,6 +300,7 @@ int by_default(const Process *a, const Process *b)
 int by_mem(const Process *a, const Process *b)
 {
     // Mem usage need to be calculated
+    return 0;
 }
 void draw_processes_window(ProcessesBlock *data)
 {

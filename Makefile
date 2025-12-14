@@ -70,10 +70,13 @@ directories:
 	@mkdir -p $(BUILD_DIR)/context
 
 # Link object files to create executable
+# $(TARGET): $(OBJECTS)
+# 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+# 	@echo "Build complete: $(TARGET)"
 $(TARGET): $(OBJECTS)
+	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "Build complete: $(TARGET)"
-
 # Compile source files to object files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)

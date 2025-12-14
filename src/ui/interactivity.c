@@ -17,13 +17,14 @@ void *interactivity_routine(void *data)
     AppContext *ctx = (AppContext *)data;
     while (ctx->running)
     {
+        int ch = getch();
+
         pthread_mutex_lock(&ctx->mutex);
         while (ctx->is_rendering)
             pthread_cond_wait(&ctx->interactivity_cond, &ctx->mutex);
         ctx->is_interacting = 1; // notify render thread
         pthread_mutex_unlock(&ctx->mutex);
 
-        int ch = getch();
         switch (ch)
         {
         case KEY_RESIZE:

@@ -1,37 +1,5 @@
-# # Simple Makefile for learning
-
-# # Variables
-# CC = gcc
-# CFLAGS = -Wall -Iinclude -pthread
-
-# SRC_DIR = src
-# BUILD_DIR = build
-# BIN_DIR = bin
-# INCLUDE_DIR = include
-# # Default target - builds the program
-# all: index
-
-# # Build the main program
-# # Target: index
-# # Dependencies: all .c files in src/
-# # Command: compile everything together
-# index: src/main.c
-# 	$(CC) $(CFLAGS) -o bin/index src/utils.c src/main.c src/routines.c src/memory.c src/processes.c  src/cpu.c  -lncurses -pthread
-
-# # Clean up - removes built files
-# clean:
-# 	rm -f index
-
-# # Run the program
-# run: index
-# 	./bin/index
-
-# # Phony targets (don't create files with these names)
-# .PHONY: all clean run
-
-# Compiler and flags
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Iinclude
+CFLAGS = -g -Wall -Wextra -Iinclude -Ideps/uthash/src
 LIBS = -lncurses -lpanel -pthread
 
 # Directories
@@ -39,35 +7,58 @@ SRC_DIR = src
 BUILD_DIR = build
 BIN_DIR = bin
 INCLUDE_DIR = include
+DEPS_DIR = $(INCLUDE_DIR)/third_party
+
+# Installation directories
+PREFIX ?= /usr/local
+INSTALL_BIN = $(PREFIX)/bin
 
 # Target executable
 TARGET = $(BIN_DIR)/index
+INSTALL_NAME = warden
+
+# Dependency: uthash
+UTHASH_DIR = $(DEPS_DIR)/uthash
+UTHASH_URL = https://github.com/troydhanson/uthash.git
 
 # Source files
 MAIN_SRC = $(SRC_DIR)/main.c
 CONTEXT_SRC = $(SRC_DIR)/context/index.c \
-			  $(SRC_DIR)/context/helpers.c 
+              $(SRC_DIR)/context/helpers.c 
 UTILS_SRC = $(SRC_DIR)/utils.c
-
 UI_SRC = $(SRC_DIR)/ui/init.c \
          $(SRC_DIR)/ui/render.c \
          $(SRC_DIR)/ui/interactivity.c
-
 CORE_SRC = $(SRC_DIR)/core/cpu/index.c \
-		   $(SRC_DIR)/core/cpu/helpers.c \
+           $(SRC_DIR)/core/cpu/helpers.c \
            $(SRC_DIR)/core/memory/index.c \
            $(SRC_DIR)/core/memory/helpers.c \
            $(SRC_DIR)/core/processes/index.c \
            $(SRC_DIR)/core/processes/helpers.c \
            $(SRC_DIR)/core/system/index.c 
+
 # All source files
 SOURCES = $(MAIN_SRC) $(CONTEXT_SRC) $(UTILS_SRC) $(UI_SRC) $(CORE_SRC)
 
-# Object files (replace src/ with build/ and .c with .o)
+# Object files
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
 # Default target
-all: directories $(TARGET)
+all: dependencies directories $(TARGET)
+
+# Download and setup dependencies
+dependencies: $(UTHASH_DIR)
+
+$(UTHASH_DIR):
+	@echo "Downloading uthash..."
+	@mkdir -p $(DEPS_DIR)
+	@if command -v git >/dev/null 2>&1; then \
+		git clone --depth 1 $(UTHASH_URL) $(UTHASH_DIR); \
+	else \
+		echo "Error: git is required to download dependencies"; \
+		exit 1; \
+	fi
+	@echo "uthash downloaded successfully"
 
 # Create necessary directories
 directories:
@@ -75,6 +66,7 @@ directories:
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(BUILD_DIR)/ui
 	@mkdir -p $(BUILD_DIR)/core
+	@mkdir -p $(BUILD_DIR)/context
 
 # Link object files to create executable
 $(TARGET): $(OBJECTS)
@@ -86,10 +78,28 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean build artifacts
+# Install the program
+install: $(TARGET)
+	@echo "Installing $(INSTALL_NAME) to $(INSTALL_BIN)"
+	@mkdir -p $(INSTALL_BIN)
+	install -m 755 $(TARGET) $(INSTALL_BIN)/$(INSTALL_NAME)
+	@echo "Installation complete. Run with: $(INSTALL_NAME)"
+
+# Uninstall the program
+uninstall:
+	@echo "Removing $(INSTALL_BIN)/$(INSTALL_NAME)"
+	rm -f $(INSTALL_BIN)/$(INSTALL_NAME)
+	@echo "Uninstall complete"
+
+# Clean build artifacts (keep dependencies)
 clean:
 	rm -rf $(BUILD_DIR) $(BIN_DIR)
 	@echo "Clean complete"
+
+# Clean everything including dependencies
+distclean: clean
+	rm -rf $(DEPS_DIR)
+	@echo "Deep clean complete"
 
 # Rebuild everything
 rebuild: clean all
@@ -98,5 +108,13 @@ rebuild: clean all
 run: $(TARGET)
 	./$(TARGET)
 
+# Check dependencies
+check-deps:
+	@echo "Checking for required dependencies..."
+	@command -v $(CC) >/dev/null 2>&1 || { echo "Error: gcc not found"; exit 1; }
+	@command -v git >/dev/null 2>&1 || { echo "Error: git not found"; exit 1; }
+	@pkg-config --exists ncurses 2>/dev/null || { echo "Warning: ncurses not found via pkg-config"; }
+	@echo "Dependencies check complete"
+
 # Phony targets
-.PHONY: all clean rebuild run directories
+.PHONY: all clean distclean rebuild run directories install uninstall check-deps dependencies

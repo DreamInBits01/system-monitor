@@ -18,7 +18,6 @@ void *interactivity_routine(void *data)
     while (ctx->running)
     {
         int ch = getch();
-
         pthread_mutex_lock(&ctx->mutex);
         while (ctx->is_rendering)
             pthread_cond_wait(&ctx->interactivity_cond, &ctx->mutex);

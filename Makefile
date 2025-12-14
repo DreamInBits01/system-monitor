@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Iinclude -Ideps/uthash/src
+CFLAGS = -g -Wall -Wextra -Iinclude
 LIBS = -lncurses -lpanel -pthread
 
 # Directories

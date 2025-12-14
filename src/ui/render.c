@@ -19,6 +19,7 @@ void redraw_screen(AppContext *ctx)
         find_proc_file_fd(ctx->proc_files, "uptime"), &ctx->cpu_block->data.system_stats);
     read_local_time(&ctx->cpu_block->data.system_stats);
 
+    // show data
     // clean processes' pad
     werase(ctx->processes_block->virtual_pad.itself);
     show_processes(ctx->processes_block);
@@ -33,14 +34,6 @@ void redraw_screen(AppContext *ctx)
     {
         refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
     }
-    // show data
-    // if (ctx->sort_menu.visible)
-    // {
-    //     top_panel(ctx->sort_menu.panel);
-    //     update_panels();
-    //     doupdate();
-    // }
-    // show_cpuinfo_data(ctx->cpu_block);
     show_cpu_data(ctx->cpu_block);
     show_memory_data(ctx->memory_block);
 }
@@ -53,14 +46,14 @@ void *render_routine(void *data)
         pthread_mutex_lock(&ctx->mutex);
         while (ctx->is_interacting)
             pthread_cond_wait(&ctx->render_cond, &ctx->mutex);
-        ctx->is_rendering = 1;
+        ctx->is_rendering = 1; // notify interactivity thread
         pthread_mutex_unlock(&ctx->mutex);
 
         redraw_screen(ctx);
 
         pthread_mutex_lock(&ctx->mutex);
         ctx->is_rendering = 0;
-        pthread_cond_signal(&ctx->interactivity_cond);
+        pthread_cond_signal(&ctx->interactivity_cond); // allow interacting
         pthread_mutex_unlock(&ctx->mutex);
         nanosleep(&ctx->render_delay, NULL);
     }

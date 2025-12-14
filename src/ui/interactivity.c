@@ -23,7 +23,6 @@ void *interactivity_routine(void *data)
         ctx->is_interacting = 1; // notify render thread
         pthread_mutex_unlock(&ctx->mutex);
 
-        // int ch = wgetch(ctx->pad_config.pad_view.itself);
         int ch = getch();
         switch (ch)
         {

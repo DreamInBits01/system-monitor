@@ -42,7 +42,8 @@ SOURCES = $(MAIN_SRC) $(CONTEXT_SRC) $(UTILS_SRC) $(UI_SRC) $(CORE_SRC)
 
 # Object files
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
-
+# Force uthash to be downloaded before compiling any object files
+$(OBJECTS): | $(UTHASH_DIR)
 # Default target
 all: dependencies directories $(TARGET)
 

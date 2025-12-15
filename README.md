@@ -65,7 +65,7 @@ Warden includes a `Makefile` for automated building and installation.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/warden.git
+git clone https://github.com/dreaminbits01/warden.git
 cd warden
 
 # Compile and Install

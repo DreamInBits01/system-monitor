@@ -86,6 +86,6 @@ warden
 ## 🔮 Roadmap
 
 - [✅] **Memory Sorting:** Ability to sort processes by RAM usage.
-- [✅] **CLI Options:** Support for command-line arguments and flags.
+- [ ] **CLI Options:** Support for command-line arguments and flags.
 
 ---

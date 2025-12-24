@@ -4,16 +4,13 @@ void cleanup_context(AppContext *ctx)
     ctx->running = 0;
     // fds
     cleanup_cached_fds(ctx->proc_files, CACHED_PROC_FILES_NUMBER);
-    if (ctx->processes_block != NULL)
-        cleanup_processes_context(ctx->processes_block);
+    cleanup_processes_context(&ctx->processes_block);
 
     // memory
-    if (ctx->memory_block != NULL)
-        cleanup_memory_context(ctx->memory_block);
+    cleanup_memory_context(&ctx->memory_block);
 
     // CPU cleanup
-    if (ctx->cpu_block != NULL)
-        cleanup_cpu_context(ctx->cpu_block);
+    cleanup_cpu_context(&ctx->cpu_block);
 
     // ctx
     cleanup_threads_context(ctx);

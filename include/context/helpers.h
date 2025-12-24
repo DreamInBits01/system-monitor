@@ -10,13 +10,13 @@
 void initialize_fds(ProcFile *destination);
 void cleanup_cached_fds(ProcFile *files, size_t size);
 // CPU
-bool initialize_cpu_context(CPUBlock **data, FILE *fd, int max_rows, int max_cols);
+bool initialize_cpu_context(CPUBlock *data, FILE *fd, int max_rows, int max_cols);
 void cleanup_cpu_context(CPUBlock *data);
 // PROCESSES
-bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_cols);
+bool initialize_processes_context(ProcessesBlock *data, int max_rows, int max_cols);
 void cleanup_processes_context(ProcessesBlock *data);
 // MEMORY
-bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols);
+bool initialize_memory_context(MemoryBlock *data, int max_rows, int max_cols);
 void cleanup_memory_context(MemoryBlock *data);
 // SORT MENU
 // CTX

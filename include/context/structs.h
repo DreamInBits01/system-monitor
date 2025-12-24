@@ -28,9 +28,9 @@ typedef struct
 } ProcFile;
 typedef struct
 {
-    MemoryBlock *memory_block;
-    CPUBlock *cpu_block;
-    ProcessesBlock *processes_block;
+    MemoryBlock memory_block;
+    CPUBlock cpu_block;
+    ProcessesBlock processes_block;
     ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
     pthread_mutex_t mutex;
     pthread_cond_t render_cond;

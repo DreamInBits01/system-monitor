@@ -32,37 +32,37 @@ void *interactivity_routine(void *data)
             break;
         case 's':
         case 'S':
-            ctx->processes_block->sort_option = (ctx->processes_block->sort_option + 1) % SORT_OPTS_COUNT;
-            if (ctx->processes_block->sort_option == BY_CPU)
+            ctx->processes_block.sort_option = (ctx->processes_block.sort_option + 1) % SORT_OPTS_COUNT;
+            if (ctx->processes_block.sort_option == BY_CPU)
             {
-                sort_by_cpu(ctx->processes_block);
+                sort_by_cpu(&ctx->processes_block);
             }
-            if (ctx->processes_block->sort_option == BY_DEFAULT)
+            if (ctx->processes_block.sort_option == BY_DEFAULT)
             {
-                sort_by_default(ctx->processes_block);
+                sort_by_default(&ctx->processes_block);
             }
-            if (ctx->processes_block->sort_option == BY_MEMORY)
+            if (ctx->processes_block.sort_option == BY_MEMORY)
             {
-                sort_by_mem(ctx->processes_block);
+                sort_by_mem(&ctx->processes_block);
             }
-            show_processes(ctx->processes_block);
-            refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+            show_processes(&ctx->processes_block);
+            refresh_processes_pad(&ctx->processes_block, ctx->processes_block.processes_count);
             break;
         case KEY_F(1):
             goto cleanup;
             break;
         case KEY_F(2):
-            if (ctx->processes_block->selected_process == NULL)
+            if (ctx->processes_block.selected_process == NULL)
                 return NULL;
-            if (ctx->processes_block->selected_process->pid == 0 ||
-                ctx->processes_block->selected_process->is_deleted)
+            if (ctx->processes_block.selected_process->pid == 0 ||
+                ctx->processes_block.selected_process->is_deleted)
                 return NULL;
-            int kill_result = kill(ctx->processes_block->selected_process->pid, SIGKILL);
+            int kill_result = kill(ctx->processes_block.selected_process->pid, SIGKILL);
             if (kill_result == -1)
             {
                 perror("Kill faild!\n");
             }
-            if (ctx->processes_block->selected_process->pid == getpid())
+            if (ctx->processes_block.selected_process->pid == getpid())
                 goto cleanup;
 
             else
@@ -71,70 +71,70 @@ void *interactivity_routine(void *data)
                 // Mark it as deleted
                 Process *found_process;
                 HASH_FIND_INT(
-                    ctx->processes_block->processes,
-                    &ctx->processes_block->selected_process->pid,
+                    ctx->processes_block.processes,
+                    &ctx->processes_block.selected_process->pid,
                     found_process);
                 if (found_process == NULL)
                     return NULL;
                 found_process->is_deleted = true;
-                // HASH_DEL(ctx->processes_block->y_to_pid, corresponding_y_to_pid_entry);
+                // HASH_DEL(ctx->processes_block.y_to_pid, corresponding_y_to_pid_entry);
                 // free(corresponding_y_to_pid_entry);
-                // HASH_DEL(ctx->processes_block->processes, ctx->processes_block->selected_process);
-                // free(ctx->processes_block->selected_process);
-                // ctx->processes_block->selected_process = NULL;
-                wattron(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
+                // HASH_DEL(ctx->processes_block.processes, ctx->processes_block.selected_process);
+                // free(ctx->processes_block.selected_process);
+                // ctx->processes_block.selected_process = NULL;
+                wattron(ctx->processes_block.virtual_pad.itself, COLOR_PAIR(3));
                 mvwprintw(
-                    ctx->processes_block->virtual_pad.itself,
-                    ctx->processes_block->selected_process_y,
+                    ctx->processes_block.virtual_pad.itself,
+                    ctx->processes_block.selected_process_y,
                     2,
                     "Deleted");
-                // ctx->processes_block->selected_process_y -= 1;
+                // ctx->processes_block.selected_process_y -= 1;
                 // handle_manual_process_selection(ctx->processes_block);
-                wattroff(ctx->processes_block->virtual_pad.itself, COLOR_PAIR(3));
-                // refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+                wattroff(ctx->processes_block.virtual_pad.itself, COLOR_PAIR(3));
+                // refresh_processes_pad(ctx->processes_block, ctx->processes_block.processes_count);
             }
             break;
         case KEY_UP:
-            if (ctx->processes_block->virtual_pad.y > 0)
+            if (ctx->processes_block.virtual_pad.y > 0)
             {
                 // remove highlighting
-                remove_process_highlight(ctx->processes_block);
+                remove_process_highlight(&ctx->processes_block);
                 // next process's y
-                ctx->processes_block->selected_process_y = ctx->processes_block->virtual_pad.y - 1;
-                handle_manual_process_selection(ctx->processes_block);
+                ctx->processes_block.selected_process_y = ctx->processes_block.virtual_pad.y - 1;
+                handle_manual_process_selection(&ctx->processes_block);
             }
             break;
         case KEY_DOWN:
-            if (ctx->processes_block->virtual_pad.y < ctx->processes_block->processes_count - 1)
+            if (ctx->processes_block.virtual_pad.y < ctx->processes_block.processes_count - 1)
             {
                 // remove highlighting
-                remove_process_highlight(ctx->processes_block);
+                remove_process_highlight(&ctx->processes_block);
                 // next process's y
-                ctx->processes_block->selected_process_y = ctx->processes_block->virtual_pad.y + 1;
-                handle_manual_process_selection(ctx->processes_block);
+                ctx->processes_block.selected_process_y = ctx->processes_block.virtual_pad.y + 1;
+                handle_manual_process_selection(&ctx->processes_block);
             };
             break;
         case KEY_HOME:
             // remove highlighting
-            remove_process_highlight(ctx->processes_block);
+            remove_process_highlight(&ctx->processes_block);
             // next process's y
-            ctx->processes_block->virtual_pad.viewport_top = 0;
-            ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->window.height - INITIAL_VIEWPORT_BOTTOM_ALIGNMENT;
-            ctx->processes_block->selected_process_y = 0;
-            handle_manual_process_selection(ctx->processes_block);
+            ctx->processes_block.virtual_pad.viewport_top = 0;
+            ctx->processes_block.virtual_pad.viewport_bottom = ctx->processes_block.window.height - INITIAL_VIEWPORT_BOTTOM_ALIGNMENT;
+            ctx->processes_block.selected_process_y = 0;
+            handle_manual_process_selection(&ctx->processes_block);
 
             break;
         case KEY_END:
             // remove highlighting
-            remove_process_highlight(ctx->processes_block);
+            remove_process_highlight(&ctx->processes_block);
             // next process's y
             // Because the pad is starting from y = 3, the viewport top must be the height of the window, with the added 3 and one to exclude last one viewed from the last viewport
-            ctx->processes_block->virtual_pad.viewport_top = ctx->processes_block->processes_count - ctx->processes_block->window.height + PROCESS_PAD_ALIGNMENT;
-            ctx->processes_block->virtual_pad.viewport_bottom = ctx->processes_block->processes_count - 1;
-            // ctx->processes_block->window.y =
-            ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
+            ctx->processes_block.virtual_pad.viewport_top = ctx->processes_block.processes_count - ctx->processes_block.window.height + PROCESS_PAD_ALIGNMENT;
+            ctx->processes_block.virtual_pad.viewport_bottom = ctx->processes_block.processes_count - 1;
+            // ctx->processes_block.window.y =
+            ctx->processes_block.selected_process_y = ctx->processes_block.processes_count - 1;
 
-            handle_manual_process_selection(ctx->processes_block);
+            handle_manual_process_selection(&ctx->processes_block);
             break;
         }
         // discard buffered keyboard strokes

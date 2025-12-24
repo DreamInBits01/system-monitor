@@ -5,37 +5,37 @@ void redraw_screen(AppContext *ctx)
     // clear();
     read_memory_data(
         find_proc_file_fd(ctx->proc_files, "meminfo"),
-        &ctx->memory_block->data);
+        &ctx->memory_block.data);
     read_cpuinfo_data(
         find_proc_file_fd(ctx->proc_files, "cpuinfo"),
-        &ctx->cpu_block->data);
+        &ctx->cpu_block.data);
     read_procstat_cpu_data(
         find_proc_file_fd(ctx->proc_files, "procstat"),
-        &ctx->cpu_block->data);
+        &ctx->cpu_block.data);
     read_processes_data(
         find_proc_dir_fd(ctx->proc_files, "processes"),
-        ctx->processes_block);
+        &ctx->processes_block);
     read_system_uptime(
-        find_proc_file_fd(ctx->proc_files, "uptime"), &ctx->cpu_block->data.system_stats);
-    read_local_time(&ctx->cpu_block->data.system_stats);
+        find_proc_file_fd(ctx->proc_files, "uptime"), &ctx->cpu_block.data.system_stats);
+    read_local_time(&ctx->cpu_block.data.system_stats);
 
     // show data
     // clean processes' pad
-    werase(ctx->processes_block->virtual_pad.itself);
-    show_processes(ctx->processes_block);
+    werase(ctx->processes_block.virtual_pad.itself);
+    show_processes(&ctx->processes_block);
     // make sure that there are no gaps between processes in the y
-    if (ctx->processes_block->virtual_pad.y >= ctx->processes_block->processes_count)
+    if (ctx->processes_block.virtual_pad.y >= ctx->processes_block.processes_count)
     {
         // only update real y if selection succeeded
-        ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
-        handle_manual_process_selection(ctx->processes_block);
+        ctx->processes_block.selected_process_y = ctx->processes_block.processes_count - 1;
+        handle_manual_process_selection(&ctx->processes_block);
     }
     else
     {
-        refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+        refresh_processes_pad(&ctx->processes_block, ctx->processes_block.processes_count);
     }
-    show_cpu_data(ctx->cpu_block);
-    show_memory_data(ctx->memory_block);
+    show_cpu_data(&ctx->cpu_block);
+    show_memory_data(&ctx->memory_block);
 }
 void *render_routine(void *data)
 {
@@ -66,18 +66,18 @@ void resize_screen(AppContext *ctx)
     resize_cpu_block(&ctx->cpu_block, ctx->max_rows, ctx->max_cols);
     resize_memory_block(&ctx->memory_block, ctx->max_rows, ctx->max_cols);
     resize_processes_block(&ctx->processes_block, ctx->max_rows, ctx->max_cols);
-    // werase(ctx->processes_block->virtual_pad.itself);
+    // werase(ctx->processes_block.virtual_pad.itself);
     // show_processes(ctx->processes_block);
     // // make sure that there are no gaps between processes in the y
-    // if (ctx->processes_block->virtual_pad.y >= ctx->processes_block->processes_count)
+    // if (ctx->processes_block.virtual_pad.y >= ctx->processes_block.processes_count)
     // {
     //     // only update real y if selection succeeded
-    //     ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
+    //     ctx->processes_block.selected_process_y = ctx->processes_block.processes_count - 1;
     //     handle_manual_process_selection(ctx->processes_block);
     // }
     // else
     // {
-    //     refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+    //     refresh_processes_pad(ctx->processes_block, ctx->processes_block.processes_count);
     // }
     // show_cpu_data(ctx->cpu_block);
     // show_memory_data(ctx->memory_block);

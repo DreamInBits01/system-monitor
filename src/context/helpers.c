@@ -60,82 +60,72 @@ void cleanup_cached_fds(ProcFile *files, size_t size)
 }
 
 // CPU
-bool initialize_cpu_context(CPUBlock **data, FILE *fd, int max_rows, int max_cols)
+bool initialize_cpu_context(CPUBlock *data, FILE *fd, int max_rows, int max_cols)
 {
-    *data = malloc(sizeof(CPUBlock));
-    if (*data == NULL)
-        return false;
-    memset(*data, 0, sizeof(CPUBlock));
-    resize_cpu_block(&(*data)->window, max_rows, max_cols);
-    (*data)->window.itself = newwin(
-        (*data)->window.height,
-        (*data)->window.width,
-        (*data)->window.y,
-        (*data)->window.x);
-    (*data)->data.cpu_cores_count = cpu_cores_count(fd);
-    (*data)->data.cores = malloc(((*data)->data.cpu_cores_count + 1) * sizeof(CPUCore));
+    resize_cpu_block(&data->window, max_rows, max_cols);
+    data->window.itself = newwin(
+        data->window.height,
+        data->window.width,
+        data->window.y,
+        data->window.x);
+    data->data.cpu_cores_count = cpu_cores_count(fd);
+    data->data.cores = malloc((data->data.cpu_cores_count + 1) * sizeof(CPUCore));
     return true;
 }
 void cleanup_cpu_context(CPUBlock *data)
 {
     free(data->data.cores);
     delwin(data->window.itself);
-    free(data);
+    // free(data);
 }
 
 // MEMORY
-bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
+bool initialize_memory_context(MemoryBlock *data, int max_rows, int max_cols)
 {
-    *data = malloc(sizeof(MemoryBlock));
-    if (*data == NULL)
-        return false;
-    memset(*data, 0, sizeof(MemoryBlock));
-    resize_memory_block(&(*data)->window, max_rows, max_cols);
-    (*data)->window.itself = newwin(
-        (*data)->window.height,
-        (*data)->window.width,
-        (*data)->window.y,
-        (*data)->window.x);
-    (*data)->bar_width = (*data)->window.width / 5;
+    resize_memory_block(&data->window, max_rows, max_cols);
+    data->window.itself = newwin(
+        data->window.height,
+        data->window.width,
+        data->window.y,
+        data->window.x);
+    data->bar_width = data->window.width / 5;
     return true;
 }
 void cleanup_memory_context(MemoryBlock *data)
 {
     delwin(data->window.itself);
-    free(data);
+    // free(data);
 }
 
 // PROCESSES
-bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_cols)
+bool initialize_processes_context(ProcessesBlock *data, int max_rows, int max_cols)
 {
-    *data = malloc(sizeof(ProcessesBlock));
-    if ((*data) == NULL)
-        return false;
-    memset(*data, 0, sizeof(ProcessesBlock));
-    (*data)->y_to_pid = NULL;
-    (*data)->processes = NULL;
+
+    memset(data, 0, sizeof(ProcessesBlock));
+    data->y_to_pid = NULL;
+    data->processes = NULL;
     // window
-    resize_processes_block(&(*data)->window, max_rows, max_cols);
-    (*data)->window.itself = newwin(
-        (*data)->window.height,
-        (*data)->window.width,
-        (*data)->window.y,
-        (*data)->window.x);
+    resize_processes_block(&data->window, max_rows, max_cols);
+    data->window.itself = newwin(
+        data->window.height,
+        data->window.width,
+        data->window.y,
+        data->window.x);
     // virtual pad
-    (*data)->virtual_pad.y = 0;
-    (*data)->virtual_pad.height = 500;
-    (*data)->virtual_pad.width = 200;
-    (*data)->virtual_pad.itself = newpad(
-        (*data)->virtual_pad.height,
-        (*data)->virtual_pad.width);
+    data->virtual_pad.y = 0;
+    data->virtual_pad.height = 500;
+    data->virtual_pad.width = 200;
+    data->virtual_pad.itself = newpad(
+        data->virtual_pad.height,
+        data->virtual_pad.width);
     //-5 to exclude the first element from the next list
-    (*data)->virtual_pad.viewport_bottom = (*data)->window.height - INITIAL_VIEWPORT_BOTTOM_ALIGNMENT;
-    (*data)->virtual_pad.viewport_top = 0;
+    data->virtual_pad.viewport_bottom = data->window.height - INITIAL_VIEWPORT_BOTTOM_ALIGNMENT;
+    data->virtual_pad.viewport_top = 0;
 
     // Sorting
-    (*data)->sort_options[BY_DEFAULT] = "DEF";
-    (*data)->sort_options[BY_MEMORY] = "MEM";
-    (*data)->sort_options[BY_CPU] = "CPU";
+    data->sort_options[BY_DEFAULT] = "DEF";
+    data->sort_options[BY_MEMORY] = "MEM";
+    data->sort_options[BY_CPU] = "CPU";
     return true;
 }
 void cleanup_processes_context(ProcessesBlock *data)
@@ -152,7 +142,6 @@ void cleanup_processes_context(ProcessesBlock *data)
     }
     delwin(data->window.itself);
     delwin(data->virtual_pad.itself);
-    free(data);
 }
 
 // THREADS

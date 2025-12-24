@@ -16,8 +16,8 @@
 enum SortOption
 {
     BY_DEFAULT,
-    BY_CPU,
     BY_MEMORY,
+    BY_CPU,
     // must be last element
     SORT_OPTS_COUNT
 };

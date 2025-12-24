@@ -355,7 +355,7 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
     mvwprintw(virtual_pad, y, (window->width * .13), "%.2f", process->cpu_usage);
     mvwprintw(virtual_pad, y, (window->width * .23), "%c", process->state);
     mvwprintw(virtual_pad, y, (window->width * .28), "%d", process->threads);
-    mvwprintw(virtual_pad, y, (window->width * .35), "%.2f", process->mem_usage);
+    mvwprintw(virtual_pad, y, (window->width * .35), "%.0f", process->mem_usage);
     mvwprintw(virtual_pad, y, (window->width * .45), "%s", process->owner);
     mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->name);
 }

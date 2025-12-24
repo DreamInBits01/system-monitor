@@ -1,4 +1,18 @@
 #include "core/processes/index.h"
+// Sorting
+void sort_by_cpu(ProcessesBlock *data)
+{
+    HASH_SORT(data->processes, by_cpu);
+}
+void sort_by_mem(ProcessesBlock *data)
+{
+    HASH_SORT(data->processes, by_mem);
+    // Mem usage need to be calculated
+}
+void sort_by_default(ProcessesBlock *data)
+{
+    HASH_SORT(data->processes, by_default);
+}
 
 void read_processes_data(DIR *fd, ProcessesBlock *data)
 {
@@ -11,7 +25,11 @@ void read_processes_data(DIR *fd, ProcessesBlock *data)
     data->processes_count = HASH_COUNT(data->processes);
     if (data->sort_option == BY_CPU)
     {
-        HASH_SORT(data->processes, by_cpu);
+        sort_by_cpu(data);
+    }
+    if (data->sort_option == BY_MEMORY)
+    {
+        sort_by_mem(data);
     }
 }
 void show_processes(ProcessesBlock *data)
@@ -168,18 +186,7 @@ void remove_process_highlight(ProcessesBlock *data)
         data->virtual_pad.itself,
         data->virtual_pad.y);
 }
-void sort_by_cpu(ProcessesBlock *data)
-{
-    HASH_SORT(data->processes, by_cpu);
-}
-void sort_by_mem(ProcessesBlock *data)
-{
-    // Mem usage need to be calculated
-}
-void sort_by_default(ProcessesBlock *data)
-{
-    HASH_SORT(data->processes, by_default);
-}
+
 void resize_processes_block(Window *window, const int max_rows, const int max_cols)
 {
     window->height = (int)(.7 * max_rows);

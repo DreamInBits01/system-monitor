@@ -33,6 +33,7 @@ typedef struct
     // 4 bytes
     int threads;
     float cpu_usage;
+    float mem_usage;
     pid_t pid;
     unsigned y;
     // 1 byte

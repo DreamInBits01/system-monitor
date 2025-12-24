@@ -41,6 +41,10 @@ void *interactivity_routine(void *data)
             {
                 sort_by_default(ctx->processes_block);
             }
+            if (ctx->processes_block->sort_option == BY_MEMORY)
+            {
+                sort_by_mem(ctx->processes_block);
+            }
             show_processes(ctx->processes_block);
             refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
             break;

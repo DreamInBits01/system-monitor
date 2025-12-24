@@ -79,6 +79,12 @@ void parse_process_status_line(char *line, void *output)
         struct passwd *owner = getpwuid(uid);
         process->owner = strdup(owner->pw_name);
     }
+    if (strncmp(line, "VmRSS:", 6) == 0)
+    {
+        unsigned long kb;
+        sscanf(line + 6, "%lu", &kb);
+        process->mem_usage = KB_TO_MB(kb);
+    }
 }
 
 // Reading
@@ -300,6 +306,12 @@ int by_default(const Process *a, const Process *b)
 int by_mem(const Process *a, const Process *b)
 {
     // Mem usage need to be calculated
+    if (a->mem_usage > b->mem_usage)
+        return -1;
+    if (a->mem_usage < b->mem_usage)
+        return 1;
+    else
+        return 0;
     return 0;
 }
 void draw_processes_window(ProcessesBlock *data)
@@ -325,11 +337,12 @@ void draw_processes_window(ProcessesBlock *data)
         data->window.width - 6 - strlen(data->sort_options[data->sort_option]),
         "<S>:%s", data->sort_options[data->sort_option]);
     mvwprintw(data->window.itself, 2, 2, "PID");
-    mvwprintw(data->window.itself, 2, data->window.width * .12, "CPU");
-    mvwprintw(data->window.itself, 2, data->window.width * .2, "State");
-    mvwprintw(data->window.itself, 2, data->window.width * .3, "Threads");
-    mvwprintw(data->window.itself, 2, data->window.width * .45, "User");
-    mvwprintw(data->window.itself, 2, data->window.width * .62, "Name");
+    mvwprintw(data->window.itself, 2, data->window.width * .13, "CPU");
+    mvwprintw(data->window.itself, 2, data->window.width * .23, "S");
+    mvwprintw(data->window.itself, 2, data->window.width * .28, "T");
+    mvwprintw(data->window.itself, 2, data->window.width * .35, "MEM");
+    mvwprintw(data->window.itself, 2, data->window.width * .45, "USR");
+    mvwprintw(data->window.itself, 2, data->window.width * .6, "NAME");
     // mvwprintw(data->window.itself, 2, data->window.width * .65, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
@@ -338,15 +351,13 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
 {
     if (process == NULL || process->owner == NULL || process->name == NULL)
         return;
-    // wattron(virtual_pad, COLOR_PAIR(5));
     mvwprintw(virtual_pad, y, 2, "%d", process->pid);
-    mvwprintw(virtual_pad, y, (window->width * .12), "%.2f", process->cpu_usage);
-    mvwprintw(virtual_pad, y, (window->width * .2), "%c", process->state);
-    mvwprintw(virtual_pad, y, (window->width * .3), "%d", process->threads);
+    mvwprintw(virtual_pad, y, (window->width * .13), "%.2f", process->cpu_usage);
+    mvwprintw(virtual_pad, y, (window->width * .23), "%c", process->state);
+    mvwprintw(virtual_pad, y, (window->width * .28), "%d", process->threads);
+    mvwprintw(virtual_pad, y, (window->width * .35), "%.2f", process->mem_usage);
     mvwprintw(virtual_pad, y, (window->width * .45), "%s", process->owner);
-    mvwprintw(virtual_pad, y, (window->width * .62), "%s", process->name);
-    // mvwprintw(virtual_pad, y, (window->width * .65), "%s", process->exe_path);
-    // wattroff(virtual_pad, COLOR_PAIR(5));
+    mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->name);
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {

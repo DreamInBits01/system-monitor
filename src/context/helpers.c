@@ -6,15 +6,15 @@ void initialize_fds(ProcFile *destination)
     // define it first here to easily put them inside destination
     //*destination = files wouldn't work as that would change just the first element of the context's array
     // a double pointer would require dynamiclly allocated memory which increases complexity
-    const ProcFile files[CACHED_PROC_FILES_NUMBER] = {
+    const ProcFile files[CACHED_PROC_FILES_LENGTH] = {
         // PATH,KEY,READ MODE, FD,DIR*, is_directory
-        {"/proc/meminfo", "meminfo", "r", NULL, NULL, false},
-        {"/proc/cpuinfo", "cpuinfo", "r", NULL, NULL, false},
-        {"/proc/stat", "procstat", "r", NULL, NULL, false},
-        {"/proc/uptime", "uptime", "r", NULL, NULL, false},
-        {"/proc/", "processes", 0, NULL, NULL, true},
+        {"/proc/meminfo", MEM_INFO, "r", NULL, NULL, false},
+        {"/proc/cpuinfo", CPU_INFO, "r", NULL, NULL, false},
+        {"/proc/stat", PROC_STAT, "r", NULL, NULL, false},
+        {"/proc/uptime", UPTIME, "r", NULL, NULL, false},
+        {"/proc/", PROCESSES, 0, NULL, NULL, true},
     };
-    for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    for (size_t i = 0; i < CACHED_PROC_FILES_LENGTH; i++)
     {
         if (files[i].is_directory)
         {

@@ -12,22 +12,22 @@ int count_digits(int digit);
  * @key: String identifier for the desired file
  *
  * Searches the cached proc files array for a non-directory entry matching
- * the given key. Only searches up to CACHED_PROC_FILES_NUMBER entries.
+ * the given key. Only searches up to CACHED_PROC_FILES_LENGTH entries.
  *
  * Return: FILE pointer if found, NULL if not found or key matches a directory
  */
-FILE *find_proc_file_fd(const ProcFile *files, const char *key);
+FILE *find_proc_file_fd(const ProcFile *files, const int key);
 /**
  * find_proc_dir_fd - Find cached directory descriptor by key
  * @files: Array of cached proc files to search
  * @key: String identifier for the desired directory
  *
  * Searches the cached proc files array for a directory entry matching
- * the given key. Only searches up to CACHED_PROC_FILES_NUMBER entries.
+ * the given key. Only searches up to CACHED_PROC_FILES_LENGTH entries.
  *
  * Return: DIR pointer if found, NULL if not found or key matches a regular file
  */
-DIR *find_proc_dir_fd(const ProcFile *files, const char *key);
+DIR *find_proc_dir_fd(const ProcFile *files, const int key);
 /**
  * proc_dir_read_and_parse - Read directory entries and apply callback to each
  * @fd: Open directory stream to read from

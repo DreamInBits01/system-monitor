@@ -21,6 +21,7 @@ enum SortOption
     // must be last element
     SORT_OPTS_COUNT
 };
+
 typedef struct
 {
     // 8 bytes

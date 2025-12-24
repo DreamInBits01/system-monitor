@@ -6,7 +6,6 @@
 #include "core/cpu/structs.h"
 #include "core/processes/structs.h"
 #include "core/memory/structs.h"
-#define CACHED_PROC_FILES_NUMBER 5
 // Sort menu
 /*
 
@@ -15,12 +14,20 @@ UI BLOCKS
 -each block has a window and data
 -data could be static or dynamic or just data
 -each block can have a selected item in the window to perform any desired action upon
-
 */
+enum CachedProcFilesKeys
+{
+    MEM_INFO,
+    CPU_INFO,
+    PROC_STAT,
+    UPTIME,
+    PROCESSES,
+    CACHED_PROC_FILES_LENGTH
+};
 typedef struct
 {
     char *path;
-    char *key;
+    int key;
     char *read_mode;
     FILE *fd;
     DIR *dir;
@@ -31,7 +38,7 @@ typedef struct
     MemoryBlock memory_block;
     CPUBlock cpu_block;
     ProcessesBlock processes_block;
-    ProcFile proc_files[CACHED_PROC_FILES_NUMBER];
+    ProcFile proc_files[CACHED_PROC_FILES_LENGTH];
     pthread_mutex_t mutex;
     pthread_cond_t render_cond;
     pthread_cond_t interactivity_cond;

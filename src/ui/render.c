@@ -4,19 +4,19 @@ void redraw_screen(AppContext *ctx)
     // NOT THREAD SAFE, YOU NEED TO LOCK THE MUTEX BEFORE USING IT
     // clear();
     read_memory_data(
-        find_proc_file_fd(ctx->proc_files, "meminfo"),
+        find_proc_file_fd(ctx->proc_files, MEM_INFO),
         &ctx->memory_block.data);
     read_cpuinfo_data(
-        find_proc_file_fd(ctx->proc_files, "cpuinfo"),
+        find_proc_file_fd(ctx->proc_files, CPU_INFO),
         &ctx->cpu_block.data);
     read_procstat_cpu_data(
-        find_proc_file_fd(ctx->proc_files, "procstat"),
+        find_proc_file_fd(ctx->proc_files, PROC_STAT),
         &ctx->cpu_block.data);
     read_processes_data(
-        find_proc_dir_fd(ctx->proc_files, "processes"),
+        find_proc_dir_fd(ctx->proc_files, PROCESSES),
         &ctx->processes_block);
     read_system_uptime(
-        find_proc_file_fd(ctx->proc_files, "uptime"), &ctx->cpu_block.data.system_stats);
+        find_proc_file_fd(ctx->proc_files, UPTIME), &ctx->cpu_block.data.system_stats);
     read_local_time(&ctx->cpu_block.data.system_stats);
 
     // show data

@@ -3,7 +3,7 @@ void cleanup_context(AppContext *ctx)
 {
     ctx->running = 0;
     // fds
-    cleanup_cached_fds(ctx->proc_files, CACHED_PROC_FILES_NUMBER);
+    cleanup_cached_fds(ctx->proc_files, CACHED_PROC_FILES_LENGTH);
     cleanup_processes_context(&ctx->processes_block);
 
     // memory
@@ -31,7 +31,7 @@ void initialize_context(AppContext *ctx)
     // CPU config
     if (!initialize_cpu_context(
             &ctx->cpu_block,
-            find_proc_file_fd(ctx->proc_files, "procstat"),
+            find_proc_file_fd(ctx->proc_files, PROC_STAT),
             ctx->max_rows,
             ctx->max_cols))
     {

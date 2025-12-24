@@ -8,22 +8,22 @@ int count_digits(int digit)
     }
     return count;
 }
-FILE *find_proc_file_fd(const ProcFile *files, const char *key)
+FILE *find_proc_file_fd(const ProcFile *files, const int key)
 {
-    for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    for (size_t i = 0; i < CACHED_PROC_FILES_LENGTH; i++)
     {
-        if (!files[i].is_directory && strcmp(files[i].key, key) == 0)
+        if (!files[i].is_directory && files[i].key == key)
         {
             return files[i].fd;
         }
     }
     return NULL;
 }
-DIR *find_proc_dir_fd(const ProcFile *files, const char *key)
+DIR *find_proc_dir_fd(const ProcFile *files, const int key)
 {
-    for (size_t i = 0; i < CACHED_PROC_FILES_NUMBER; i++)
+    for (size_t i = 0; i < CACHED_PROC_FILES_LENGTH; i++)
     {
-        if (files[i].is_directory && strcmp(files[i].key, key) == 0)
+        if (files[i].is_directory && files[i].key == key)
         {
             return files[i].dir;
         }

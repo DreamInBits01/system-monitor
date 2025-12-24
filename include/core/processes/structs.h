@@ -35,10 +35,12 @@ typedef struct
     int threads;
     float cpu_usage;
     float mem_usage;
+    float mem_usage_in_mb;
     pid_t pid;
     unsigned y;
     // 1 byte
     char state;
+    char mem_usage_unit;
     unsigned char type;
     bool seen;
     bool is_deleted;

@@ -83,7 +83,24 @@ void parse_process_status_line(char *line, void *output)
     {
         unsigned long kb;
         sscanf(line + 6, "%lu", &kb);
-        process->mem_usage = KB_TO_MB(kb);
+        if (kb < 1024)
+        {
+            process->mem_usage = kb;
+            process->mem_usage_unit = 'B';
+        }
+        float mb = KB_TO_MB(kb);
+        if (mb >= 1)
+        {
+            process->mem_usage = mb;
+            process->mem_usage_unit = 'M';
+        }
+        float gb = KB_TO_GB(kb);
+        if (gb >= 1)
+        {
+            process->mem_usage = gb;
+            process->mem_usage_unit = 'G';
+        }
+        process->mem_usage_in_mb = mb;
     }
 }
 
@@ -306,9 +323,9 @@ int by_default(const Process *a, const Process *b)
 int by_mem(const Process *a, const Process *b)
 {
     // Mem usage need to be calculated
-    if (a->mem_usage > b->mem_usage)
+    if (a->mem_usage_in_mb > b->mem_usage_in_mb)
         return -1;
-    if (a->mem_usage < b->mem_usage)
+    if (a->mem_usage_in_mb < b->mem_usage_in_mb)
         return 1;
     else
         return 0;
@@ -355,7 +372,7 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
     mvwprintw(virtual_pad, y, (window->width * .13), "%.2f", process->cpu_usage);
     mvwprintw(virtual_pad, y, (window->width * .23), "%c", process->state);
     mvwprintw(virtual_pad, y, (window->width * .28), "%d", process->threads);
-    mvwprintw(virtual_pad, y, (window->width * .35), "%.0f", process->mem_usage);
+    mvwprintw(virtual_pad, y, (window->width * .35), "%.1f%c", process->mem_usage, process->mem_usage_unit);
     mvwprintw(virtual_pad, y, (window->width * .45), "%s", process->owner);
     mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->name);
 }

@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include "context/structs.h"
 #include "core/processes/structs.h"
+#define KB_TO_MB(x) ((x) / 1024.0)
+#define KB_TO_GB(x) ((x) / (1024.0 * 1024.0))
+
 int count_digits(int digit);
 /**
  * find_proc_file_fd - Find cached FILE descriptor by key

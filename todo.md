@@ -4,11 +4,6 @@
 - to redraw the pad efficiently, just shift every y after the deleted process by -1
 - Add viewports to processes's virtual pad
 
-## Run options
-
-- add refresh argument
-- add help commmand to explain program
-
 ## Render
 
 - Create a function to handle render when having static and dynamic data
@@ -39,11 +34,17 @@
 
 ## Refactor
 
-- For UI components initialization, separate the window/panel etc. creation (create at 0,0)
-  - Create a separate function for resizing to be used in both the initialization and resizing app
+- Write block resize function
+  - It should resize the window details
+  - It should move the window to its new position
+- Use enums for cached file descriptors
+- Use
 
 ## Core functionality
 
 - Read each CPU core usage:DONE
+- Read RSS from /proc/pid/status and convert it to MB
+- add refresh argument
+- add help commmand to explain program
 
 ## Utils

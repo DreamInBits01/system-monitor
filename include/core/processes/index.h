@@ -23,4 +23,5 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
 void sort_by_cpu(ProcessesBlock *data);
 void sort_by_mem(ProcessesBlock *data);
 void sort_by_default(ProcessesBlock *data);
+void resize_processes_block(Window *window, int max_rows, int max_cols);
 #endif

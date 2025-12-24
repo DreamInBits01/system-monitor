@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include "core/processes/index.h"
 #include "core/cpu/index.h"
-#include "core/processes/structs.h"
-#include "core/memory/structs.h"
+#include "core/memory/index.h"
 #include "structs.h"
 #include "ncurses.h"
 // CACHED FILE DESCRIPTORS

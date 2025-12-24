@@ -63,13 +63,23 @@ void resize_screen(AppContext *ctx)
 {
     // Pad view config
     getmaxyx(stdscr, ctx->max_rows, ctx->max_cols);
-    clear();
-    ctx->processes_block->virtual_pad.height = (int)(.7 * ctx->max_rows);
-    ctx->processes_block->virtual_pad.width = ctx->max_cols;
-    prefresh(ctx->processes_block->virtual_pad.itself,
-             ctx->processes_block->virtual_pad.viewport_top, ctx->processes_block->virtual_pad.x, // Top-left corner of pad content to display (scroll position)
-             ctx->processes_block->window.y + 3,                                                  // Top edge of screen area where pad appears
-             ctx->processes_block->window.x + 2,                                                  // Left edge of screen area where pad appears
-             ctx->processes_block->window.y + ctx->processes_block->window.height - 2,            // Bottom edge of screen area where pad appears
-             ctx->processes_block->window.x + ctx->processes_block->window.width - 2);            // Right edge of screen area where pad appears
+    resize_cpu_block(&ctx->cpu_block, ctx->max_rows, ctx->max_cols);
+    resize_memory_block(&ctx->memory_block, ctx->max_rows, ctx->max_cols);
+    resize_processes_block(&ctx->processes_block, ctx->max_rows, ctx->max_cols);
+    // werase(ctx->processes_block->virtual_pad.itself);
+    // show_processes(ctx->processes_block);
+    // // make sure that there are no gaps between processes in the y
+    // if (ctx->processes_block->virtual_pad.y >= ctx->processes_block->processes_count)
+    // {
+    //     // only update real y if selection succeeded
+    //     ctx->processes_block->selected_process_y = ctx->processes_block->processes_count - 1;
+    //     handle_manual_process_selection(ctx->processes_block);
+    // }
+    // else
+    // {
+    //     refresh_processes_pad(ctx->processes_block, ctx->processes_block->processes_count);
+    // }
+    // show_cpu_data(ctx->cpu_block);
+    // show_memory_data(ctx->memory_block);
+    // refresh();
 }

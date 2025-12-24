@@ -87,3 +87,18 @@ int cpu_cores_count(FILE *fd)
         &output, 1);
     return output;
 }
+void resize_cpu_block(Window *window, int max_rows, int max_cols)
+{
+    window->height = (int)(max_rows * .28);
+    window->width = (int)max_cols;
+    if (window->itself != NULL)
+    {
+        wresize(window->itself, window->height, window->width);
+        mvwin(window->itself, window->y, window->x);
+    }
+    // window->itself = newwin(
+    //     window->height,
+    //     window->width,
+    //     window->y,
+    //     window->x);
+}

@@ -180,6 +180,18 @@ void sort_by_default(ProcessesBlock *data)
 {
     HASH_SORT(data->processes, by_default);
 }
+void resize_processes_block(Window *window, const int max_rows, const int max_cols)
+{
+    window->height = (int)(.7 * max_rows);
+    window->width = (int)(.55 * max_cols);
+    window->y = (int)(max_rows * .28);
+    window->x = 0;
+    if (window->itself != NULL)
+    {
+        wresize(window->itself, window->height, window->width);
+        mvwin(window->itself, window->y, window->x);
+    };
+}
 /*
 
 -if it doesn't exist, you can add it

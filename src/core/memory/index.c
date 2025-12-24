@@ -26,3 +26,20 @@ void show_memory_data(MemoryBlock *data)
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
 }
+void resize_memory_block(Window *window, int max_rows, int max_cols)
+{
+    window->y = (int)(max_rows * .28);
+    window->x = (int)(max_cols * .55);
+    window->height = (int)(.35 * max_rows);
+    window->width = (int)(.46 * max_cols);
+    if (window->itself != NULL)
+    {
+        wresize(window->itself, window->height, window->width);
+        mvwin(window->itself, window->y, window->x);
+    }
+    // window->itself = newwin(
+    //     window->height,
+    //     window->width,
+    //     window->y,
+    //     window->x);
+}

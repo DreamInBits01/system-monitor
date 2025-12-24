@@ -66,8 +66,7 @@ bool initialize_cpu_context(CPUBlock **data, FILE *fd, int max_rows, int max_col
     if (*data == NULL)
         return false;
     memset(*data, 0, sizeof(CPUBlock));
-    (*data)->window.height = max_rows * .28;
-    (*data)->window.width = max_cols;
+    resize_cpu_block(&(*data)->window, max_rows, max_cols);
     (*data)->window.itself = newwin(
         (*data)->window.height,
         (*data)->window.width,
@@ -91,10 +90,7 @@ bool initialize_memory_context(MemoryBlock **data, int max_rows, int max_cols)
     if (*data == NULL)
         return false;
     memset(*data, 0, sizeof(MemoryBlock));
-    (*data)->window.y = (int)(max_rows * .28);
-    (*data)->window.x = (int)(max_cols * .55);
-    (*data)->window.height = (int)(.35 * max_rows);
-    (*data)->window.width = (int)(.46 * max_cols);
+    resize_memory_block(&(*data)->window, max_rows, max_cols);
     (*data)->window.itself = newwin(
         (*data)->window.height,
         (*data)->window.width,
@@ -119,10 +115,7 @@ bool initialize_processes_context(ProcessesBlock **data, int max_rows, int max_c
     (*data)->y_to_pid = NULL;
     (*data)->processes = NULL;
     // window
-    (*data)->window.height = (int)(.7 * max_rows);
-    (*data)->window.width = (int)(.55 * max_cols);
-    (*data)->window.y = (int)(max_rows * .28);
-    (*data)->window.x = 0;
+    resize_processes_block(&(*data)->window, max_rows, max_cols);
     (*data)->window.itself = newwin(
         (*data)->window.height,
         (*data)->window.width,

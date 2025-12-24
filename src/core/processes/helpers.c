@@ -358,8 +358,8 @@ void draw_processes_window(ProcessesBlock *data)
     mvwprintw(data->window.itself, 2, data->window.width * .23, "S");
     mvwprintw(data->window.itself, 2, data->window.width * .28, "T");
     mvwprintw(data->window.itself, 2, data->window.width * .35, "MEM");
-    mvwprintw(data->window.itself, 2, data->window.width * .45, "USR");
-    mvwprintw(data->window.itself, 2, data->window.width * .6, "NAME");
+    mvwprintw(data->window.itself, 2, data->window.width * .48, "USR");
+    mvwprintw(data->window.itself, 2, data->window.width * .63, "NAME");
     // mvwprintw(data->window.itself, 2, data->window.width * .65, "Path");
     wattroff(data->window.itself, A_BOLD);
     wrefresh(data->window.itself);
@@ -373,8 +373,8 @@ void show_process_information(Process *process, Window *window, WINDOW *virtual_
     mvwprintw(virtual_pad, y, (window->width * .23), "%c", process->state);
     mvwprintw(virtual_pad, y, (window->width * .28), "%d", process->threads);
     mvwprintw(virtual_pad, y, (window->width * .35), "%.1f%c", process->mem_usage, process->mem_usage_unit);
-    mvwprintw(virtual_pad, y, (window->width * .45), "%s", process->owner);
-    mvwprintw(virtual_pad, y, (window->width * .6), "%s", process->name);
+    mvwprintw(virtual_pad, y, (window->width * .48), "%s", process->owner);
+    mvwprintw(virtual_pad, y, (window->width * .63), "%s", process->name);
 }
 void update_interactivity_metadata(ProcessesBlock *data, int processes_count)
 {

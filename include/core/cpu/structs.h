@@ -15,7 +15,9 @@ typedef struct
     int physical_cores;
     int cpu_cores_count;
     int avg_mhz;
+    int mhz_occurrence;
     char model_name[32];
+    float total_mhz;
     double cpu_usage;
     unsigned long long prev_active_time;
     unsigned long long prev_total_time;

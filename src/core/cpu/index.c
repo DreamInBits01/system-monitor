@@ -4,7 +4,8 @@
 void read_cpuinfo_data(FILE *fd, CPUData *data)
 {
     data->logical_cpus = 0;
-
+    data->mhz_occurrence = 0;
+    data->total_mhz = 0;
     proc_file_read_and_parse(
         fd,
         parse_cpuinfo_line,

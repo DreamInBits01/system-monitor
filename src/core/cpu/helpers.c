@@ -5,21 +5,18 @@
 void parse_cpuinfo_line(char *line, void *data)
 {
     CPUData *cpu_data = (CPUData *)data;
-    float total_mhz = 0;
-    int mhz_occurrence = 0;
     if (strncmp("cpu MHz", line, 7) == 0)
     {
         float current_mhz;
         if (sscanf(line, "cpu MHz : %f", &current_mhz) == 1)
         {
-            total_mhz += current_mhz;
-            mhz_occurrence += 1;
+            cpu_data->total_mhz += current_mhz;
+            cpu_data->mhz_occurrence += 1;
         }
     };
-    if (mhz_occurrence > 0)
+    if (cpu_data->mhz_occurrence > 0)
     {
-        float avg_mhz = (float)total_mhz / mhz_occurrence;
-        cpu_data->avg_mhz = avg_mhz;
+        cpu_data->avg_mhz = cpu_data->total_mhz / cpu_data->mhz_occurrence;
     }
     if (strncmp("processor", line, 9) == 0)
     {

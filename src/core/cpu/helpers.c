@@ -1,7 +1,4 @@
 #include "core/cpu/helpers.h"
-// void parse_cpu_data(char *line, void *data) {
-
-// };
 void parse_cpuinfo_line(char *line, void *data)
 {
     CPUData *cpu_data = (CPUData *)data;
